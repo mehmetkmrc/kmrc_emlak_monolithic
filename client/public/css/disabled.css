@@ -1,0 +1,5 @@
+.api-text-links.disabled a {
+    pointer-events: none;
+    opacity: 10; /* Görsel olarak disabled görünümü vermek için */
+    color: gray;  /* Renk değiştirme */
+}

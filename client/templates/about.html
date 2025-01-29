@@ -1,0 +1,407 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <!--=============== basic  ===============-->
+        <meta charset="UTF-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>{{.Title}}</title>
+        <!--=============== css  ===============-->	
+        <link type="text/css" rel="stylesheet" href="/css/plugins.css">
+        <link type="text/css" rel="stylesheet" href="/css/style.css">
+        <!--=============== favicons ===============-->
+        <link rel="shortcut icon" href="/images/kmrc-logo.png">
+    </head>
+    <body>
+        <!--loader-->
+        <div class="loader-wrap">
+            <div class="loader-inner">
+                <svg>
+                    <defs>
+                        <filter id="goo">
+                            <fegaussianblur in="SourceGraphic" stdDeviation="2" result="blur" />
+                            <fecolormatrix in="blur"   values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 5 -2" result="gooey" />
+                            <fecomposite in="SourceGraphic" in2="gooey" operator="atop"/>
+                        </filter>
+                    </defs>
+                </svg>
+            </div>
+        </div>
+        <!--loader end-->
+        <!--  main   -->
+        <div id="main">
+            <!--header-->
+            {{template "partials/header" .}}
+            <!--header-end-->
+            <!--warpper-->
+            <div class="wrapper">
+                <!--content-->
+                <div class="content">
+                    <!--section-->
+                    <div class="section hero-section hero-section_sin">
+                        <div class="hero-section-wrap">
+                            <div class="hero-section-wrap-item">
+                                <div class="container">
+                                    <div class="hero-section-container">
+                                        <div class="hero-section-title">
+                                            <h2>Kömürcü Emlak Hakkında</h2>
+                                            <h5>2013'ten beri sizi hayalinizdeki eve ulaştırmak için çalışıyoruz.</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="hs-scroll-down-wrap">
+                                    <div class="scroll-down-item">
+                                        <div class="mousey">
+                                            <div class="scroller"></div>
+                                        </div>
+                                        <span>Aşağı Kaydırınız</span>
+                                    </div>
+                                    <div class="svg-corner svg-corner_white"  style="bottom:0;right: -39px; transform: rotate( 90deg)" ></div>
+                                    <div class="svg-corner svg-corner_white"  style="bottom:0;left:  -39px;"></div>
+                                </div>
+                                <div class="bg-wrap bg-hero bg-parallax-wrap-gradien fs-wrapper" data-scrollax-parent="true">
+                                    <div class="bg" data-bg="/images/all/bosphorus.jpg" data-scrollax="properties: { translateY: '30%' }"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--section-end-->				
+                    <!--container-->
+                    <div class="container">
+                        <!--breadcrumbs-list-->
+                        <div class="breadcrumbs-list bl_flat">
+                            <a href="#">Anasayfa</a><a href="#">Sayfalar</a><span>Hakkımızda</span>
+                            <div class="breadcrumbs-list_dec"><i class="fa-thin fa-arrow-up"></i></div>
+                        </div>
+                        <!--breadcrumbs-list end-->					
+                    </div>
+                    <!--container end-->	
+                    <!--main-content-->
+                    <div class="main-content ms_vir_height">
+                        <!--container-->
+                        <div class="container">
+                            <!--boxed-container-->
+                            <div class="boxed-container">
+                                <div class="boxed-content ">
+                                    <div class="about-wrap boxed-content-item">
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="about-title ab-hero ab-hero2">
+                                                    <h2> Biz Kimiz?</h2>
+                                                    <h4>Ne yapıyoruz?</h4>
+                                                </div>
+                                                <p>2013 yılında Kömürcü Emlak adı altında kendi şirketimizi kurduk. Bu süreçte emlak danışmanlığı, bina onarımı, müteahhitlik, kiraya verme ve ev alım-satımı gibi geniş bir hizmet yelpazesi sunduk. Müşterilerimize en uygun gayrimenkulleri bulmalarında yardımcı olurken, binaların inşaat süreçlerini yönettik ve güvenilir yapılar inşa ettik. </p>
+                                                <p>
+                                                    Emlak sektöründeki tecrübemizle mülklerin değerini doğru analiz etmeyi ve müteahhitlik projelerini başarıyla yürütmeyi başardık. Kömürcü Emlak olarak her zaman müşteri memnuniyetini ön planda tuttuk ve bu yolculukta güvenilir bir isim haline geldik.  
+                                                </p>
+                                                <a href="/contacts" class="commentssubmit" style="margin-top: 30px">Bizimle İletişime geçin</a>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="about-img ab_i2">
+                                                    <img src="images/all/16.jpg" class="respimg" alt="">
+                                                    <div class="ab_img_wideo_wrap">
+                                                        <div class="video-link" id="html5-videos" data-html="#video1"><i class="fas fa-play"></i><span> Hikaye Videosunu Oynat</span></div>
+                                                    </div>
+                                                    <div style="display:none;" id="video1" class="popup_video" data-videolink="/videos/1.mp4">
+                                                        <video class="lg-video-object lg-html5" controls preload="none">
+                                                            <source src="/" type="video/mp4">
+                                                        </video>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <!-- inline-facts -->
+                                    <div class="col-lg-3">
+                                        <div class="inline-facts">
+                                            <i class="fa-light fa-users"></i>
+                                            <div class="milestone-counter">
+                                                <div class="stats animaper">
+                                                    <div class="num" data-content="0" data-num="254">0</div>
+                                                </div>
+                                            </div>
+                                            <h6>Yeni Ziyaretçi</h6>
+                                        </div>
+                                    </div>
+                                    <!-- inline-facts end -->
+                                    <!-- inline-facts  -->
+                                    <div class="col-lg-3">
+                                        <div class="inline-facts">
+                                            <i class="fa-light fa-message-heart"></i>
+                                            <div class="milestone-counter">
+                                                <div class="stats animaper">
+                                                    <div class="num" data-content="0" data-num="12168">0</div>
+                                                </div>
+                                            </div>
+                                            <h6>Mutlu Müşteri</h6>
+                                        </div>
+                                    </div>
+                                    <!-- inline-facts end -->
+                                    <!-- inline-facts  -->
+                                    <div class="col-lg-3">
+                                        <div class="inline-facts">
+                                            <i class="fa-light fa-wreath-laurel"></i>
+                                            <div class="milestone-counter">
+                                                <div class="stats animaper">
+                                                    <div class="num" data-content="0" data-num="172">0</div>
+                                                </div>
+                                            </div>
+                                            <h6>Fethedilen gönüller)</h6>
+                                        </div>
+                                    </div>
+                                    <!-- inline-facts end -->
+                                    <!-- inline-facts  -->
+                                    <div class="col-lg-3">
+                                        <div class="inline-facts">
+                                            <i class="fa-light fa-house-building"></i>
+                                            <div class="milestone-counter">
+                                                <div class="stats animaper">
+                                                    <div class="num" data-content="0" data-num="732">0</div>
+                                                </div>
+                                            </div>
+                                            <h6>Yeni yerleşim</h6>
+                                        </div>
+                                    </div>
+                                    <!-- inline-facts end -->
+                                </div>
+                            </div>
+                            <!--boxed-container end-->					
+                        </div>
+                        <!--container end-->			
+                        <div class="agent-bg-section">
+                            <div class="fw_car_title-wrap">
+                                <div class="fw_car_title">
+                                    <h3>Acentelerimizle Tanışın</h3>
+                                    <p>Acentelerimiz size en hızlı ve en kaliteli hizmeti vermek için gece gündüz çalışır ve siz değerli müşterimizi hedeflerine en kolay şekilde ulaştırır. </p>
+                                </div>
+                            </div>
+                            <div class="agent-carousel_controls">
+                                <div class="ac-button ac-button-prev"><i class="fas fa-caret-left"></i></div>
+                                <div class="ac-button ac-button-next"><i class="fas fa-caret-right"></i></div>
+                            </div>
+                            <div class="agnet-carousel-wrap">
+                                <div class="agnet-carousel">
+                                    <div class="swiper-container">
+                                        <div class="swiper-wrapper">
+                                            <!--agent-card-item-->
+                                            <div class="swiper-slide">
+                                                <div class="agent-card-item">
+                                                    <div class="agent-card-item_media">
+                                                        <div class="agent-card-item_media-wrap">
+                                                            <img src="/images/agents/Ramazankomurcu.png" alt="" class="respimg">
+                                                            <div class="overlay"></div>
+                                                            <div class="acim-wrap">
+                                                                <ul>
+                                                                    <li><a href="#" target="_blank"><i class="fa-brands fa-facebook-f"></i></a></li>
+                                                                    <li><a href="#" target="_blank"><i class="fa-brands fa-x-twitter"></i></a></li>
+                                                                    <li><a href="#" target="_blank"><i class="fa-brands fa-instagram"></i></a></li>
+                                                                    <li><a href="#" target="_blank"><i class="fa-brands fa-tiktok"></i></a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="agent-card-item_text">
+                                                        <div class="agent-card-item_text-item">
+                                                            <h4><a href="agent-single.html">Ramazan Kömürcü</a></h4>
+                                                            <p>Kendileri emlak danışmanımız olup yılın her günü sizler için çalışır.</p>
+                                                            <div class="post-card-details">
+                                                                <ul>
+                                                                    <li><i class="fa-regular fa-house-building"></i><span>12 Properties</span></li>
+                                                                    <li><i class="fa-light fa-glasses"></i><span>3567 Views</span></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="agent-card-item_footer sh-links">
+                                                        <a href="agent-single.html" class="post-card_link">Detayları Görüntüle <i class="fa-solid fa-caret-right"></i></a>
+                                                        <div class="property-contacts-links">
+                                                            <a href="tel:+905363256210" class="tolt pcl_btn" data-microtip-position="left" data-tooltip="Call"><i class="fa-solid fa-phone"></i></a>
+                                                            <a href="#" class="show-messenger-links pcl_btn tolt" data-microtip-position="left" data-tooltip="Write Message"><i class="fa-solid fa-message-sms"></i></a>
+                                                        </div>
+                                                        <div class="messenger-links-container">
+                                                            <a href="#" class="tolt" data-microtip-position="bottom" data-tooltip="Viber"><i class="fa-brands fa-viber"></i></a>
+                                                            <a href="#" class="tolt" data-microtip-position="bottom" data-tooltip="Whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+                                                            <a href="#" class="tolt" data-microtip-position="bottom" data-tooltip="Telegram"><i class="fa-brands fa-telegram"></i></a>
+                                                            <a href="#" class="tolt" data-microtip-position="bottom" data-tooltip="Facebook"><i class="fa-brands fa-facebook-messenger"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--agent-card-item end-->					
+                                            <!--agent-card-item-->
+                                            <div class="swiper-slide">
+                                                <div class="agent-card-item">
+                                                    <div class="agent-card-item_media">
+                                                        <div class="agent-card-item_media-wrap">
+                                                            <img src="/images/agents/Mahmutkomurcu.png" alt="" class="respimg">
+                                                            <div class="overlay"></div>
+                                                            <div class="acim-wrap">
+                                                                <ul>
+                                                                    <li><a href="#" target="_blank"><i class="fa-brands fa-facebook-f"></i></a></li>
+                                                                    <li><a href="#" target="_blank"><i class="fa-brands fa-instagram"></i></a></li>
+                                                                    <li><a href="#" target="_blank"><i class="fa-brands fa-tiktok"></i></a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="agent-card-item_text">
+                                                        <div class="agent-card-item_text-item">
+                                                            <h4><a href="agent-single.html">Mahmut Kömürcü</a></h4>
+                                                            <p>Çok çeşit işle uğraştığı için birçok insanla anlaşabilir ve hayalinizdeki evi almanıza veyahut satmanıza yardımcı olur.</p>
+                                                            <div class="post-card-details">
+                                                                <ul>
+                                                                    <li><i class="fa-regular fa-house-building"></i><span>6 Properties</span></li>
+                                                                    <li><i class="fa-light fa-glasses"></i><span>8976 Views</span></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="agent-card-item_footer sh-links">
+                                                        <a href="agent-single.html" class="post-card_link">View Details <i class="fa-solid fa-caret-right"></i></a>
+                                                        <div class="property-contacts-links">
+                                                            <a href="tel:+18475555555" class="tolt pcl_btn" data-microtip-position="left" data-tooltip="Call"><i class="fa-solid fa-phone"></i></a>
+                                                            <a href="#" class="show-messenger-links pcl_btn tolt" data-microtip-position="left" data-tooltip="Write Message"><i class="fa-solid fa-message-sms"></i></a>
+                                                        </div>
+                                                        <div class="messenger-links-container">
+                                                            <a href="#" class="tolt" data-microtip-position="bottom" data-tooltip="Viber"><i class="fa-brands fa-viber"></i></a>
+                                                            <a href="#" class="tolt" data-microtip-position="bottom" data-tooltip="Whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+                                                            <a href="#" class="tolt" data-microtip-position="bottom" data-tooltip="Telegram"><i class="fa-brands fa-telegram"></i></a>
+                                                            <a href="#" class="tolt" data-microtip-position="bottom" data-tooltip="Facebook"><i class="fa-brands fa-facebook-messenger"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--agent-card-item end-->								
+                                            <!--agent-card-item-->
+                                            <div class="swiper-slide">
+                                                <div class="agent-card-item">
+                                                    <div class="agent-card-item_media">
+                                                        <div class="agent-card-item_media-wrap">
+                                                            <img src="/images/agents/mk_gc.jpg" alt="" class="respimg">
+                                                            <div class="overlay"></div>
+                                                            <div class="acim-wrap">
+                                                                <ul>
+                                                                    <li><a href="#" target="_blank"><i class="fa-brands fa-facebook-f"></i></a></li>
+                                                                    <li><a href="#" target="_blank"><i class="fa-brands fa-x-twitter"></i></a></li>
+                                                                    <li><a href="#" target="_blank"><i class="fa-brands fa-instagram"></i></a></li>
+                                                                    <li><a href="#" target="_blank"><i class="fa-brands fa-tiktok"></i></a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="agent-card-item_text">
+                                                        <div class="agent-card-item_text-item">
+                                                            <h4><a href="agent-single.html">Mehmet Kömürcü</a></h4>
+                                                            <p>Her zaman insanlara barınabilecekleri evleri temin etmek hayali olan kardeşiniz olaraktan  </p>
+                                                            <div class="post-card-details">
+                                                                <ul>
+                                                                    <li><i class="fa-regular fa-house-building"></i><span>24 Properties</span></li>
+                                                                    <li><i class="fa-light fa-glasses"></i><span>5462 Views</span></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="agent-card-item_footer sh-links">
+                                                        <a href="agent-single.html" class="post-card_link">View Details <i class="fa-solid fa-caret-right"></i></a>
+                                                        <div class="property-contacts-links">
+                                                            <a href="tel:+18475555555" class="tolt pcl_btn" data-microtip-position="left" data-tooltip="Call"><i class="fa-solid fa-phone"></i></a>
+                                                            <a href="#" class="show-messenger-links pcl_btn tolt" data-microtip-position="left" data-tooltip="Write Message"><i class="fa-solid fa-message-sms"></i></a>
+                                                        </div>
+                                                        <div class="messenger-links-container">
+                                                            <a href="#" class="tolt" data-microtip-position="bottom" data-tooltip="Viber"><i class="fa-brands fa-viber"></i></a>
+                                                            <a href="#" class="tolt" data-microtip-position="bottom" data-tooltip="Whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+                                                            <a href="#" class="tolt" data-microtip-position="bottom" data-tooltip="Telegram"><i class="fa-brands fa-telegram"></i></a>
+                                                            <a href="#" class="tolt" data-microtip-position="bottom" data-tooltip="Facebook"><i class="fa-brands fa-facebook-messenger"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--agent-card-item end-->								
+                                            <!--agent-card-item-->
+                                            <div class="swiper-slide">
+                                                <div class="agent-card-item">
+                                                    <div class="agent-card-item_media">
+                                                        <div class="agent-card-item_media-wrap">
+                                                            <img src="/images/agents/tetraNur.jpg" alt="" class="respimg">
+                                                            <div class="overlay"></div>
+                                                            <div class="acim-wrap">
+                                                                <ul>
+                                                                    <li><a href="#" target="_blank"><i class="fa-brands fa-facebook-f"></i></a></li>
+                                                                    <li><a href="#" target="_blank"><i class="fa-brands fa-x-twitter"></i></a></li>
+                                                                    <li><a href="#" target="_blank"><i class="fa-brands fa-instagram"></i></a></li>
+                                                                    <li><a href="#" target="_blank"><i class="fa-brands fa-tiktok"></i></a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="agent-card-item_text">
+                                                        <div class="agent-card-item_text-item">
+                                                            <h4><a href="agent-single.html">Nurullah Kömürcü</a></h4>
+                                                            <p>İnsanları tedavi etmekten sonra en güzel duygunun insanların temel  </p>
+                                                            <div class="post-card-details">
+                                                                <ul>haklarınadan biri olan barınma hakkının temin edilmesini ilke alan genç bir girişimci kardeşimiz.
+                                                                    <li><i class="fa-regular fa-house-building"></i><span>7 Properties</span></li>
+                                                                    <li><i class="fa-light fa-glasses"></i><span>7897 Views</span></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="agent-card-item_footer sh-links">
+                                                        <a href="agent-single.html" class="post-card_link">View Details <i class="fa-solid fa-caret-right"></i></a>
+                                                        <div class="property-contacts-links">
+                                                            <a href="tel:+18475555555" class="tolt pcl_btn" data-microtip-position="left" data-tooltip="Call"><i class="fa-solid fa-phone"></i></a>
+                                                            <a href="#" class="show-messenger-links pcl_btn tolt" data-microtip-position="left" data-tooltip="Write Message"><i class="fa-solid fa-message-sms"></i></a>
+                                                        </div>
+                                                        <div class="messenger-links-container">
+                                                            <a href="#" class="tolt" data-microtip-position="bottom" data-tooltip="Viber"><i class="fa-brands fa-viber"></i></a>
+                                                            <a href="#" class="tolt" data-microtip-position="bottom" data-tooltip="Whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+                                                            <a href="#" class="tolt" data-microtip-position="bottom" data-tooltip="Telegram"><i class="fa-brands fa-telegram"></i></a>
+                                                            <a href="#" class="tolt" data-microtip-position="bottom" data-tooltip="Facebook"><i class="fa-brands fa-facebook-messenger"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--agent-card-item end-->								
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- section   -->
+                        {{template "partials/comments" .}}
+                        <!-- section end  -->										
+                        <!--container-->
+                        {{template "partials/mobil_app" .}}
+                        <!--container end-->
+                    </div>
+                    <!--main-content end-->
+                </div>
+                <!--content  end-->
+                {{template "partials/footer" .}}
+            </div>
+            <!--warpper end-->
+            <!--wish-list-wrap-->
+            {{template "partials/wish_list" .}}
+            <!--wish-list-wrap end-->
+            <div class="mob-nav-overlay fs-wrapper"></div>
+            <div class="body-overlay fs-wrapper wishlist-wrap-overlay clwl_btn"></div>
+            <!--register form -->
+            {{template "partials/signupform" .}}
+            <!--register form end -->	
+            <!-- progress-bar  -->
+            <div class="progress-bar-wrap">
+                <div class="progress-bar color-bg"></div>
+            </div>
+            <!-- progress-bar end -->			
+        </div>
+        <!-- Main end -->
+        <!--=============== scripts  ===============-->   
+        <script  src="/js/jquery.min.js"></script>
+        <script  src="/js/plugins.js"></script>
+        <script  src="/js/scripts.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLbbqPyt9k72CSUbi2d4F_aUKAjB6oekI&libraries=places"></script>
+        <script src="/js/map-single.js"></script>
+    </body>
+</html>

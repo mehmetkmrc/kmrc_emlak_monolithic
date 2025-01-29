@@ -1,0 +1,600 @@
+<!DOCTYPE HTML>
+<html lang="en">
+    <head>
+        <!--=============== basic  ===============-->
+        <meta charset="UTF-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>{{.Title}}</title>
+        <!--=============== css  ===============-->	
+        <link type="text/css" rel="stylesheet" href="/css/plugins.css">
+        <link type="text/css" rel="stylesheet" href="/css/style.css">
+        <!--=============== favicons ===============-->
+        <link rel="shortcut icon" href="/images/kmrc-logo.jpg">
+    </head>
+    <body>
+        <!--loader-->
+        <div class="loader-wrap">
+            <div class="loader-inner">
+                <svg>
+                    <defs>
+                        <filter id="goo">
+                            <fegaussianblur in="SourceGraphic" stdDeviation="2" result="blur" />
+                            <fecolormatrix in="blur"   values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 5 -2" result="gooey" />
+                            <fecomposite in="SourceGraphic" in2="gooey" operator="atop"/>
+                        </filter>
+                    </defs>
+                </svg>
+            </div>
+        </div>
+        <!--loader end-->
+        <!--  main   -->
+        <div id="main">
+            <!--header-->
+            {{template "partials/header" .}}
+            <div class="body-overlay fs-wrapper search-form-overlay close-search-form"></div>
+            <!--header-end-->
+            <!--warpper-->
+            <div class="wrapper">
+                <!--content-->
+                <div class="content">
+                    <!--section-->
+                    <div class="section hero-section hero-section_sin">
+                        <div class="hero-section-wrap">
+                            <div class="hero-section-wrap-item">
+                                <div class="container">
+                                    <div class="hero-section-container">
+                                        <div class="hero-section-title">
+                                            <h2>Latest Properties</h2>
+                                            <h5>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut nec tincidunt arcu, sit amet fermentum sem.</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="hs-scroll-down-wrap">
+                                    <div class="scroll-down-item">
+                                        <div class="mousey">
+                                            <div class="scroller"></div>
+                                        </div>
+                                        <span>Scroll Down To Discover</span>
+                                    </div>
+                                    <div class="svg-corner svg-corner_white"  style="bottom:0;right: -39px; transform: rotate( 90deg)" ></div>
+                                    <div class="svg-corner svg-corner_white"  style="bottom:0;left:  -39px;"></div>
+                                </div>
+                                <div class="bg-wrap bg-hero bg-parallax-wrap-gradien fs-wrapper" data-scrollax-parent="true">
+                                    <div class="bg" data-bg="/images/all/14.jpg" data-scrollax="properties: { translateY: '30%' }"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--section-end-->				
+                    <!--container-->
+                    <div class="container">
+                        <!--breadcrumbs-list-->
+                        <div class="breadcrumbs-list bl_flat">
+                            <a href="#">Home</a><a href="#">Listing</a><span>Properties style 3</span>
+                            <div class="breadcrumbs-list_dec"><i class="fa-thin fa-arrow-up"></i></div>
+                        </div>
+                        <!--breadcrumbs-list end-->
+                        <!--main-content-->
+                        <div class="main-content">
+                            <!--boxed-container-->
+                            <div class="boxed-container">
+                                <div class="show-mob-filter" style="margin-bottom:20px"><i class="far fa-sliders-h"></i> Search Filters</div>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <!-- list-searh-input-wrap-->
+                                        <div class="list-searh-input-wrap box_list-searh-input-wrap lws_mobile lws_column" id="filters-column">
+                                            <div class="close_mob-filter cmf"><i class="fa-regular fa-xmark"></i></div>
+                                            <div class="list-searh-input-wrap-title_wrap">
+                                                <div class="list-searh-input-wrap-title"><i class="far fa-sliders-h"></i><span>Search Filters</span></div>
+                                                <div class="list-searh-input-radio_wrap">
+                                                    <div class="header-search-radio">
+                                                        <input class="hidden radio-label" type="radio" name="accept-offers2" id="sale-button2" checked="checked">
+                                                        <label class="button-label" for="sale-button2">Sale</label>
+                                                        <input class="hidden radio-label" type="radio" name="accept-offers2" id="rent-button2">
+                                                        <label class="button-label" for="rent-button2">Rent</label>							
+                                                        <input class="hidden radio-label" type="radio" name="accept-offers2" id="comm-button2">
+                                                        <label class="button-label" for="comm-button2">Commercial</label>								
+                                                    </div>
+                                                    <div class="reset-form reset-btn tolt" data-microtip-position="bottom"  data-tooltip="Reset Filters"><i class="fa-solid fa-arrows-rotate"></i></div>
+                                                </div>
+                                            </div>
+                                            <div class="custom-form">
+                                                <div class="row">
+                                                    <!-- listsearch-input-item -->
+                                                    <div class="col-lg-12">
+                                                        <div class="cs-intputwrap">
+                                                            <i class="fa-light fa-location-dot"></i>
+                                                            <input type="text"   placeholder="Address , Street , State..." value="">
+                                                        </div>
+                                                    </div>
+                                                    <!-- listsearch-input-item -->
+                                                    <!-- listsearch-input-item -->
+                                                    <div class="col-lg-12">
+                                                        <div class="cs-intputwrap">
+                                                            <i class="fa-light fa-layer-group"></i>
+                                                            <select data-placeholder="Categories" class="chosen-select on-radius no-search-select" >
+                                                                <option>All Categories</option>
+                                                                <option>House</option>
+                                                                <option>Apartment</option>
+                                                                <option>Hotel</option>
+                                                                <option>Villa</option>
+                                                                <option>Office</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <!-- listsearch-input-item -->								
+                                                    <!-- listsearch-input-item -->
+                                                    <div class="col-lg-12">
+                                                        <div class="cs-intputwrap">
+                                                            <i class="fa-light fa-city"></i>
+                                                            <select data-placeholder="All Cities" class="chosen-select on-radius no-search-select" >
+                                                                <option>All Cities</option>
+                                                                <option>New York</option>
+                                                                <option>London</option>
+                                                                <option>Paris</option>
+                                                                <option>Kiev</option>
+                                                                <option>Moscow</option>
+                                                                <option>Dubai</option>
+                                                                <option>Rome</option>
+                                                                <option>Beijing</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <!-- listsearch-input-item -->										
+                                                    <!-- listsearch-input-item -->
+                                                    <div class="col-lg-12">
+                                                        <div class="cs-intputwrap">
+                                                            <div class="price-range-wrap">
+                                                                <label>Price Range</label>
+                                                                <div class="price-rage-item">
+                                                                    <input type="text" class="price-range-double" data-min="100" data-max="100000"  name="price-range1"  data-step="1" value="1" data-prefix="$">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- listsearch-input-item -->											
+                                                    <!-- listsearch-input-item -->
+                                                    <div class="col-lg-12">
+                                                        <div class="cs-intputwrap">
+                                                            <div class="price-range-wrap">
+                                                                <label>Area Sq/ft</label>
+                                                                <div class="price-rage-item pr-nopad">
+                                                                    <input type="text" class="price-range-double" data-min="1" data-max="1000"  name="price-range2"  data-step="1" value="1" data-prefix="">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- listsearch-input-item -->										
+                                                    <!-- listsearch-input-item -->
+                                                    <div class="col-lg-12">
+                                                        <!-- quantity_wrap -->								
+                                                        <div class="quantity_wrap">
+                                                            <div class="quantity_wrap_title"><i class="fa-light fa-bed"></i><span>Badrooms</span></div>
+                                                            <div class="quantity">
+                                                                <div class="quantity-item">
+                                                                    <input type="button" value="-" class="minus">
+                                                                    <input type="text"    name="quantity"   title="Qty" class="qty" data-min="1" data-max="6" data-step="1" value="1">
+                                                                    <input type="button" value="+" class="plus">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- quantity_wrap end-->
+                                                        <!-- quantity_wrap -->								
+                                                        <div class="quantity_wrap">
+                                                            <div class="quantity_wrap_title"><i class="fa-light fa-bath"></i><span>Bathrooms</span></div>
+                                                            <div class="quantity">
+                                                                <div class="quantity-item">
+                                                                    <input type="button" value="-" class="minus">
+                                                                    <input type="text"    name="quantity"   title="Qty" class="qty" data-min="1" data-max="6" data-step="1" value="1">
+                                                                    <input type="button" value="+" class="plus">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- quantity_wrap end-->										
+                                                        <!-- hidden-listing-item -->
+                                                        <div class="hidden-listing-item">
+                                                            <div class="filter-tags-title">Amenities</div>
+                                                            <div class=" filter-tags">
+                                                                <ul class="no-list-style">
+                                                                    <li>
+                                                                        <input id="check-aa" type="checkbox" name="check">
+                                                                        <label for="check-aa">Elevator in building</label>
+                                                                    </li>
+                                                                    <li>
+                                                                        <input id="check-b" type="checkbox" name="check">
+                                                                        <label for="check-b"> Laundry Room</label>
+                                                                    </li>
+                                                                    <li>
+                                                                        <input id="check-c" type="checkbox" name="check" checked>
+                                                                        <label for="check-c">Equipped Kitchen</label>
+                                                                    </li>
+                                                                    <li>
+                                                                        <input id="check-d" type="checkbox" name="check">
+                                                                        <label for="check-d">Air Conditioned</label>
+                                                                    </li>
+                                                                    <li>
+                                                                        <input id="check-d2" type="checkbox" name="check" checked>
+                                                                        <label for="check-d2">Parking</label> 
+                                                                    </li>
+                                                                    <li>
+                                                                        <input id="check-d3" type="checkbox" name="check" checked>
+                                                                        <label for="check-d3">Swimming Pool</label> 
+                                                                    </li>
+                                                                    <li>   
+                                                                        <input id="check-d4" type="checkbox" name="check">
+                                                                        <label for="check-d4">Fitness Gym</label>
+                                                                    </li>
+                                                                    <li>   
+                                                                        <input id="check-d5" type="checkbox" name="check">
+                                                                        <label for="check-d5">Security</label>
+                                                                    </li>
+                                                                    <li>   
+                                                                        <input id="check-d6" type="checkbox" name="check">
+                                                                        <label for="check-d6">Garage Attached</label>
+                                                                    </li>
+                                                                    <li>   
+                                                                        <input id="check-d7" type="checkbox" name="check">
+                                                                        <label for="check-d7">Back yard</label>
+                                                                    </li>
+                                                                    <li>   
+                                                                        <input id="check-d8" type="checkbox" name="check">
+                                                                        <label for="check-d8">Fireplace</label>
+                                                                    </li>
+                                                                    <li>   
+                                                                        <input id="check-d9" type="checkbox" name="check">
+                                                                        <label for="check-d9">Window Covering</label>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                        <!-- hidden-listing-item end-->
+                                                    </div>
+                                                    <!-- listsearch-input-item -->									
+                                                    <button onclick="window.location.href='listing.html'" class="commentssubmit commentssubmit_fw"  style="margin-top:20px">Search</button>									
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- list-searh-input-wrap end-->							
+                                        <div class="back-tofilters-wrap btf_init">
+                                            <a class="back-tofilters    custom-scroll-link" href="#filters-column">Back to filters </a>						
+                                        </div>
+                                        <div class="mob-filter-overlay cmf fs-wrapper"></div>
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <!-- list-main-wrap-header-->
+                                        <div class="list-main-wrap-header box-list-header" style="margin-top: 0">
+                                            <!-- list-main-wrap-title-->
+                                            <div class="list-main-wrap-title">
+                                                <h2>Results For : <span>New York </span><strong>9</strong></h2>
+                                            </div>
+                                            <!-- list-main-wrap-title end-->
+                                            <!-- list-main-wrap-opt-->
+                                            <div class="list-main-wrap-opt">
+                                                <!-- price-opt-->
+                                                <div class="price-opt">
+                                                    <span class="price-opt-title">Sort   by:</span>
+                                                    <div class="cs-intputwrap" style="margin-bottom: 0">
+                                                        <i class="fa-light fa-arrow-down-small-big"></i>
+                                                        <select data-placeholder="Popularity" class="chosen-select no-search-select" >
+                                                            <option>Popularity</option>
+                                                            <option>Latest</option>
+                                                            <option>Price: low to high</option>
+                                                            <option>Price: high to low</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <!-- price-opt end-->
+                                            </div>
+                                            <!-- list-main-wrap-opt end-->                    
+                                        </div>
+                                        <!-- list-main-wrap-header end-->								
+                                        <!--listing-item-container-->
+                                        <div class="listing-item-container fw-listing-item">
+                                            <!-- listing-item -->
+                                            <div class="listing-item">
+                                                <div class="geodir-category-listing">
+                                                    <div class="geodir-category-img">
+                                                        <a href="listing-single.html" class="geodir-category-img_item">
+                                                            <div class="bg" data-bg="images/all/1.jpg"></div>
+                                                            <div class="overlay"></div>
+                                                        </a>
+                                                        <div class="geodir-category-location">
+                                                            <a href="#4" class="map-item tolt single-map-item" data-newlatitude="40.72956781" data-newlongitude="-73.99726866"   data-microtip-position="top" data-tooltip="On the map"><i class="fas fa-map-marker-alt"></i>  40 Journal Square  , NJ, USA</a>
+                                                        </div>
+                                                        <ul class="list-single-opt_header_cat">
+                                                            <li><a href="#" class="cat-opt">Sale</a></li>
+                                                            <li><a href="#" class="cat-opt">House</a></li>
+                                                        </ul>
+                                                        <a href="#" class="geodir_save-btn tolt" data-microtip-position="left" data-tooltip="Save"><span><i class="fal fa-heart"></i></span></a>
+                                                        <div class="geodir-category-listing_media-list">
+                                                            <span><i class="fas fa-camera"></i> 13</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="geodir-category-content">
+                                                        <h3><a href="listing-single.html">Gorgeous House For Sale</a></h3>
+                                                        <div class="geodir-category-content_price">$ 500,000</div>
+                                                        <p> Maecenas in pulvinar neque. Nulla finibus lobortis pulvinar. Lorem ipsum dolor sit amet, consectetur adipiscing elit.  Donec a consectetur nulla.</p>
+                                                        <div class="geodir-category-content-details">
+                                                            <ul>
+                                                                <li><i class="fa-light fa-bed"></i><span>2</span></li>
+                                                                <li><i class="fa-light fa-bath"></i><span>2</span></li>
+                                                                <li><i class="fa-light fa-chart-area"></i><span>150 ft2</span></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="geodir-category-footer">
+                                                        <a href="agent-single.html" class="gcf-company"><img src="images/avatar/2.jpg" alt=""><span>By Niko Furingee </span></a>
+                                                        <a href="listing-single.html" class="gid_link"><span>View Details</span> <i class="fa-solid fa-caret-right"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- listing-item end-->																	
+                                            <!-- listing-item -->
+                                            <div class="listing-item">
+                                                <div class="geodir-category-listing">
+                                                    <div class="geodir-category-img">
+                                                        <a href="listing-single.html" class="geodir-category-img_item">
+                                                            <div class="bg" data-bg="images/all/8.jpg"></div>
+                                                            <div class="overlay"></div>
+                                                        </a>
+                                                        <div class="geodir-category-location">
+                                                            <a href="#4" class="map-item tolt single-map-item" data-newlatitude="40.88496706" data-newlongitude="-73.88191222"   data-microtip-position="top" data-tooltip="On the map"><i class="fas fa-map-marker-alt"></i>   70 Bright St, Jersey City, NJ USA</a>
+                                                        </div>
+                                                        <ul class="list-single-opt_header_cat">
+                                                            <li><a href="#" class="cat-opt">Rent</a></li>
+                                                            <li><a href="#" class="cat-opt">Apartment</a></li>
+                                                        </ul>
+                                                        <a href="#" class="geodir_save-btn tolt" data-microtip-position="left" data-tooltip="Save"><span><i class="fal fa-heart"></i></span></a>
+                                                        <div class="geodir-category-listing_media-list">
+                                                            <span><i class="fas fa-camera"></i> 5</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="geodir-category-content">
+                                                        <h3><a href="listing-single.html">Kayak Point House</a></h3>
+                                                        <div class="geodir-category-content_price">$ 1500 / per month</div>
+                                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas in pulvinar neque. Nulla finibus lobortis pulvinar. Donec a consectetur nulla.</p>
+                                                        <div class="geodir-category-content-details">
+                                                            <ul>
+                                                                <li><i class="fa-light fa-bed"></i><span>1</span></li>
+                                                                <li><i class="fa-light fa-bath"></i><span>1</span></li>
+                                                                <li><i class="fa-light fa-chart-area"></i><span>70 ft2</span></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="geodir-category-footer">
+                                                        <a href="agent-single.html" class="gcf-company"><img src="images/avatar/5.jpg" alt=""><span>By Andy Sposty</span></a>
+                                                        <a href="listing-single.html" class="gid_link"><span>View Details</span> <i class="fa-solid fa-caret-right"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- listing-item end-->																	
+                                            <!-- listing-item -->
+                                            <div class="listing-item">
+                                                <div class="geodir-category-listing">
+                                                    <div class="geodir-category-img">
+                                                        <a href="listing-single.html" class="geodir-category-img_item">
+                                                            <div class="bg" data-bg="images/all/4.jpg"></div>
+                                                            <div class="overlay"></div>
+                                                        </a>
+                                                        <div class="geodir-category-location">
+                                                            <a href="#4" class="map-item tolt single-map-item" data-newlatitude="40.94982541" data-newlongitude="-73.84357452"    data-microtip-position="top" data-tooltip="On the map"><i class="fas fa-map-marker-alt"></i>   W 85th St, New York, USA </a>
+                                                        </div>
+                                                        <ul class="list-single-opt_header_cat">
+                                                            <li><a href="#" class="cat-opt">Sale</a></li>
+                                                            <li><a href="#" class="cat-opt">Apartment</a></li>
+                                                        </ul>
+                                                        <a href="#" class="geodir_save-btn tolt" data-microtip-position="left" data-tooltip="Save"><span><i class="fal fa-heart"></i></span></a>
+                                                        <div class="geodir-category-listing_media-list">
+                                                            <span><i class="fas fa-camera"></i> 7</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="geodir-category-content">
+                                                        <h3><a href="listing-single.html">Luxury Family Home</a></h3>
+                                                        <div class="geodir-category-content_price">$ 450,000</div>
+                                                        <p> Maecenas in pulvinar neque. Nulla finibus lobortis pulvinar. Lorem ipsum dolor sit amet, consectetur adipiscing elit.  Donec a consectetur nulla.</p>
+                                                        <div class="geodir-category-content-details">
+                                                            <ul>
+                                                                <li><i class="fa-light fa-bed"></i><span>2</span></li>
+                                                                <li><i class="fa-light fa-bath"></i><span>1</span></li>
+                                                                <li><i class="fa-light fa-chart-area"></i><span>150 ft2</span></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="geodir-category-footer">
+                                                        <a href="agent-single.html" class="gcf-company"><img src="images/avatar/6.jpg" alt=""><span>By Anna Lips</span></a>
+                                                        <a href="listing-single.html" class="gid_link"><span>View Details</span> <i class="fa-solid fa-caret-right"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- listing-item end-->									
+                                            <!-- listing-item -->
+                                            <div class="listing-item">
+                                                <div class="geodir-category-listing">
+                                                    <div class="geodir-category-img">
+                                                        <a href="listing-single.html" class="geodir-category-img_item">
+                                                            <div class="bg" data-bg="images/all/11.jpg"></div>
+                                                            <div class="overlay"></div>
+                                                        </a>
+                                                        <div class="geodir-category-location">
+                                                            <a href="#4" class="map-item tolt single-map-item" data-newlatitude="40.72228267" data-newlongitude="-73.99246214"   data-microtip-position="top" data-tooltip="On the map"><i class="fas fa-map-marker-alt"></i>   75 Prince St, NY, USA</a>
+                                                        </div>
+                                                        <ul class="list-single-opt_header_cat">
+                                                            <li><a href="#" class="cat-opt">Rent</a></li>
+                                                            <li><a href="#" class="cat-opt">House</a></li>
+                                                        </ul>
+                                                        <a href="#" class="geodir_save-btn tolt" data-microtip-position="left" data-tooltip="Save"><span><i class="fal fa-heart"></i></span></a>
+                                                        <div class="geodir-category-listing_media-list">
+                                                            <span><i class="fas fa-camera"></i> 11</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="geodir-category-content">
+                                                        <h3><a href="listing-single.html">Urban House for Rent</a></h3>
+                                                        <div class="geodir-category-content_price">$ 130,000</div>
+                                                        <p> Maecenas in pulvinar neque. Nulla finibus lobortis pulvinar. Lorem ipsum dolor sit amet, consectetur adipiscing elit.  Donec a consectetur nulla.</p>
+                                                        <div class="geodir-category-content-details">
+                                                            <ul>
+                                                                <li><i class="fa-light fa-bed"></i><span>2</span></li>
+                                                                <li><i class="fa-light fa-bath"></i><span>1</span></li>
+                                                                <li><i class="fa-light fa-chart-area"></i><span>110 ft2</span></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="geodir-category-footer">
+                                                        <a href="agent-single.html" class="gcf-company"><img src="images/avatar/3.jpg" alt=""><span>By Viki Morintagee </span></a>
+                                                        <a href="listing-single.html" class="gid_link"><span>View Details</span> <i class="fa-solid fa-caret-right"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- listing-item end-->																	
+                                            <!-- listing-item -->
+                                            <div class="listing-item">
+                                                <div class="geodir-category-listing">
+                                                    <div class="geodir-category-img">
+                                                        <a href="listing-single.html" class="geodir-category-img_item">
+                                                            <div class="bg" data-bg="images/all/9.jpg"></div>
+                                                            <div class="overlay"></div>
+                                                        </a>
+                                                        <div class="geodir-category-location">
+                                                            <a href="#4" class="map-item tolt single-map-item" data-newlatitude="40.88496706" data-newlongitude="-73.88191222"   data-microtip-position="top" data-tooltip="On the map"><i class="fas fa-map-marker-alt"></i>    34-42 Montgomery St , NY, USA</a>
+                                                        </div>
+                                                        <ul class="list-single-opt_header_cat">
+                                                            <li><a href="#" class="cat-opt">Rent</a></li>
+                                                            <li><a href="#" class="cat-opt">Residential</a></li>
+                                                        </ul>
+                                                        <a href="#" class="geodir_save-btn tolt" data-microtip-position="left" data-tooltip="Save"><span><i class="fal fa-heart"></i></span></a>
+                                                        <div class="geodir-category-listing_media-list">
+                                                            <span><i class="fas fa-camera"></i> 8</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="geodir-category-content">
+                                                        <h3><a href="listing-single.html">Family House for Rent</a></h3>
+                                                        <div class="geodir-category-content_price">$ 1500 / per month</div>
+                                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas in pulvinar neque. Nulla finibus lobortis pulvinar. Donec a consectetur nulla.</p>
+                                                        <div class="geodir-category-content-details">
+                                                            <ul>
+                                                                <li><i class="fa-light fa-bed"></i><span>2</span></li>
+                                                                <li><i class="fa-light fa-bath"></i><span>2</span></li>
+                                                                <li><i class="fa-light fa-chart-area"></i><span>95  ft2</span></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="geodir-category-footer">
+                                                        <a href="agent-single.html" class="gcf-company"><img src="images/avatar/4.jpg" alt=""><span>By Liza Archer</span></a>
+                                                        <a href="listing-single.html" class="gid_link"><span>View Details</span> <i class="fa-solid fa-caret-right"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- listing-item end-->																	
+                                            <!-- listing-item -->
+                                            <div class="listing-item">
+                                                <div class="geodir-category-listing">
+                                                    <div class="geodir-category-img">
+                                                        <a href="listing-single.html" class="geodir-category-img_item">
+                                                            <div class="bg" data-bg="images/all/16.jpg"></div>
+                                                            <div class="overlay"></div>
+                                                        </a>
+                                                        <div class="geodir-category-location">
+                                                            <a href="#4" class="map-item tolt single-map-item" data-newlatitude="40.76221766" data-newlongitude="-73.96511769"  data-microtip-position="top" data-tooltip="On the map"><i class="fas fa-map-marker-alt"></i>    75 Prince St, NY, USA </a>
+                                                        </div>
+                                                        <ul class="list-single-opt_header_cat">
+                                                            <li><a href="#" class="cat-opt">Sale</a></li>
+                                                            <li><a href="#" class="cat-opt">Comercial</a></li>
+                                                        </ul>
+                                                        <a href="#" class="geodir_save-btn tolt" data-microtip-position="left" data-tooltip="Save"><span><i class="fal fa-heart"></i></span></a>
+                                                        <div class="geodir-category-listing_media-list">
+                                                            <span><i class="fas fa-camera"></i> 5</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="geodir-category-content">
+                                                        <h3><a href="listing-single.html">Contemporary Apartment</a></h3>
+                                                        <div class="geodir-category-content_price">$ 850,000</div>
+                                                        <p> Maecenas in pulvinar neque. Nulla finibus lobortis pulvinar. Lorem ipsum dolor sit amet, consectetur adipiscing elit.  Donec a consectetur nulla.</p>
+                                                        <div class="geodir-category-content-details">
+                                                            <ul>
+                                                                <li><i class="fa-light fa-bed"></i><span>4</span></li>
+                                                                <li><i class="fa-light fa-bath"></i><span>2</span></li>
+                                                                <li><i class="fa-light fa-chart-area"></i><span>450 ft2</span></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="geodir-category-footer">
+                                                        <a href="agent-single.html" class="gcf-company"><img src="images/avatar/1.jpg" alt=""><span>By Judi Colinns</span></a>
+                                                        <a href="listing-single.html" class="gid_link"><span>View Details</span> <i class="fa-solid fa-caret-right"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- listing-item end-->									
+                                        </div>
+                                        <!--listing-item-container end-->
+                                        <!-- pagination-->
+                                        <div class="pagination-wrap">
+                                            <div class="pagination float-pagination">
+                                                <a href="#" class="prevposts-link"><i class="fa fa-caret-left"></i></a>
+                                                <a href="#" >1</a>
+                                                <a href="#" class="current-page">2</a>
+                                                <a href="#">3</a>
+                                                <a href="#">4</a>
+                                                <a href="#" class="nextposts-link"><i class="fa fa-caret-right"></i></a>
+                                            </div>
+                                            <div class="load-more_btn"><i class="fa-solid fa-arrows-spin"></i>Load More</div>
+                                        </div>
+                                        <!-- pagination end-->
+                                    </div>
+                                </div>
+                                <div class="limit-box"></div>
+                            </div>
+                            <!--boxed-container end-->
+                        </div>
+                        <!--main-content end-->
+                        <div class="to_top-btn-wrap">
+                            <div class="to-top to-top_btn"><span>Başa Dön</span> <i class="fa-solid fa-arrow-up"></i></div>
+                            <div class="svg-corner svg-corner_white"  style="top:0;left:  -40px; transform: rotate(-90deg)"></div>
+                            <div class="svg-corner svg-corner_white"  style="top:0;right: -40px; transform: rotate(-180deg)"></div>
+                        </div>
+                    </div>
+                    <!-- container end-->
+                </div>
+                <!--content  end-->
+                <!--main-footer-->
+                {{template "partials/footer" .}}
+                <!--main-footer end-->
+            </div>
+            <!--warpper end-->
+            <!--wish-list-wrap-->
+            {{template "partials/wish_list" .}}
+            <!--wish-list-wrap end-->
+            <div class="mob-nav-overlay fs-wrapper"></div>
+            <div class="body-overlay fs-wrapper wishlist-wrap-overlay clwl_btn"></div>
+            <!--register form -->
+            {{template "partials/signupform" .}}
+            <!--register form end -->		
+            <!-- progress-bar  -->
+            <div class="progress-bar-wrap">
+                <div class="progress-bar color-bg"></div>
+            </div>
+            <!-- progress-bar end -->			
+            <!--map-modal -->
+            <div class="map-modal-wrap">
+                <div class="map-modal-wrap-overlay"></div>
+                <div class="map-modal-item">
+                    <div class="map-modal-container fl-wrap">
+                        <h3> <span>Listing Title </span></h3>
+                        <div class="map-modal-close"><i class="fa-regular fa-xmark"></i></div>
+                        <div class="map-modal fl-wrap">
+                            <div id="singleMap" data-latitude="40.7" data-longitude="-73.1"></div>
+                            <div class="scrollContorl"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--map-modal end --> 			
+        </div>
+        <!-- Main end -->
+        <!--=============== scripts  ===============-->   
+        <script  src="/js/jquery.min.js"></script>
+        <script  src="/js/plugins.js"></script>
+        <script  src="/js/scripts.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwJSRi0zFjDemECmFl9JtRj1FY7TiTRRo&libraries=places"></script>
+        <script src="/js/map-single.js"></script>
+    </body>
+</html>
