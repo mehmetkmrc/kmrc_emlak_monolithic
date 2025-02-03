@@ -7,10 +7,12 @@ import (
 
 	"kmrc_emlak_mono/auth"
 	"kmrc_emlak_mono/database"
+	"kmrc_emlak_mono/property"
 
 	"kmrc_emlak_mono/web"
 	"log"
 	"time"
+
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/static"
 	"github.com/gofiber/template/html/v2"
@@ -93,6 +95,7 @@ func main() {
 	app.Get("/projects", web.ProjectWeb)
 	route0 := app.Group("/dashboard")
 	route0.Get("/", web.DashboardWeb, auth.IsAuthorized, auth.GetUserDetail, auth.RateLimiter(120, time.Minute), )
+	route0.Get("/add-new-property", web.AddPropertyWeb, auth.IsAuthorized, auth.GetUserDetail, auth.RateLimiter(120, time.Minute), )
 	app.Post("/logout", auth.IsAuthorized, auth.Logout)
 	//app.Get("/login", web.LoginPage, auth.RateLimiter(5, time.Minute))
 
@@ -100,6 +103,21 @@ func main() {
 	route.Post("/login", auth.Login, auth.RateLimiter(5, time.Minute), auth.LoginValidation)
 	route.Post("/register", auth.Register, auth.RateLimiter(5, time.Minute), auth.RegisterValidation)
 	
+
+	propertier := app.Group("/property")
+	propertier.Post("/add-property", property.AddProperty)
+	propertier.Post("/add-property-details", property.AddPropertyDetails)
+	propertier.Post("/add-video-widget", property.AddVideoWidget)
+	propertier.Post("/add-location", property.AddLocation)
+	propertier.Post("/add-amenities", property.AddAmenities)
+	propertier.Post("/add-property-media", property.AddPropertyMedia)
+	propertier.Post("/add-image", property.AddImage)
+	propertier.Post("/add-basic-info", property.AddBasicInfo)
+	propertier.Post("/add-nearby", property.AddNearby)
+	propertier.Post("/add-plans-brochures", property.AddPlansBrochures)
+	
+	
+
 
 	// document := app.Group("/documenter")
 	// document.Post("/main", property.CreateMainDocument)
