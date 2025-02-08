@@ -71,7 +71,7 @@ type BasicInfo struct {
 	PropertyID uuid.UUID `json:"property_id"`
 	BasicInfoID uuid.UUID `json:"basic_info_id"`
 	MainTitle string `json:"main_title"`
-	Type 	PropertyType `json:"type"`
+	Type 	PropertyType `json:"property_type"`
 	Category PropertyCategory `json:"category"`
 	Price	float32 `json:"price"`
 	Keywords string `json:"keywords"`

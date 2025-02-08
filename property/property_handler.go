@@ -3,13 +3,17 @@ package property
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"kmrc_emlak_mono/auth"
 	"kmrc_emlak_mono/database"
 	"kmrc_emlak_mono/dto"
 	"kmrc_emlak_mono/models"
 	"kmrc_emlak_mono/response"
 	"time"
 
+	"github.com/go-playground/validator"
 	"github.com/gofiber/fiber/v3"
+	"github.com/google/uuid"
 	"go.uber.org/zap"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -18,9 +22,8 @@ import (
 
 type PropertyRepository struct {
 	dbPool *pgxpool.Pool
+	validate *validator.Validate
 }
-
-
 //Buradan itibaren kullanıcı tabanlı property id- userid tanımlaması olacak
 func AddProperty(c fiber.Ctx) error {
 	reqBody := new(dto.MainPropertyCreateRequest)
@@ -29,16 +32,37 @@ func AddProperty(c fiber.Ctx) error {
 	err != nil{
 		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
 	}
+	// UserID'yi context'ten al
+	 payload, ok := c.Locals(auth.AuthPayload).(*auth.Payload)
+	 if !ok {
+		fmt.Println("payload boş döndü...")
+		fmt.Println(c.Locals(auth.AuthPayload))
+	 	return response.Error_Response(c, "payload not found in context", nil, nil, fiber.StatusInternalServerError)
+	 }
+
+
+	userIDString := payload.ID //string türünde UserID
+	fmt.Println("Kullanıcı ID:", userIDString)
+
+	// string UserID'yi uuid.UUID'ye dönüştür
+	userID, err := uuid.Parse(userIDString)
+	if err != nil {
+		return response.Error_Response(c, "invalid user ID format", err, nil, fiber.StatusBadRequest)
+	}
+
+	
+	propertyID := uuid.New()
+	
 
 	MainPropertyCreateRequestModel := func(req *dto.MainPropertyCreateRequest)(*models.Property, error) {
 		mainProperty := new(models.Property)
 		
 		mainProperty = &models.Property{
-			UserID: mainProperty.UserID,
-			PropertyID: mainProperty.PropertyID,
-			TariffPlan: mainProperty.TariffPlan,
+			UserID: userID,
+			PropertyID: propertyID,
+			TariffPlan: "extended",
 			Date: time.Now(),
-			PropertyTitle: reqBody.PropertyTitle,
+			PropertyTitle: "default",
 		}
 		return mainProperty, nil
 	}
@@ -67,9 +91,16 @@ func AddProperty(c fiber.Ctx) error {
 		return response.Error_Response(c, "error while trying to create main property", err, nil, fiber.StatusBadRequest)
 	} 
 
+	
+
 	zap.S().Info("Property Created Successfuly! Property:", property)
-	return response.Success_Response(c, propertyModel, "Property Created successfully", fiber.StatusOK)
+
+	// **Context'e PropertyID'yi kaydet**
+	c.Locals("propertyID", propertyID)
+
+	return c.Next()
 }
+
 
 func AddPropertyDetails(c fiber.Ctx) error {
 	reqBody := new(dto.PropertyDetailsCreateRequest)
@@ -397,10 +428,24 @@ func AddBasicInfo(c fiber.Ctx) error{
 	err != nil{
 		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
 	}
+
+
+
+	// Middleware aracılığıyla aktarılan propertyID'yi alın
+	propertyID, ok := c.Locals("propertyID").(uuid.UUID)
+	if !ok {
+		return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
+	}
+
+
+
+	 
 	BasicInfoCreateRequestModel := func (dto.BasicInfoCreateRequest) (*models.BasicInfo, error) {
 		basicInfo := new(models.BasicInfo)
 		basicInfo = &models.BasicInfo{
-			PropertyID: basicInfo.BasicInfoID,
+			BasicInfoID: uuid.New(),
+			PropertyID: propertyID,
+			MainTitle: reqBody.MainTitle,
 			Type: models.PropertyType(reqBody.Type),
 			Category: models.PropertyCategory(reqBody.Category),
 			Price: reqBody.Price,
@@ -413,9 +458,9 @@ func AddBasicInfo(c fiber.Ctx) error{
 		return response.Error_Response(c, "error while trying to convert basic_info create request model", err, nil, fiber.StatusBadRequest)
 	}
 	Insert := func (ctx context.Context, q *PropertyRepository, basicInfoModel *models.BasicInfo) (*models.BasicInfo, error) {
-		query := `INSERT INTO basic_infos(basic_infos_id, property_id, type, category, price, keywords) VALUES($1, $2, $3, $4, $5, $6) RETURNING basic_infos_id, property_id, type, category, price, keywords`
-		queryRow := q.dbPool.QueryRow(ctx, query, basicInfoModel.BasicInfoID, basicInfoModel.PropertyID, basicInfoModel.Type, basicInfoModel.Category, basicInfoModel.Price, basicInfoModel.Keywords)
-		err := queryRow.Scan(&basicInfoModel.BasicInfoID, &basicInfoModel.PropertyID, &basicInfoModel.Type, &basicInfoModel.Category, &basicInfoModel.Price, &basicInfoModel.Keywords)
+		query := `INSERT INTO basic_infos(basic_info_id, property_id, main_title, property_type, category, price, keywords) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING basic_info_id, property_id, main_title, property_type, category, price, keywords`
+		queryRow := q.dbPool.QueryRow(ctx, query, basicInfoModel.BasicInfoID, basicInfoModel.PropertyID,basicInfoModel.MainTitle,  basicInfoModel.Type, basicInfoModel.Category, basicInfoModel.Price, basicInfoModel.Keywords)
+		err := queryRow.Scan(&basicInfoModel.BasicInfoID, &basicInfoModel.PropertyID,&basicInfoModel.MainTitle,  &basicInfoModel.Type, &basicInfoModel.Category, &basicInfoModel.Price, &basicInfoModel.Keywords)
 		if err != nil{
 			return nil, err
 		}
@@ -429,7 +474,7 @@ func AddBasicInfo(c fiber.Ctx) error{
 	if err != nil{
 		return response.Error_Response(c, "error while trying to create BasicInfo table", err, nil, fiber.StatusBadRequest)
 	}
-	zap.S().Info("basic_infos table created successfully! basic_info: ", basicInfo)
+	zap.S().Info("basic_info table created successfully! basic_info: ", basicInfo)
 	return response.Success_Response(c, basicInfoModel, "BasicInfo Created Successfully", fiber.StatusOK)
 }
 

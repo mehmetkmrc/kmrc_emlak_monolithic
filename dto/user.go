@@ -11,14 +11,14 @@ type (
 
 	// Responses
 	UserDetail struct {
-		UserID      string `json:"user_id"`
+		UserID  string `json:"user_id"`
 		Email   string `json:"email"`
 		Name    string `json:"first_name"`
 		Surname string `json:"last_name"`
 	}
 
 	GetUserResponse struct {
-		UserID          string    `json:"user_id"`
+		UserID      string    `json:"user_id"`
 		Name        string    `json:"first_name"`
 		Surname     string    `json:"last_name"`
 		Email       string    `json:"email"`

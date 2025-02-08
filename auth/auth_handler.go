@@ -119,7 +119,7 @@ type(
 
 func IsAuthorized(c fiber.Ctx) error {
 
-	fmt.Println("IsAuthorized middleware çalıştı")
+	
 	if !isValidToken(c) {
 		return redirectToLogin(c, fiber.StatusUnauthorized, "authorization header is not provided or invalid")
 	}
@@ -194,7 +194,7 @@ func IsAuthorized(c fiber.Ctx) error {
 
 func GetUserDetail(c fiber.Ctx) error {
 	payload := c.Locals(AuthPayload).(*Payload)
-
+	
 	GetByID := func (ctx context.Context, r *UserRepository, id string) (*models.User, error) {
 		userQuery := struct {
 			UserID        string
@@ -221,7 +221,7 @@ func GetUserDetail(c fiber.Ctx) error {
 			return nil, err
 		}
 	
-		userData := &models.User{
+		userData 	:= &models.User{
 			UserID:    userQuery.UserID,
 			Name:      userQuery.Name,
 			Surname:   userQuery.Surname,
@@ -257,7 +257,9 @@ func GetUserDetail(c fiber.Ctx) error {
 	}
 
 	userResponse := GetUserModelToDto(userAggregate)
+	
 	c.Locals(UserDetail, userResponse)
+	//c.Locals(AuthPayload, payload) // payload'ı context'e kaydet
 	return c.Next()
 }
 
@@ -389,6 +391,15 @@ func getAccessPublicKey(c fiber.Ctx) string {
 	return c.Cookies(AccessPublic)
 }
 
+func NewPayload(userID string, duration time.Duration)(*Payload, error) {
+	payload := &Payload{
+		ID: userID,
+		IssuedAt: time.Now(),
+		ExpiredAt: time.Now().Add(duration),
+	}
+	return payload, nil
+}
+
 func Login(c fiber.Ctx) error {
     reqBody := new(dto.UserLoginRequest)
 
@@ -470,14 +481,7 @@ func Login(c fiber.Ctx) error {
         CreateToken := func(userID string, tokenTTL time.Duration) (string, string, *Payload, error) {
             duration := tokenTTL
 
-            NewPayload := func(userID string, duration time.Duration) (*Payload, error) {
-                payload := &Payload{
-                    ID:        userID,
-                    IssuedAt:  time.Now(),
-                    ExpiredAt: time.Now().Add(duration),
-                }
-                return payload, nil
-            }
+           
 
             payload, err := NewPayload(userID, duration)
             if err != nil {

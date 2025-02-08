@@ -123,7 +123,7 @@ type (
 
 	BasicInfoCreateRequest struct {
 		MainTitle string `json:"main_title"`
-		Type     PropertyType  `json:"type"`
+		Type     PropertyType  `json:"property_type"`
 		Category PropertyCategory  `json:"category"`
 		Price    float32 `json:"price"`
 		Keywords string  `json:"keywords"`

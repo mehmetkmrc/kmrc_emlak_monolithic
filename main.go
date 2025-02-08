@@ -81,8 +81,6 @@ func main() {
 	})
 
 	app.Use(static.New(publicPath))
-
-
 	
 
 	app.Get("/", web.HomeWeb)
@@ -94,8 +92,8 @@ func main() {
 	app.Get("/listing", web.ListingWeb)
 	app.Get("/projects", web.ProjectWeb)
 	route0 := app.Group("/dashboard")
-	route0.Get("/", web.DashboardWeb, auth.IsAuthorized, auth.GetUserDetail, auth.RateLimiter(120, time.Minute), )
-	route0.Get("/add-new-property", web.AddPropertyWeb, auth.IsAuthorized, auth.GetUserDetail, auth.RateLimiter(120, time.Minute), )
+	route0.Get("/", web.DashboardWeb, auth.IsAuthorized, auth.GetUserDetail,   auth.RateLimiter(120, time.Minute))
+	route0.Get("/add-new-property", web.AddPropertyWeb, auth.IsAuthorized, auth.GetUserDetail,  auth.RateLimiter(120, time.Minute))
 	app.Post("/logout", auth.IsAuthorized, auth.Logout)
 	//app.Get("/login", web.LoginPage, auth.RateLimiter(5, time.Minute))
 
@@ -105,15 +103,16 @@ func main() {
 	
 
 	propertier := app.Group("/property")
-	propertier.Post("/add-property", property.AddProperty)
+	//propertier.Post("/add-property", property.AddProperty)
 	propertier.Post("/add-property-details", property.AddPropertyDetails)
 	propertier.Post("/add-video-widget", property.AddVideoWidget)
 	propertier.Post("/add-location", property.AddLocation)
 	propertier.Post("/add-amenities", property.AddAmenities)
 	propertier.Post("/add-property-media", property.AddPropertyMedia)
 	propertier.Post("/add-image", property.AddImage)
-	propertier.Post("/add-basic-info", property.AddBasicInfo)
+	propertier.Post("/add-basic-info", property.AddBasicInfo, auth.IsAuthorized, property.AddProperty,  auth.GetUserDetail)
 	propertier.Post("/add-nearby", property.AddNearby)
+	propertier.Post("/add-accordion-widget", property.AddAccordionWidget)
 	propertier.Post("/add-plans-brochures", property.AddPlansBrochures)
 	
 	
