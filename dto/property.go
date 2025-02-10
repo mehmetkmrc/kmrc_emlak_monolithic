@@ -131,29 +131,34 @@ type (
 
 
 	LocationCreateRequest struct {
-		Phone     int     `json:"phone"`
+		PropertyID string `json:"property_id"`
+		Phone     string     `json:"phone"`
 		Email     string  `json:"email"`
 		City      CityLocation  `json:"city"`
 		Address   string  `json:"address"`
-		Longitude float32 `json:"longitude"`
-		Latitude  float32 `json:"latitude"`
+		Longitude string `json:"longitude"`
+		Latitude  string `json:"latitude"`
 	}
 
 	NearbyCreateRequest struct {
+		PropertyID string `json:"property_id"`
 		Places   PropertyNearby `json:"places"`
 		Distance int    `json:"distance"`
 	}
 
 	PropertyMediaCreateRequest struct {
+		PropertyID string `json:"property_id"`
 		Type string `json:"type"`
 	}
 
 	ImageCreateRequest struct {
+		PropertyID string `json:"property_id"`
 		ImageName string `json:"name"`
 		FilePath  string `json:"file_path"`
 	}
 
 	PropertyDetailsCreateRequest struct {
+		PropertyID string `json:"property_id"`
 		Area            float32 `json:"area"`
 		Bedrooms        int     `json:"bedrooms"`
 		Bathrooms       int     `json:"bathrooms"`
@@ -164,6 +169,7 @@ type (
 	}
 
 	AmenitiesCreateRequest struct {
+		PropertyID string `json:"property_id"`
 		Wifi            bool   `json:"wifi"`
 		Pool            bool   `json:"pool"`
 		Security        bool   `json:"security"`
@@ -182,12 +188,14 @@ type (
 	}
 
 	AccordionWidgetCreateRequest struct {
+		PropertyID string `json:"property_id"`
 		AccordionExist   bool   `json:"accordion_exist"`
 		AccordionTitle   string `json:"accordion_title"`
 		AccordionDetails string `json:"accordion_details"`
 	}
 
 	VideoWidgetCreateRequest struct {
+		PropertyID string `json:"property_id"`
 		VideoExist bool   `json:"video_exist"`
 		VideoTitle string `json:"video_title"`
 		YouTubeUrl string `json:"youtube_url"`
@@ -195,11 +203,13 @@ type (
 	}
 
 	PlansBrochuresCreateRequest struct {
+		PropertyID string `json:"property_id"`
 		FileType string `json:"file_type"`
 		FilePath string `json:"file_path"`
 	}
 
 	MainPropertyCreateRequest struct {
+		PropertyID string `json:"property_id"`
 		PropertyTitle string `json:"title"`
 	}	
 )

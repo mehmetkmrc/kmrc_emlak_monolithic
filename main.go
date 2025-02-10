@@ -7,6 +7,7 @@ import (
 
 	"kmrc_emlak_mono/auth"
 	"kmrc_emlak_mono/database"
+	"kmrc_emlak_mono/middleware"
 	"kmrc_emlak_mono/property"
 
 	"kmrc_emlak_mono/web"
@@ -110,7 +111,7 @@ func main() {
 	propertier.Post("/add-amenities", property.AddAmenities)
 	propertier.Post("/add-property-media", property.AddPropertyMedia)
 	propertier.Post("/add-image", property.AddImage)
-	propertier.Post("/add-basic-info", property.AddBasicInfo, auth.IsAuthorized, property.AddProperty,  auth.GetUserDetail)
+	propertier.Post("/add-basic-info", property.AddBasicInfo, auth.IsAuthorized,middleware.PropertyMiddleware, property.AddProperty,   auth.GetUserDetail)
 	propertier.Post("/add-nearby", property.AddNearby)
 	propertier.Post("/add-accordion-widget", property.AddAccordionWidget)
 	propertier.Post("/add-plans-brochures", property.AddPlansBrochures)

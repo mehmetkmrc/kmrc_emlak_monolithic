@@ -49,24 +49,42 @@ document.addEventListener("DOMContentLoaded", function () {
             const basicInfoResult = await basicInfoResponse.json(); // Yanıtı JSON olarak ayrıştır
             console.log("Basic Info Response:", basicInfoResult);
 
-            if (basicInfoResult.status !== "success") {
+            if (basicInfoResult.status !== 200) {
                 showModal("error", "Hata!", "Basic Info oluşturulamadı: " + basicInfoResult.message);
                 return;
             }
 
-            const propertyID = basicInfoResult.data.propertyID; // **Backend'den gelen propertyID'yi alın.**
-            console.log("Property ID:", propertyID);
+            const propertyID = basicInfoResult.data; // **Backend'den gelen propertyID'yi alın.**
+            //console.log("Property ID:", property_id);
 
             // **2. Adım: Location oluştur**
             const phone = document.querySelector('input[name="phone"]').value;
             const email = document.querySelector('input[name="email"]').value;
             const city = document.querySelector('select[name="city"]').value;
             const address = document.querySelector('input[name="address"]').value;
-            const longitude = document.querySelector('textarea[name="longitude"]').value;
-            const latitude = document.querySelector('textarea[name="latitude"]').value;
+            const longitudeInput = document.querySelector('input[name="longitude"]');
+            const longitudeValue = longitudeInput.value;
+            let longitude = null; // Başlangıçta null olarak tanımla
+
+            if (longitudeValue) {
+                const parsedLongitude = parseFloat(longitudeValue);
+                if (!isNaN(parsedLongitude)) { // Geçerli bir sayı mı?
+                    longitude = parsedLongitude; // Geçerli ise değeri ata
+                }
+            }
+            const latitudeInput = document.querySelector('input[name="latitude"]');
+            const latitudeValue = latitudeInput.value;
+            let latitude = null; // Başlangıçta null olarak tanımla
+
+            if (latitudeValue) {
+                const parsedLatitude = parseFloat(latitudeValue);
+                if (!isNaN(parsedLatitude)) { // Geçerli bir sayı mı?
+                    latitude = parsedLatitude; // Geçerli ise değeri ata
+                }
+            }
 
             const locationData = {
-                property_id: propertyID, // **PropertyID'yi kullanın**
+                property_id: propertyID.property_id, // **PropertyID'yi kullanın**
                 phone: phone,
                 email: email,
                 city: city,
@@ -165,7 +183,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         return;
                     }
         
-                    const imageID = addImageResult.data.imageID; // Backend'den dönen imageID
+                    const imageID = addImageResult.data; // Backend'den dönen imageID
                     imageIDs.push(imageID); // ID'yi diziye ekle
                 }
         

@@ -211,6 +211,7 @@ type PropertyMedia struct {
 }
 
 type Image struct{
+	PropertyID uuid.UUID `json:"property_id"`
 	ImageID  uuid.UUID `json:"image_id"`
 	ImageName     string    `json:"name"`
 	FilePath string    `json:"file_path"`

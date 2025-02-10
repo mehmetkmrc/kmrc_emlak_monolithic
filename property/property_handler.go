@@ -7,8 +7,10 @@ import (
 	"kmrc_emlak_mono/auth"
 	"kmrc_emlak_mono/database"
 	"kmrc_emlak_mono/dto"
+	
 	"kmrc_emlak_mono/models"
 	"kmrc_emlak_mono/response"
+	"strconv"
 	"time"
 
 	"github.com/go-playground/validator"
@@ -24,6 +26,7 @@ type PropertyRepository struct {
 	dbPool *pgxpool.Pool
 	validate *validator.Validate
 }
+
 //Buradan itibaren kullanıcı tabanlı property id- userid tanımlaması olacak
 func AddProperty(c fiber.Ctx) error {
 	reqBody := new(dto.MainPropertyCreateRequest)
@@ -51,12 +54,19 @@ func AddProperty(c fiber.Ctx) error {
 	}
 
 	
-	propertyID := uuid.New()
-	
+	// propertyID, done := c.Locals("propertyID").(uuid.UUID)
+	// if !done {
+	// 	fmt.Println("propertyID boş döndü...")
+		
+	//  	return response.Error_Response(c, "payload not found in context", nil, nil, fiber.StatusInternalServerError)
+	//  }
 
 	MainPropertyCreateRequestModel := func(req *dto.MainPropertyCreateRequest)(*models.Property, error) {
 		mainProperty := new(models.Property)
-		
+		propertyID, err := uuid.NewV7()
+		if err != nil {
+			return nil, err
+		}
 		mainProperty = &models.Property{
 			UserID: userID,
 			PropertyID: propertyID,
@@ -91,7 +101,7 @@ func AddProperty(c fiber.Ctx) error {
 		return response.Error_Response(c, "error while trying to create main property", err, nil, fiber.StatusBadRequest)
 	} 
 
-	
+	propertyID := propertyModel.PropertyID
 
 	zap.S().Info("Property Created Successfuly! Property:", property)
 
@@ -101,7 +111,6 @@ func AddProperty(c fiber.Ctx) error {
 	return c.Next()
 }
 
-
 func AddPropertyDetails(c fiber.Ctx) error {
 	reqBody := new(dto.PropertyDetailsCreateRequest)
 	body := c.Body()
@@ -109,10 +118,24 @@ func AddPropertyDetails(c fiber.Ctx) error {
 	err != nil{
 		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
 	}
+
+
+	// Middleware aracılığıyla aktarılan propertyID'yi alın
+	// propertyID, ok := c.Locals("propertyID").(uuid.UUID)
+	// if !ok {
+	// 	return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
+	// }
+
+
 	PropertyDetailsCreateRequestModel := func (dto.PropertyDetailsCreateRequest) (*models.PropertyDetails, error) {
 		propertyDetail := new(models.PropertyDetails)
+		property_id, err := uuid.Parse(reqBody.PropertyID)
+		if err != nil {
+			return nil, err
+		}
 		propertyDetail = &models.PropertyDetails{
-			PropertyID: propertyDetail.PropertyID,
+			PropertyID: property_id,
+			PropertyDetailsID: uuid.New(),
 			Area: reqBody.Area,
 			Bedrooms:  reqBody.Bedrooms,
 			Bathrooms: reqBody.Bathrooms,
@@ -156,10 +179,20 @@ func AddVideoWidget(c fiber.Ctx) error {
 	err != nil{
 		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
 	}
+	// Middleware aracılığıyla aktarılan propertyID'yi alın
+	// propertyID, ok := c.Locals("propertyID").(uuid.UUID)
+	// if !ok {
+	// 	return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
+	// }
 	VideoWidgetCreateRequestModel := func (dto.VideoWidgetCreateRequest) (*models.VideoWidget, error) {
 		videoWidget := new(models.VideoWidget)
+		property_id, err := uuid.Parse(reqBody.PropertyID)
+		if err != nil {
+			return nil, err
+		}
 		videoWidget = &models.VideoWidget{
-			PropertyID: videoWidget.PropertyID,
+			PropertyID: property_id,
+			VideoWidgetID: uuid.New(),
 			VideoExist: reqBody.VideoExist,
 			VideoTitle: reqBody.VideoTitle,
 			YouTubeUrl: reqBody.YouTubeUrl,
@@ -200,16 +233,56 @@ func AddLocation(c fiber.Ctx) error{
 	err != nil {
 		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
 	}
+
+
+	// Middleware aracılığıyla aktarılan propertyID'yi alın
+	// propertyID, ok := c.Locals("propertyID").(uuid.UUID)
+	// if !ok {
+	// 	return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
+	// }
+
+	phoneInt, err := strconv.Atoi(reqBody.Phone) // Atoi fonksiyonunu çağır ve değerleri al
+	if err != nil {
+		// Dönüşüm hatası durumunda işlemi durdur ve hatayı döndür
+		return fmt.Errorf("invalid phone number format: %w", err)
+	}
+
+	// Longitude'u float32'ye dönüştürme
+	var longitudeFloat32 float32 // float32 olarak tanımla
+	if reqBody.Longitude != "" {    // Boş değilse dönüştür
+		longitudeFloat64, err := strconv.ParseFloat(reqBody.Longitude, 32)
+		if err != nil {
+			fmt.Println("Longitude dönüşüm hatası:", err) // Hatayı yazdır
+			return fmt.Errorf("invalid longitude format: %w", err)
+		}
+		longitudeFloat32 = float32(longitudeFloat64) // float32'ye dönüştür
+	}
+
+	// Latitude'u float32'ye dönüştürme
+	var latitudeFloat32 float32 // float32 olarak tanımla
+	if reqBody.Latitude != "" {   // Boş değilse dönüştür
+		latitudeFloat64, err := strconv.ParseFloat(reqBody.Latitude, 32)
+		if err != nil {
+			return fmt.Errorf("invalid latitude format: %w", err)
+		}
+		latitudeFloat32 = float32(latitudeFloat64) // float32'ye dönüştür
+	}
+
 	LocationCreateRequestModel := func (dto.LocationCreateRequest) (*models.Location, error) {
 		location := new(models.Location)
+		property_id, err := uuid.Parse(reqBody.PropertyID)
+		if err != nil {
+			return nil, err
+		}
 		location = &models.Location{
-			PropertyID: location.PropertyID,
-			Phone: reqBody.Phone,
+			PropertyID: property_id,
+			LocationID: uuid.New(),
+			Phone: phoneInt,
 			Email: reqBody.Email,
 			City: models.CityLocation(reqBody.City),
 			Address: reqBody.Address,
-			Longitude: reqBody.Longitude,
-			Latitude: reqBody.Latitude,
+			Longitude: longitudeFloat32,
+			Latitude: latitudeFloat32,
 		}
 		return location, nil
 	}
@@ -218,9 +291,9 @@ func AddLocation(c fiber.Ctx) error{
 		return response.Error_Response(c, "error while trying to convet location create request model", err, nil, fiber.StatusBadRequest)
 	}
 	Insert := func (ctx context.Context, q *PropertyRepository, locationModel *models.Location) (*models.Location, error) {
-		query := `INSERT INTO location(property_id, location_id, phone, email, city, address, longitude, latitude) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING property_id, location_id, phone, email, city, address, longitude, latitude`
-		queryRow := q.dbPool.QueryRow(ctx, query, locationModel.PropertyID, locationModel.LocationID, locationModel.Phone, locationModel.Email, locationModel.City, locationModel.Address, locationModel.Longitude, locationModel.Latitude)
-		err := queryRow.Scan(&locationModel.PropertyID, &locationModel.LocationID, &locationModel.Phone, &locationModel.Email, &locationModel.City, &locationModel.Address, &locationModel.Longitude, &locationModel.Latitude)
+		query := `INSERT INTO location(location_id, property_id, phone, email, city, address, longitude, latitude) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING location_id, property_id, phone, email, city, address, longitude, latitude`
+		queryRow := q.dbPool.QueryRow(ctx, query,  locationModel.LocationID, locationModel.PropertyID, locationModel.Phone, locationModel.Email, locationModel.City, locationModel.Address, locationModel.Longitude, locationModel.Latitude)
+		err := queryRow.Scan(&locationModel.LocationID, &locationModel.PropertyID, &locationModel.Phone, &locationModel.Email, &locationModel.City, &locationModel.Address, &locationModel.Longitude, &locationModel.Latitude)
 		if err != nil{
 			return nil, err
 		}
@@ -246,10 +319,26 @@ func AddAmenities(c fiber.Ctx) error{
 	err != nil{
 		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
 	}
+
+
+
+	// Middleware aracılığıyla aktarılan propertyID'yi alın
+	// propertyID, ok := c.Locals("propertyID").(uuid.UUID)
+	// if !ok {
+	// 	return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
+	// }
+
+
+
 	AmenitiesCreateRequestModel := func (dto.AmenitiesCreateRequest) (*models.Amenities, error) {
 		amenities := new(models.Amenities)
+		property_id, err := uuid.Parse(reqBody.PropertyID)
+		if err != nil {
+			return nil, err
+		}
 		amenities = &models.Amenities{
-			PropertyID: amenities.PropertyID,
+			PropertyID: property_id,
+			AmenitiesID: uuid.New(),
 			Wifi: reqBody.Wifi,
 			Pool: reqBody.Pool,
 			Security: reqBody.Security,
@@ -300,10 +389,20 @@ func AddAccordionWidget(c fiber.Ctx) error{
 	err != nil{
 		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
 	}
+	// Middleware aracılığıyla aktarılan propertyID'yi alın
+	// propertyID, ok := c.Locals("propertyID").(uuid.UUID)
+	// if !ok {
+	// 	return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
+	// }
 	AccordionWidgetCreateRequestModel := func (dto.AccordionWidgetCreateRequest) (*models.AccordionWidget, error) {
 		accordionWidget := new(models.AccordionWidget)
+		property_id, err := uuid.Parse(reqBody.PropertyID)
+		if err != nil {
+			return nil, err
+		}
 		accordionWidget = &models.AccordionWidget{
-			PropertyID: accordionWidget.PropertyID,
+			PropertyID: property_id,
+			AccordionWidgetID: uuid.New(),
 			AccordionExist: reqBody.AccordionExist,
 			AccordionTitle: reqBody.AccordionTitle,
 			AccordionDetails: reqBody.AccordionDetails,
@@ -344,10 +443,20 @@ func AddPropertyMedia(c fiber.Ctx) error{
 	err != nil{
 		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
 	}
+	// Middleware aracılığıyla aktarılan propertyID'yi alın
+	// propertyID, ok := c.Locals("propertyID").(uuid.UUID)
+	// if !ok {
+	// 	return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
+	// }
 	PropertyMediaCreateRequestModel := func (dto.PropertyMediaCreateRequest) (*models.PropertyMedia, error) {
 		propertyMedia := new(models.PropertyMedia)
+		property_id, err := uuid.Parse(reqBody.PropertyID)
+		if err != nil {
+			return nil, err
+		}
 		propertyMedia = &models.PropertyMedia{
-			PropertyID: propertyMedia.PropertyID,
+			PropertyID: property_id,
+			PropertyMediaID: uuid.New(),
 			ImageID: propertyMedia.ImageID,
 			Type: models.GalleryType(reqBody.Type),
 		}
@@ -387,8 +496,13 @@ func AddImage(c fiber.Ctx) error{
 	}
 	ImageCreateRequestModel := func (dto.ImageCreateRequest) (*models.Image, error){
 		image := new(models.Image)
+		property_id, err := uuid.Parse(reqBody.PropertyID)
+			if err != nil {
+				return nil, err
+			}
 		image = &models.Image{
-			ImageID: image.ImageID,
+			PropertyID: property_id,
+			ImageID: uuid.New(),
 			ImageName: reqBody.ImageName,
 			FilePath: reqBody.FilePath,
 		}		
@@ -399,9 +513,9 @@ func AddImage(c fiber.Ctx) error{
 		return response.Error_Response(c, "error while trying to convert Image create request model", err, nil, fiber.StatusBadRequest)
 	}
 	Insert := func (ctx context.Context, q *PropertyRepository, imageModel *models.Image) (*models.Image, error) {
-		query := `INSERT INTO images(image_id, name, file_path) VALUES($1, $2, $3) RETURNING image_id, name, file_path`
-		queryRow := q.dbPool.QueryRow(ctx, query, imageModel.ImageID, imageModel.ImageName, imageModel.FilePath)
-		err := queryRow.Scan(&imageModel.ImageID, &imageModel.ImageName, &imageModel.FilePath)
+		query := `INSERT INTO images(property_id, image_id, name, file_path) VALUES($1, $2, $3) RETURNING property_id, image_id, name, file_path`
+		queryRow := q.dbPool.QueryRow(ctx, query, imageModel.PropertyID, imageModel.ImageID, imageModel.ImageName, imageModel.FilePath)
+		err := queryRow.Scan(&imageModel.PropertyID, &imageModel.ImageID, &imageModel.ImageName, &imageModel.FilePath)
 		if err != nil {
 			return nil, err
 		}
@@ -429,8 +543,6 @@ func AddBasicInfo(c fiber.Ctx) error{
 		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
 	}
 
-
-
 	// Middleware aracılığıyla aktarılan propertyID'yi alın
 	propertyID, ok := c.Locals("propertyID").(uuid.UUID)
 	if !ok {
@@ -442,6 +554,7 @@ func AddBasicInfo(c fiber.Ctx) error{
 	 
 	BasicInfoCreateRequestModel := func (dto.BasicInfoCreateRequest) (*models.BasicInfo, error) {
 		basicInfo := new(models.BasicInfo)
+		
 		basicInfo = &models.BasicInfo{
 			BasicInfoID: uuid.New(),
 			PropertyID: propertyID,
@@ -485,11 +598,26 @@ func AddNearby(c fiber.Ctx) error{
 	err != nil{
 		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
 	}
+
+
+	// Middleware aracılığıyla aktarılan propertyID'yi alın
+	// propertyID, ok := c.Locals("propertyID").(uuid.UUID)
+	// if !ok {
+	// 	return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
+	// }
+
+
+
+
 	NearbyCreateRequestModel := func (dto.NearbyCreateRequest) (*models.Nearby, error){
 		nearby := new(models.Nearby)
+		property_id, err := uuid.Parse(reqBody.PropertyID)
+		if err != nil {
+			return nil, err
+		}
 		nearby = &models.Nearby{
-			PropertyID: nearby.PropertyID,
-			NearbyID: nearby.NearbyID,
+			PropertyID: property_id,
+			NearbyID: uuid.New(),
 			Places: models.PropertyNearby(reqBody.Places),
 			Distance: reqBody.Distance,
 		}
@@ -527,11 +655,20 @@ func AddPlansBrochures(c fiber.Ctx) error{
 	err != nil{
 		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
 	}
+	// Middleware aracılığıyla aktarılan propertyID'yi alın
+	// propertyID, ok := c.Locals("propertyID").(uuid.UUID)
+	// if !ok {
+	// 	return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
+	// }
 	PlansBrochuresCreateRequestModel := func (dto.PlansBrochuresCreateRequest) (*models.PlansBrochures, error) {
 		plansBrochures := new(models.PlansBrochures)
+		property_id, err := uuid.Parse(reqBody.PropertyID)
+		if err != nil {
+			return nil, err
+		}
 		plansBrochures = &models.PlansBrochures{
-			PropertyID: plansBrochures.PropertyID,
-			PlansBrochuresID: plansBrochures.PlansBrochuresID,
+			PropertyID: property_id,
+			PlansBrochuresID: uuid.New(),
 			FileType: reqBody.FileType,
 			FilePath: reqBody.FilePath,
 		}
