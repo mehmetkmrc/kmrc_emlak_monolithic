@@ -143,7 +143,7 @@ type (
 	NearbyCreateRequest struct {
 		PropertyID string `json:"property_id"`
 		Places   PropertyNearby `json:"places"`
-		Distance int    `json:"distance"`
+		Distance string    `json:"distance"`
 	}
 
 	PropertyMediaCreateRequest struct {
@@ -159,10 +159,10 @@ type (
 
 	PropertyDetailsCreateRequest struct {
 		PropertyID string `json:"property_id"`
-		Area            float32 `json:"area"`
-		Bedrooms        int     `json:"bedrooms"`
-		Bathrooms       int     `json:"bathrooms"`
-		Parking         int     `json:"parking"`
+		Area            string `json:"area"`
+		Bedrooms        string     `json:"bedrooms"`
+		Bathrooms       string     `json:"bathrooms"`
+		Parking         string     `json:"parking"`
 		Accomodation    string  `json:"accomodation"`
 		Website         string  `json:"website"`
 		PropertyMessage string  `json:"property_message"`

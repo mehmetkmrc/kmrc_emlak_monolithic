@@ -126,6 +126,25 @@ func AddPropertyDetails(c fiber.Ctx) error {
 	// 	return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
 	// }
 
+	area, err := strconv.ParseFloat(reqBody.Area, 32)
+	if err != nil{
+		return err
+	}
+
+
+	bedrooms, err := strconv.Atoi(reqBody.Bedrooms)
+	if err != nil{
+		return err
+	}
+	bathrooms, err := strconv.Atoi(reqBody.Bathrooms)
+	if err != nil{
+		return err
+	}
+	parkings, err := strconv.Atoi(reqBody.Parking)
+	if err != nil{
+		return err
+	}
+
 
 	PropertyDetailsCreateRequestModel := func (dto.PropertyDetailsCreateRequest) (*models.PropertyDetails, error) {
 		propertyDetail := new(models.PropertyDetails)
@@ -136,10 +155,10 @@ func AddPropertyDetails(c fiber.Ctx) error {
 		propertyDetail = &models.PropertyDetails{
 			PropertyID: property_id,
 			PropertyDetailsID: uuid.New(),
-			Area: reqBody.Area,
-			Bedrooms:  reqBody.Bedrooms,
-			Bathrooms: reqBody.Bathrooms,
-			Parking: reqBody.Parking,
+			Area: float32(area),
+			Bedrooms:  bedrooms,
+			Bathrooms: bathrooms,
+			Parking: parkings,
 			Accomodation: reqBody.Accomodation,
 			Website: reqBody.Website,
 			PropertyMessage: reqBody.PropertyMessage,
@@ -606,8 +625,11 @@ func AddNearby(c fiber.Ctx) error{
 	// 	return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
 	// }
 
-
-
+	distance, err := strconv.Atoi(reqBody.Distance)
+	if err != nil{
+		return err
+	}
+	
 
 	NearbyCreateRequestModel := func (dto.NearbyCreateRequest) (*models.Nearby, error){
 		nearby := new(models.Nearby)
@@ -619,7 +641,7 @@ func AddNearby(c fiber.Ctx) error{
 			PropertyID: property_id,
 			NearbyID: uuid.New(),
 			Places: models.PropertyNearby(reqBody.Places),
-			Distance: reqBody.Distance,
+			Distance: distance,
 		}
 		return nearby, nil
 	}

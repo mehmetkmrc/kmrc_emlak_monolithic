@@ -110,17 +110,17 @@ document.addEventListener("DOMContentLoaded", function () {
             const locationResult = await locationResponse.json();
             console.log("Location Response:", locationResult);
 
-            if (locationResult.status !== "success") {
+            if (locationResult.status !== 200) {
                 showModal("error", "Hata!", "Location oluşturulamadı: " + locationResult.message);
                 return;
             }
 
            // **3. Adım: Nearby oluştur**
-           const places = document.querySelector('input[name="places"]').value;
+           const places = document.querySelector('select[name="places"]').value;
            const distance = document.querySelector('input[name="distance"]').value;
 
            const nearbyData = {
-               property_id: propertyID, // **PropertyID'yi kullanın**
+               property_id: propertyID.property_id, // **PropertyID'yi kullanın**
                places: places,
                distance: distance,
            };
@@ -141,13 +141,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
            const nearbyResult = await nearbyResponse.json();
            console.log("Nearby Response:", nearbyResult);
-           if (nearbyResult.status !== "success") {
+           if (nearbyResult.status !== 200) {
                showModal("error", "Hata!", "Nearby oluşturulamadı: " + nearbyResult.message);
                return;
            }
 
            // **4. Property Media oluştur
-           const galleryType = document.querySelector('input[name="type"]').value;
+           const galleryType = document.querySelector('select[name="type"]').value;
            const fileInput = document.querySelector('input[type="file"][multiple]'); // Birden fazla dosya seçilebilen input
 
            fileInput.addEventListener("change", async function (event) {
@@ -178,7 +178,7 @@ document.addEventListener("DOMContentLoaded", function () {
         
                     const addImageResult = await addImageResponse.json();
         
-                    if (addImageResult.status !== "success") {
+                    if (addImageResult.status !== 200) {
                         showModal("error", "Hata!", "Resim yüklenemedi: " + addImageResult.message);
                         return;
                     }
@@ -212,7 +212,7 @@ document.addEventListener("DOMContentLoaded", function () {
         
                     const addPropertyMediaResult = await addPropertyMediaResponse.json();
         
-                    if (addPropertyMediaResult.status !== "success") {
+                    if (addPropertyMediaResult.status !== 200) {
                         showModal("error", "Hata!", "Property Media oluşturulamadı: " + addPropertyMediaResult.message);
                         return;
                     }
@@ -229,10 +229,10 @@ document.addEventListener("DOMContentLoaded", function () {
             const parking = document.querySelector('input[name="parking"]').value;
             const accomodation = document.querySelector('input[name="accomodation"]').value;
             const website = document.querySelector('input[name="website"]').value;
-            const property_message = document.querySelector('input[name="property_message"]').value;
+            const property_message = document.querySelector('textarea[name="property_message"]').value;
 
             const propertyDetailsData ={
-                propertyID: propertyID,
+                property_id: propertyID.property_id,
                 area : area,
                 bedrooms: bedrooms,
                 bathrooms: bathrooms,
@@ -259,7 +259,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const propertyDetailsResult = await propertyDetailsResponse.json();
             console.log("Property Details Response:", propertyDetailsResult );
 
-            if (propertyDetailsResult.status !== "success") {
+            if (propertyDetailsResult.status !== 200) {
                 showModal("error", "Hata!", "Property Details oluşturulamadı: " + propertyDetailsResult.message);
                 return;
             }
@@ -280,11 +280,11 @@ document.addEventListener("DOMContentLoaded", function () {
             const fitnessGym = document.querySelector('input[name="fitness_gym"]').checked;
             const elevator = document.querySelector('input[name="elevator"]').checked;
             // Yeni alanlar
-            const othersName = document.querySelector('input[name="others_name"]'); // Inputtan değeri al
+            const othersName = document.querySelector('input[name="others_name"]').value; // Inputtan değeri al
             const othersChecked = document.querySelector('input[name="others_checked"]').checked; // Checkbox'ın durumunu al
 
             const amenitiesData = {
-                property_id: propertyID, // Daha önce aldığınız propertyID
+                property_id: propertyID.property_id, // Daha önce aldığınız propertyID
                 wifi: wifi,
                 pool: pool,
                 security: security,
@@ -318,7 +318,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const addAmenitiesResult = await addAmenitiesResponse.json();
 
-            if (addAmenitiesResult.status !== "success") {
+            if (addAmenitiesResult.status !== 200) {
                 showModal("error", "Hata!", "Amenities oluşturulamadı: " + addAmenitiesResult.message);
                 return;
             }
@@ -367,13 +367,13 @@ document.addEventListener("DOMContentLoaded", function () {
             // **8. Accordion Widget oluştur
             const accordion_exist = document.querySelector('input[name="accordion_exist"]').checked;
             const accordionTitle = document.querySelector('input[name="accordion_title"]').value; // Inputtan değeri al
-            const accordionDetails = document.querySelector('input[name="accordion_details"]').value; // Inputtan değeri al
+            const accordionDetails = document.querySelector('textarea[name="accordion_details"]').value; // Inputtan değeri al
 
             const accordionWidgetData = {
-                propertyID: propertyID,
+                property_id: propertyID.property_id,
                 accordion_exist: accordion_exist,
-                accordionTitle: accordionTitle,
-                accordionDetails: accordionDetails,
+                accordion_title: accordionTitle,
+                accordion_details: accordionDetails,
             }
 
             const accordionWidgetResponse = await fetch("http://127.0.0.1:8081/property/add-accordion-widget", {
@@ -392,7 +392,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const accordionWidgetResult = await accordionWidgetResponse.json();
 
-            if(accordionWidgetResult.status !== "success"){
+            if(accordionWidgetResult.status !== 200){
                 showModal("error", "Hata!", "Amenities oluşturulamadı: " + accordionWidgetResult.message);
                 return;
             }
@@ -405,9 +405,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const vimeo_url = document.querySelector('input[name="vimeo_url"]').value; // Inputtan değeri al
 
             const videoWidgetData = {
-                propertyID: propertyID,
+                property_id: propertyID.property_id,
                 video_exist: video_exist,
-                videoTitle: videoTitle,
+                video_title: videoTitle,
                 youtube_url: youtube_url,
                 vimeo_url: vimeo_url,
             }
@@ -428,7 +428,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const videoWidgetResult = await videoWidgetResponse.json();
 
-            if(videoWidgetResult.status !== "success"){
+            if(videoWidgetResult.status !== 200){
                 showModal("error", "Hata!", "Amenities oluşturulamadı: " + videoWidgetResult.message);
                 return;
             }
