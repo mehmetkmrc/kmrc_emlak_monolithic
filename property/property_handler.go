@@ -473,10 +473,14 @@ func AddPropertyMedia(c fiber.Ctx) error{
 		if err != nil {
 			return nil, err
 		}
+		image_id, err := uuid.Parse(reqBody.ImageID)
+		if err != nil {
+			return nil, err
+		}
 		propertyMedia = &models.PropertyMedia{
 			PropertyID: property_id,
 			PropertyMediaID: uuid.New(),
-			ImageID: propertyMedia.ImageID,
+			ImageID: image_id,
 			Type: models.GalleryType(reqBody.Type),
 		}
 		return propertyMedia, nil

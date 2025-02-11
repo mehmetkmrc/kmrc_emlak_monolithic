@@ -148,6 +148,7 @@ type (
 
 	PropertyMediaCreateRequest struct {
 		PropertyID string `json:"property_id"`
+		ImageID string `json:"image_id"`
 		Type string `json:"type"`
 	}
 
