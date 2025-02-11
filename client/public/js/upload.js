@@ -15,6 +15,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Loader'ı görünür yap
         loaderWrap.style.display = "block"; // veya "flex", "grid" gibi uygun bir değer
+        const loader = document.getElementById("loader");
+        loader.classList.remove("d-none");
 
         try {
             // **1. Adım: BasicInfo oluştur**
@@ -444,6 +446,7 @@ document.addEventListener("DOMContentLoaded", function () {
             showModal("error", "Hata!", "Bir hata oluştu!");
         } finally {
             loaderWrap.style.display = "none";
+            loader.classList.add("d-none");
         }
 
         const modalElement = document.getElementById("kt_modal_1");

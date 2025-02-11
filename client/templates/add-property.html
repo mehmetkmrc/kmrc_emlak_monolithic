@@ -750,6 +750,12 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <!-- Spinner -->
+                                            <div id="loader" class="css3-spinner d-none" style="--cnvs-loader-color:var(--cnvs-themecolor);">
+                                                <div class="css3-spinner-bounce1"></div>
+                                                <div class="css3-spinner-bounce2"></div>
+                                                <div class="css3-spinner-bounce3"></div>
+                                            </div>
                                             <button type="submit" class="commentssubmit" style="margin-top: 10px"><span>Mülkü Ekle</span></button>		
                                         </div>
                                         <!--dasboard-content-item end-->
@@ -757,7 +763,31 @@
                                 </div>
                             </form>
                             
-                            
+                            <!-- Modal -->
+                            <div class="modal fade" tabindex="-1" id="kt_modal_1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h3 class="modal-title"></h3>
+
+                                            <!--begin::Close-->
+                                            <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                                                aria-label="Close">
+                                                <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
+                                            </div>
+                                            <!--end::Close-->
+                                        </div>
+
+                                        <div class="modal-body">
+
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal"></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                             <!-- pricing-column end-->											
                         </div>
@@ -780,6 +810,7 @@
         <!--main-footer end-->
     </div>
     <!--warpper end-->
+        
     <!--wish-list-wrap-->
     <div class="wish-list-wrap">
         <div class="wish-list-close clwl_btn"><i class="fa-regular fa-xmark"></i></div>
@@ -839,28 +870,3 @@
 </div>
 <!-- Main end -->
 
-<!-- Modal -->
-<div class="modal fade" tabindex="-1" id="kt_modal_1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title"></h3>
-
-                <!--begin::Close-->
-                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
-                    aria-label="Close">
-                    <i class="ki-duotone ki-cross fs-1"><span class="path1"></span><span class="path2"></span></i>
-                </div>
-                <!--end::Close-->
-            </div>
-
-            <div class="modal-body">
-
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-bs-dismiss="modal"></button>
-            </div>
-        </div>
-    </div>
-</div>
