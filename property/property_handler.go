@@ -8,6 +8,8 @@ import (
 	"kmrc_emlak_mono/database"
 	"kmrc_emlak_mono/dto"
 	
+	"path/filepath"
+
 	"kmrc_emlak_mono/models"
 	"kmrc_emlak_mono/response"
 	"strconv"
@@ -510,52 +512,51 @@ func AddPropertyMedia(c fiber.Ctx) error{
 	return response.Success_Response(c, propertyMediaModel, "PropertyModel Created Successfully", fiber.StatusOK)
 }
 
-func AddImage(c fiber.Ctx) error{
-	reqBody := new(dto.ImageCreateRequest)
-	body := c.Body()
-	if err := json.Unmarshal(body, reqBody);
-	err != nil{
-		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
-	}
-	ImageCreateRequestModel := func (dto.ImageCreateRequest) (*models.Image, error){
-		image := new(models.Image)
-		property_id, err := uuid.Parse(reqBody.PropertyID)
-			if err != nil {
-				return nil, err
-			}
-		image = &models.Image{
-			PropertyID: property_id,
-			ImageID: uuid.New(),
-			ImageName: reqBody.ImageName,
-			FilePath: reqBody.FilePath,
-		}		
-		return image, nil
-	}
-	imageModel, err := ImageCreateRequestModel(*reqBody)
-	if err != nil{
-		return response.Error_Response(c, "error while trying to convert Image create request model", err, nil, fiber.StatusBadRequest)
-	}
-	Insert := func (ctx context.Context, q *PropertyRepository, imageModel *models.Image) (*models.Image, error) {
-		query := `INSERT INTO images(property_id, image_id, name, file_path) VALUES($1, $2, $3) RETURNING property_id, image_id, name, file_path`
-		queryRow := q.dbPool.QueryRow(ctx, query, imageModel.PropertyID, imageModel.ImageID, imageModel.ImageName, imageModel.FilePath)
-		err := queryRow.Scan(&imageModel.PropertyID, &imageModel.ImageID, &imageModel.ImageName, &imageModel.FilePath)
-		if err != nil {
-			return nil, err
-		}
-		return imageModel, nil
-	}
-	AddImage := func (ctx context.Context, image *models.Image) (*models.Image, error) {
-		repo := &PropertyRepository{
-			dbPool: database.DBPool,
-		}
-		return Insert(ctx, repo, image)
-	}
-	image, err := AddImage(c.Context(), imageModel)
-	if err != nil{
-		return response.Error_Response(c, "error while trying to create image table", err, nil, fiber.StatusBadRequest)
-	}
-	zap.S().Info("Image table created successfully! Image: ", image)
-	return response.Success_Response(c, image, "Image Model Created successfully", fiber.StatusOK)
+func AddImage(c fiber.Ctx) error {
+    // Dosyayı al
+    file, err := c.FormFile("image")
+    if err != nil {
+        return response.Error_Response(c, "Error retrieving the file", err, nil, fiber.StatusBadRequest)
+    }
+
+    // Dosya Adını ve Yolunu Belirle
+    imageID := uuid.New()
+    fileExt := filepath.Ext(file.Filename)
+    fileName := fmt.Sprintf("%s%s", imageID, fileExt)
+    savePath := fmt.Sprintf("uploads/%s", fileName)
+
+    // Dosyayı Kaydet
+    if err := c.SaveFile(file, savePath); err != nil {
+        return response.Error_Response(c, "Error saving file", err, nil, fiber.StatusInternalServerError)
+    }
+
+    // 📌 Burada JSON body kullanma, formdan veri çek
+    propertyIDStr := c.FormValue("property_id")
+
+    // PropertyID'yi uuid'ye çevir
+    propertyID, err := uuid.Parse(propertyIDStr)
+    if err != nil {
+        return response.Error_Response(c, "Invalid property ID", err, nil, fiber.StatusBadRequest)
+    }
+
+    // Image modelini oluştur
+    image := &models.Image{
+        PropertyID: propertyID,
+        ImageID:    imageID,
+        ImageName:  file.Filename,
+        FilePath:   savePath,
+    }
+
+    query := `INSERT INTO images(property_id, image_id, name, file_path) VALUES($1, $2, $3, $4) RETURNING property_id, image_id, name, file_path`
+    row := database.DBPool.QueryRow(c.Context(), query, image.PropertyID, image.ImageID, image.ImageName, image.FilePath)
+
+    if err := row.Scan(&image.PropertyID, &image.ImageID, &image.ImageName, &image.FilePath); err != nil {
+        return response.Error_Response(c, "Error inserting into database", err, nil, fiber.StatusInternalServerError)
+    }
+
+    // Başarılı yanıt döndür
+    zap.S().Info("Image saved successfully!", image)
+    return response.Success_Response(c, image, "Image uploaded successfully", fiber.StatusOK)
 }
 
 func AddBasicInfo(c fiber.Ctx) error{
@@ -675,54 +676,47 @@ func AddNearby(c fiber.Ctx) error{
 }
 
 func AddPlansBrochures(c fiber.Ctx) error{
-	reqBody := new(dto.PlansBrochuresCreateRequest)
-	body := c.Body()
-	if err := json.Unmarshal(body, reqBody);
-	err != nil{
-		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
+	// Dosyayı al
+	file, err := c.FormFile("file_path") // "file_path" anahtarıyla dosyayı al
+	if err != nil {
+		return response.Error_Response(c, "Error retrieving the file", err, nil, fiber.StatusBadRequest)
 	}
-	// Middleware aracılığıyla aktarılan propertyID'yi alın
-	// propertyID, ok := c.Locals("propertyID").(uuid.UUID)
-	// if !ok {
-	// 	return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
-	// }
-	PlansBrochuresCreateRequestModel := func (dto.PlansBrochuresCreateRequest) (*models.PlansBrochures, error) {
-		plansBrochures := new(models.PlansBrochures)
-		property_id, err := uuid.Parse(reqBody.PropertyID)
-		if err != nil {
-			return nil, err
-		}
-		plansBrochures = &models.PlansBrochures{
-			PropertyID: property_id,
-			PlansBrochuresID: uuid.New(),
-			FileType: reqBody.FileType,
-			FilePath: reqBody.FilePath,
-		}
-		return plansBrochures, nil
+
+	// Property ID'yi al
+	propertyIDStr := c.FormValue("property_id") // "property_id" anahtarıyla Property ID'yi al
+	propertyID, err := uuid.Parse(propertyIDStr)
+	if err != nil {
+		return response.Error_Response(c, "Invalid property ID", err, nil, fiber.StatusBadRequest)
 	}
-	plansBrochuresModel, err := PlansBrochuresCreateRequestModel(*reqBody)
-	if err != nil{
-		return response.Error_Response(c, "error while trying to convert PlansBrochures create request model", err, nil, fiber.StatusBadRequest)
+
+	// Dosya Adını ve Yolunu Belirle
+	plansBrochuresID := uuid.New()
+	fileExt := filepath.Ext(file.Filename)
+	fileName := fmt.Sprintf("%s%s", plansBrochuresID, fileExt)
+	savePath := fmt.Sprintf("uploads/%s", fileName)
+
+	// Dosyayı Kaydet
+	if err := c.SaveFile(file, savePath); err != nil {
+		return response.Error_Response(c, "Error saving file", err, nil, fiber.StatusInternalServerError)
 	}
-	Insert := func (ctx context.Context, q *PropertyRepository, plansBrochuresModel *models.PlansBrochures) (*models.PlansBrochures, error) {
-		query := `INSERT INTO accordion_widget(plans_brochures_id, property_id, file_type,file_path) VALUES($1, $2, $3, $4) RETURNING plans_brochures_id, property_id, file_type,file_path`
-		queryRow := q.dbPool.QueryRow(ctx, query, plansBrochuresModel.PlansBrochuresID, plansBrochuresModel.PropertyID, plansBrochuresModel.FileType, plansBrochuresModel.FilePath)
-		err := queryRow.Scan(&plansBrochuresModel.PlansBrochuresID, &plansBrochuresModel.PropertyID, &plansBrochuresModel.FileType, &plansBrochuresModel.FilePath)
-		if err != nil {
-			return nil, err
-		}
-		return plansBrochuresModel, nil
+
+	// PlansBrochures modelini oluştur
+	plansBrochures := &models.PlansBrochures{
+		PropertyID:     propertyID,
+		PlansBrochuresID: plansBrochuresID,
+		FileType:       file.Filename, // Dosya adını FileType olarak kullan
+		FilePath:       savePath,      // Kayıt yolunu FilePath olarak kullan
 	}
-	AddPlansBrochures := func (ctx context.Context, plansBrochures *models.PlansBrochures) (*models.PlansBrochures, error) {
-		repo := &PropertyRepository{
-			dbPool: database.DBPool,
-		}
-		return Insert(ctx, repo, plansBrochures)
+
+	// Veritabanına kaydet
+	query := `INSERT INTO plans_brochures(plans_brochures_id, property_id, file_type, file_path) VALUES($1, $2, $3, $4) RETURNING plans_brochures_id, property_id, file_type, file_path`
+	row := database.DBPool.QueryRow(c.Context(), query, plansBrochures.PlansBrochuresID, plansBrochures.PropertyID, plansBrochures.FileType, plansBrochures.FilePath)
+
+	if err := row.Scan(&plansBrochures.PlansBrochuresID, &plansBrochures.PropertyID, &plansBrochures.FileType, &plansBrochures.FilePath); err != nil {
+		return response.Error_Response(c, "Error inserting into database", err, nil, fiber.StatusInternalServerError)
 	}
-	plansBrochures, err := AddPlansBrochures(c.Context(), plansBrochuresModel)
-	if err != nil{
-		return response.Error_Response(c, "error while trying to create PlansBrochures table", err, nil, fiber.StatusBadRequest)
-	}
-	zap.S().Info("PlansBrochures table created successfully! AccordionWidget: ", plansBrochures)
-	return response.Success_Response(c, plansBrochures, "PlansBrochures Model Created successfully", fiber.StatusOK)
+
+	// Başarılı yanıt döndür
+	zap.S().Info("Plans and brochures saved successfully!", plansBrochures)
+	return response.Success_Response(c, plansBrochures, "Plans and brochures uploaded successfully", fiber.StatusOK)
 }

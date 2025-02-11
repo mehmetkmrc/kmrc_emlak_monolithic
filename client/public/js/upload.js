@@ -148,80 +148,13 @@ document.addEventListener("DOMContentLoaded", function () {
                return;
            }
 
-           // **4. Property Media oluştur
+           
+           // **4. Property Media oluştur**
            const galleryType = document.querySelector('select[name="type"]').value;
-           const fileInput = document.querySelector('input[type="file"][multiple]'); // Birden fazla dosya seçilebilen input
+           const fileInput = document.querySelector('input[type="file"][multiple]');
 
-           fileInput.addEventListener("change", async function (event) {
-            const files = event.target.files; // Seçilen dosyaların listesi
-        
-            if (files.length > 0) {
-                const imageIDs = []; // Yüklenen resimlerin ID'lerini saklamak için dizi
-        
-                // Her bir resim için döngü
-                for (let i = 0; i < files.length; i++) {
-                    const file = files[i];
-        
-                    // **1. Adım: Resmi `AddImage` endpoint'ine yükle**
-                    const formData = new FormData();
-                    formData.append("ImageName", file.name); // Dosya adını gönder
-                    formData.append("FilePath", file); // Dosyayı gönder
-        
-                    const addImageResponse = await fetch("http://127.0.0.1:8081/property/add-image", {
-                        method: "POST",
-                        body: formData, // FormData olarak gönderiyoruz
-                    });
-        
-                    if (!addImageResponse.ok) {
-                        const errorText = await addImageResponse.text();
-                        showModal("error", "Hata!", `Resim yüklenirken bir hata oluştu! Hata: ${errorText}`);
-                        return;
-                    }
-        
-                    const addImageResult = await addImageResponse.json();
-        
-                    if (addImageResult.status !== 200) {
-                        showModal("error", "Hata!", "Resim yüklenemedi: " + addImageResult.message);
-                        return;
-                    }
-        
-                    const imageID = addImageResult.data; // Backend'den dönen imageID
-                    imageIDs.push(imageID); // ID'yi diziye ekle
-                }
-        
-                // **5. Adım: `AddPropertyMedia` endpoint'ine bilgileri gönder**
-                for (let i = 0; i < imageIDs.length; i++) {
-                    const imageID = imageIDs[i];
-                    const propertyMediaData = {
-                        property_id: propertyID, // Daha önce aldığınız propertyID
-                        image_id: imageID,
-                        type: galleryType,
-                    };
-        
-                    const addPropertyMediaResponse = await fetch("http://127.0.0.1:8081/property/add-property-media", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json", // JSON olarak gönderiyoruz
-                        },
-                        body: JSON.stringify(propertyMediaData),
-                    });
-        
-                    if (!addPropertyMediaResponse.ok) {
-                        const errorText = await addPropertyMediaResponse.text();
-                        showModal("error", "Hata!", `Property Media oluşturulurken bir hata oluştu! Hata: ${errorText}`);
-                        return;
-                    }
-        
-                    const addPropertyMediaResult = await addPropertyMediaResponse.json();
-        
-                    if (addPropertyMediaResult.status !== 200) {
-                        showModal("error", "Hata!", "Property Media oluşturulamadı: " + addPropertyMediaResult.message);
-                        return;
-                    }
-                }
-        
-            }
-            });
+           // **Resimleri yükleme ve Property Media oluşturma işlemini ayrı bir fonksiyonda yap**
+           await handlePropertyMedia(propertyID, galleryType, fileInput);
 
 
             // **6. Property Details oluştur
@@ -327,44 +260,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
             // **7. `Upload Plans and Brochure` oluştur
-            const fileInput1 = document.querySelector('input[type="file"][multiple]'); // Birden fazla dosya seçilebilen input
-
-            fileInput1.addEventListener("change", async function (event) {
-                const files = event.target.files; // Seçilen dosyaların listesi
-            
-                if (files.length > 0) {
-                    const imageIDs = []; // Yüklenen resimlerin ID'lerini saklamak için dizi
-            
-                    // Her bir resim için döngü
-                    for (let i = 0; i < files.length; i++) {
-                        const file = files[i];
-            
-                        // **1. Adım: Resmi `AddImage` endpoint'ine yükle**
-                        const formData = new FormData();
-                        formData.append("file_type", file.name); // Dosya adını gönder
-                        formData.append("file_path", file); // Dosyayı gönder
-            
-                        const addPlansAndBrochuresResponse = await fetch("http://127.0.0.1:8081/property/add-plans-brochures", {
-                            method: "POST",
-                            body: formData, // FormData olarak gönderiyoruz
-                        });
-            
-                        if (!addPlansAndBrochuresResponse.ok) {
-                            const errorText = await addPlansAndBrochuresResponse.text();
-                            showModal("error", "Hata!", `Resim yüklenirken bir hata oluştu! Hata: ${errorText}`);
-                            return;
-                        }
-            
-                        const addPlansAndBrochuresResult = await addPlansAndBrochuresResponse.json();
-            
-                        if (addPlansAndBrochuresResult.status !== "success") {
-                            showModal("error", "Hata!", "Resim yüklenemedi: " + addPlansAndBrochuresResult.message);
-                            return;
-                        }
-            
-                    }            
-                }
-            });
+            const fileInput1 = document.querySelector('input[type="file"][multiple]');
+            await handlePlansAndBrochures(fileInput1);
 
             // **8. Accordion Widget oluştur
             const accordion_exist = document.querySelector('input[name="accordion_exist"]').checked;
@@ -459,6 +356,115 @@ document.addEventListener("DOMContentLoaded", function () {
         modal.hide();
     });
 });
+
+
+
+
+
+// **Resimleri yükleme ve Property Media oluşturma fonksiyonu**
+async function handlePropertyMedia(propertyID, galleryType, fileInput) {
+    const files = fileInput.files;
+
+    if (files.length > 0) {
+        const imageIDs = [];
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+
+            const formData = new FormData();
+            formData.append("property_id", propertyID.property_id);
+            formData.append("image", file);
+
+            const addImageResponse = await fetch("http://127.0.0.1:8081/property/add-image", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (!addImageResponse.ok) {
+                const errorText = await addImageResponse.text();
+                showModal("error", "Hata!", `Resim yüklenirken bir hata oluştu! Hata: ${errorText}`);
+                return;
+            }
+
+            const addImageResult = await addImageResponse.json();
+
+            if (addImageResult.status !== 200) {
+                showModal("error", "Hata!", "Resim yüklenemedi: " + addImageResult.message);
+                return;
+            }
+
+            const imageID = addImageResult.data.image_id;
+            imageIDs.push(imageID);
+        }
+
+        for (let i = 0; i < imageIDs.length; i++) {
+            const imageID = imageIDs[i];
+            const propertyMediaData = {
+                property_id: propertyID.property_id,
+                image_id: imageID,
+                type: galleryType,
+            };
+
+            const addPropertyMediaResponse = await fetch("http://127.0.0.1:8081/property/add-property-media", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(propertyMediaData),
+            });
+
+            if (!addPropertyMediaResponse.ok) {
+                const errorText = await addPropertyMediaResponse.text();
+                showModal("error", "Hata!", `Property Media oluşturulurken bir hata oluştu! Hata: ${errorText}`);
+                return;
+            }
+
+            const addPropertyMediaResult = await addPropertyMediaResponse.json();
+
+            if (addPropertyMediaResult.status !== 200) {
+                showModal("error", "Hata!", "Property Media oluşturulamadı: " + addPropertyMediaResult.message);
+                return;
+            }
+        }
+    }
+}
+
+// **PLans and brochures
+async function handlePlansAndBrochures(fileInput1) {
+    const files = fileInput1.files;
+
+    if (files.length > 0) {
+        const imageIDs = [];
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+
+            const formData = new FormData();
+            formData.append("property_id", propertyID.property_id)
+            formData.append("file_type", file.name);
+            formData.append("file_path", file);
+
+            const addPlansAndBrochuresResponse = await fetch("http://127.0.0.1:8081/property/add-plans-brochures", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (!addPlansAndBrochuresResponse.ok) {
+                const errorText = await addPlansAndBrochuresResponse.text();
+                showModal("error", "Hata!", `Resim yüklenirken bir hata oluştu! Hata: ${errorText}`);
+                return;
+            }
+
+            const addPlansAndBrochuresResult = await addPlansAndBrochuresResponse.json();
+
+            if (addPlansAndBrochuresResult.status !== "success") {
+                showModal("error", "Hata!", "Resim yüklenemedi: " + addPlansAndBrochuresResult.message);
+                return;
+            }
+        }
+    }
+}
+
 
 
 function showModal(type, title, message) {
