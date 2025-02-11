@@ -259,9 +259,11 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
-            // **7. `Upload Plans and Brochure` oluştur
+            // **7. `Upload Plans and Brochure` oluştur**
             const fileInput1 = document.querySelector('input[type="file"][multiple]');
-            await handlePlansAndBrochures(fileInput1);
+            await handlePlansAndBrochures(propertyID, fileInput1); // **propertyID GEÇİRİLDİ**
+
+
 
             // **8. Accordion Widget oluştur
             const accordion_exist = document.querySelector('input[name="accordion_exist"]').checked;
@@ -430,7 +432,7 @@ async function handlePropertyMedia(propertyID, galleryType, fileInput) {
 }
 
 // **PLans and brochures
-async function handlePlansAndBrochures(fileInput1) {
+async function handlePlansAndBrochures(propertyID, fileInput1) { // **propertyID EKLENDİ**
     const files = fileInput1.files;
 
     if (files.length > 0) {
@@ -440,7 +442,7 @@ async function handlePlansAndBrochures(fileInput1) {
             const file = files[i];
 
             const formData = new FormData();
-            formData.append("property_id", propertyID.property_id)
+            formData.append("property_id", propertyID.property_id);
             formData.append("file_type", file.name);
             formData.append("file_path", file);
 
@@ -457,13 +459,14 @@ async function handlePlansAndBrochures(fileInput1) {
 
             const addPlansAndBrochuresResult = await addPlansAndBrochuresResponse.json();
 
-            if (addPlansAndBrochuresResult.status !== "success") {
+            if (addPlansAndBrochuresResult.status !== 200 ) {
                 showModal("error", "Hata!", "Resim yüklenemedi: " + addPlansAndBrochuresResult.message);
                 return;
             }
         }
     }
 }
+
 
 
 
