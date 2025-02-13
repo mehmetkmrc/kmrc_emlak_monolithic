@@ -40,13 +40,13 @@ type Property struct {
 	PropertyTitle string `json:"title"`
 	TariffPlan string `json:"tariff_plan"`
 	Date time.Time `json:"date"`
-	PropertyDetails []*PropertyDetails `json:"property_details"`
+	PropertyDetails *PropertyDetails `json:"property_details"`
 	VideoWidget []*VideoWidget `json:"video_widget"`
-	Location []*Location `json:"location"`
+	Location *Location `json:"location"`
 	Amenities []*Amenities `json:"amenities"`
 	AccordionWidget []*AccordionWidget `json:"accordion_widget"`
 	PropertyMedia []*PropertyMedia `json:"property_media"`
-	BasicInfo []*BasicInfo `json:"basic_info"`
+	BasicInfo *BasicInfo `json:"basic_info"`
 	Nearby 	[]*Nearby `json:"nearby"`
 	PlansBrochures []*PlansBrochures `json:"plans_brochures"`
 }

@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const basicInfoData = {
                 main_title : main_title,
-                type: type,
+                property_type: type,
                 category: category,
                 price: parseFloat(price),
                 keywords: keywords,

@@ -572,9 +572,6 @@ func AddBasicInfo(c fiber.Ctx) error{
 	if !ok {
 		return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
 	}
-
-
-
 	 
 	BasicInfoCreateRequestModel := func (dto.BasicInfoCreateRequest) (*models.BasicInfo, error) {
 		basicInfo := new(models.BasicInfo)

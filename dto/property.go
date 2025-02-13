@@ -170,7 +170,7 @@ type (
 	}
 
 	AmenitiesCreateRequest struct {
-		PropertyID string `json:"property_id"`
+		PropertyID 		string `json:"property_id"`
 		Wifi            bool   `json:"wifi"`
 		Pool            bool   `json:"pool"`
 		Security        bool   `json:"security"`
