@@ -8,6 +8,7 @@ import (
 	"kmrc_emlak_mono/database"
 	"kmrc_emlak_mono/dto"
 	
+
 	"path/filepath"
 
 	"kmrc_emlak_mono/models"
@@ -18,6 +19,7 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
+	"github.com/lib/pq"
 	"go.uber.org/zap"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -513,50 +515,69 @@ func AddPropertyMedia(c fiber.Ctx) error{
 }
 
 func AddImage(c fiber.Ctx) error {
-    // Dosyayı al
-    file, err := c.FormFile("image")
-    if err != nil {
-        return response.Error_Response(c, "Error retrieving the file", err, nil, fiber.StatusBadRequest)
-    }
 
-    // Dosya Adını ve Yolunu Belirle
-    imageID := uuid.New()
-    fileExt := filepath.Ext(file.Filename)
-    fileName := fmt.Sprintf("%s%s", imageID, fileExt)
-    savePath := fmt.Sprintf("uploads/%s", fileName)
+	//Formdan property_id'yi al
+	propertyIDStr := c.FormValue("property_id")
+	propertyID, err := uuid.Parse(propertyIDStr)
+	if err != nil{
+		return response.Error_Response(c, "Invalid property ID", err, nil, fiber.StatusBadRequest)
+	}
 
-    // Dosyayı Kaydet
-    if err := c.SaveFile(file, savePath); err != nil {
-        return response.Error_Response(c, "Error saving file", err, nil, fiber.StatusInternalServerError)
-    }
+	// Formdan gelen tüm dosyaları al
+	form, err := c.MultipartForm()
+	if err != nil{
+		return response.Error_Response(c, "Error retrieving form files", err, nil, fiber.StatusBadRequest)
+	}
 
-    // 📌 Burada JSON body kullanma, formdan veri çek
-    propertyIDStr := c.FormValue("property_id")
+	files := form.File["image"] //"image" input'unun adıyla eşleşmeli
 
-    // PropertyID'yi uuid'ye çevir
-    propertyID, err := uuid.Parse(propertyIDStr)
-    if err != nil {
-        return response.Error_Response(c, "Invalid property ID", err, nil, fiber.StatusBadRequest)
-    }
+	if len(files) == 0 {
+		return response.Error_Response(c, "No images uploaded", nil, nil, fiber.StatusBadRequest)
+	}
 
-    // Image modelini oluştur
-    image := &models.Image{
-        PropertyID: propertyID,
-        ImageID:    imageID,
-        ImageName:  file.Filename,
-        FilePath:   savePath,
-    }
 
-    query := `INSERT INTO images(property_id, image_id, name, file_path) VALUES($1, $2, $3, $4) RETURNING property_id, image_id, name, file_path`
-    row := database.DBPool.QueryRow(c.Context(), query, image.PropertyID, image.ImageID, image.ImageName, image.FilePath)
+	var filePaths []string
+	var imageNames []string
+	imageID := uuid.New() // Tek bir ImageID oluştur
 
-    if err := row.Scan(&image.PropertyID, &image.ImageID, &image.ImageName, &image.FilePath); err != nil {
-        return response.Error_Response(c, "Error inserting into database", err, nil, fiber.StatusInternalServerError)
-    }
+	//Tüm dosyaları işle
+	for _, file := range files {
+		fileExt := filepath.Ext(file.Filename)
+		fileName := fmt.Sprintf("%s%s", imageID, fileExt) // Tüm osyalar aynı imageID'yi kullanıyor.
+		savePath := fmt.Sprintf("uploads/%s", fileName)
 
-    // Başarılı yanıt döndür
-    zap.S().Info("Image saved successfully!", image)
-    return response.Success_Response(c, image, "Image uploaded successfully", fiber.StatusOK)
+		//Dosyayı Kaydet
+		if err := c.SaveFile(file, savePath); err != nil{
+			return response.Error_Response(c, "Error saving file", err, nil, fiber.StatusInternalServerError)
+		}
+
+		filePaths = append(filePaths, savePath)
+		imageNames = append(imageNames, file.Filename) //Orijinal dosya adını sakla
+	}
+
+	//Image modelini oluştur
+	image := &models.Image{
+		PropertyID: propertyID,
+		ImageID: imageID,
+		ImageName: imageNames, //Tüm Dosya adlarını sakla
+		FilePath: filePaths,  //Tüm dosya yollarını sakla
+	}
+
+	validate := validator.New()
+	if err := validate.Struct(image); err != nil {
+		return response.Error_Response(c, "Validation error", err, nil, fiber.StatusBadRequest)
+	}
+
+	//Veritabanına Kaydet
+	query := `INSERT INTO images(property_id, image_id, name, file_path) VALUES($1, $2, $3, $4) RETURNING property_id, image_id, name, file_path`
+	row := database.DBPool.QueryRow(c.Context(), query, image.PropertyID, image.ImageID, pq.Array(image.ImageName), pq.Array(image.FilePath))
+	if err := row.Scan(&image.PropertyID, &image.ImageID, &image.ImageName, &image.FilePath); err != nil{
+		return response.Error_Response(c, "Error inserting into database", err, nil, fiber.StatusInternalServerError)
+	}
+
+	//Başarılı yanıt döndür
+	zap.S().Info("Images saved successfully!", image)
+	return response.Success_Response(c, image, "Images uploaded successfully", fiber.StatusOK)
 }
 
 func AddBasicInfo(c fiber.Ctx) error{
