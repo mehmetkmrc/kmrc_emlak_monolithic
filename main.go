@@ -23,6 +23,7 @@ const (
 	viewPath   = "./client/templates"
 	publicPath = "./client/public"
 	renderType = ".html"
+	uploadsPath = "./"
 )
 
 func add(x, y int) int {
@@ -76,13 +77,14 @@ func main() {
 			}
 			return c.Status(fiber.StatusInternalServerError).Render("error", fiber.Map{
 				"Title":   "Internal Server Error",
-				"Message": "An unexpected error occured.",
+				"Message": err,
 			})
 		},
 	})
-
+	app.Use(static.New(uploadsPath))
 	app.Use(static.New(publicPath))
 	
+
 
 	app.Get("/", web.HomeWeb)
 	app.Get("/about", web.AboutWeb)

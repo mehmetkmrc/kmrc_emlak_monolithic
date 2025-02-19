@@ -150,11 +150,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
            
            // **4. Property Media oluştur**
-        //    const galleryType = document.querySelector('select[name="type"]').value;
-        //    const fileInput = document.querySelector('input[type="file"][multiple]');
+            const galleryType = document.querySelector('select[name="type"]').value;
+            const fileInput = document.querySelector('input[type="file"][multiple]');
 
            // **Resimleri yükleme ve Property Media oluşturma işlemini ayrı bir fonksiyonda yap**
-        //    await handlePropertyMedia(propertyID, galleryType, fileInput);
+            await handlePropertyMedia(propertyID, galleryType, fileInput);
 
 
             // **6. Property Details oluştur
@@ -364,73 +364,72 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 // **Resimleri yükleme ve Property Media oluşturma fonksiyonu**
-// async function handlePropertyMedia(propertyID, galleryType, fileInput) {
-//     const files = fileInput.files;
+async function handlePropertyMedia(propertyID, galleryType, fileInput) {
+     const files = fileInput.files;
 
-//     if (files.length > 0) {
-//         try {
+     if (files.length > 0) {
+         try {
 //             // Create a single FormData instance for all files
-//             const formData = new FormData();
-//             formData.append("property_id", propertyID.property_id);
+             const formData = new FormData();
+             formData.append("property_id", propertyID.property_id);
             
 //             // Add all files to the same FormData
-//             for (let i = 0; i < files.length; i++) {
-//                 formData.append("image", files[i]);
-//             }
+             for (let i = 0; i < files.length; i++) {
+                 formData.append("image", files[i]);
+             }
 
 //             // Single request to upload all images
-//             const addImageResponse = await fetch("http://127.0.0.1:8081/property/add-image", {
-//                 method: "POST",
-//                 body: formData
-//             });
+             const addImageResponse = await fetch("http://127.0.0.1:8081/property/add-image", {
+                 method: "POST",
+                 body: formData
+             });
 
-//             if (!addImageResponse.ok) {
-//                 const errorText = await addImageResponse.text();
-//                 showModal("error", "Hata!", `Resimler yüklenirken bir hata oluştu! Hata: ${errorText}`);
-//                 return;
-//             }
+             if (!addImageResponse.ok) {
+                 const errorText = await addImageResponse.text();
+                 showModal("error", "Hata!", `Resimler yüklenirken bir hata oluştu! Hata: ${errorText}`);
+                 return;
+             }
 
-//             const addImageResult = await addImageResponse.json();
+             const addImageResult = await addImageResponse.json();
 
-//             if (addImageResult.status !== 200) {
-//                 showModal("error", "Hata!", "Resimler yüklenemedi: " + addImageResult.message);
-//                 return;
-//             }
+             if (addImageResult.status !== 200) {
+                 showModal("error", "Hata!", "Resimler yüklenemedi: " + addImageResult.message);
+                 return;
+             }
 
 //             // Create property media entry with the image ID
-//             const propertyMediaData = {
-//                 property_id: propertyID.property_id,
-//                 image_id: addImageResult.data.image_id,
-//                 type: galleryType
-//             };
+             const propertyMediaData = {
+                 property_id: propertyID.property_id,
+                 image_id: addImageResult.data.image_id,
+                 type: galleryType
+             };
+             const addPropertyMediaResponse = await fetch("http://127.0.0.1:8081/property/add-property-media", {
+                 method: "POST",
+                 headers: {
+                     "Content-Type": "application/json"
+                 },
+                 body: JSON.stringify(propertyMediaData)
+             });
 
-//             const addPropertyMediaResponse = await fetch("http://127.0.0.1:8081/property/add-property-media", {
-//                 method: "POST",
-//                 headers: {
-//                     "Content-Type": "application/json"
-//                 },
-//                 body: JSON.stringify(propertyMediaData)
-//             });
+             if (!addPropertyMediaResponse.ok) {
+                 const errorText = await addPropertyMediaResponse.text();
+                 showModal("error", "Hata!", `Property Media oluşturulurken bir hata oluştu! Hata: ${errorText}`);
+                 return;
+             }
 
-//             if (!addPropertyMediaResponse.ok) {
-//                 const errorText = await addPropertyMediaResponse.text();
-//                 showModal("error", "Hata!", `Property Media oluşturulurken bir hata oluştu! Hata: ${errorText}`);
-//                 return;
-//             }
+             const addPropertyMediaResult = await addPropertyMediaResponse.json();
 
-//             const addPropertyMediaResult = await addPropertyMediaResponse.json();
+             if (addPropertyMediaResult.status !== 200) {
+                 showModal("error", "Hata!", "Property Media oluşturulamadı: " + addPropertyMediaResult.message);
+                 return;
+             }
 
-//             if (addPropertyMediaResult.status !== 200) {
-//                 showModal("error", "Hata!", "Property Media oluşturulamadı: " + addPropertyMediaResult.message);
-//                 return;
-//             }
-
-//         } catch (error) {
-//             showModal("error", "Hata!", "Bağlantı hatası: " + error.message);
-//             return;
-//         }
-//     }
-// }
+         } catch (error) {
+             showModal("error", "Hata!", "Bağlantı hatası: " + error.message);
+             return;
+         }
+     }
+}
 
 
 

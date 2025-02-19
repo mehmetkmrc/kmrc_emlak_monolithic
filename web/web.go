@@ -6,7 +6,7 @@ import (
 	"kmrc_emlak_mono/database"
 	"kmrc_emlak_mono/models"
 	"strconv"
-
+	"github.com/google/uuid"
 	"github.com/gofiber/fiber/v3"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -26,10 +26,10 @@ func LoginWeb(c fiber.Ctx) error {
 
 func HomeWeb(c fiber.Ctx) error {
 	categoryFilter := c.Query("category")
-	offset, _ := strconv.Atoi(c.Query("offset","0"))
+	offset, _ := strconv.Atoi(c.Query("offset", "0"))
 	limit, _ := strconv.Atoi(c.Query("limit", "6"))
 
-	GetPropertiesByJoin := func(ctx context.Context) ([]*models.Property, error){
+	GetPropertiesByJoin := func(ctx context.Context) ([]*models.Property, error) {
 		rows, err := database.DBPool.Query(ctx, `
 			SELECT
 				p.property_id as property_id,
@@ -67,26 +67,77 @@ func HomeWeb(c fiber.Ctx) error {
 			var basicInfos models.BasicInfo
 			var location models.Location
 			var propertyDetails models.PropertyDetails
-			
 
-			err := rows.Scan( 
+			err := rows.Scan(
 				&property.PropertyID, &basicInfos.PropertyID, &basicInfos.Type, &basicInfos.Category, &basicInfos.MainTitle, &basicInfos.Price, &location.PropertyID, &location.Address, &propertyDetails.PropertyID, &propertyDetails.PropertyMessage, &propertyDetails.Bedrooms, &propertyDetails.Bathrooms, &propertyDetails.Area,
 			)
-			if err != nil{
+			if err != nil {
 				fmt.Println("Satır tarama hatası: ", err)
 				continue // Hata durumunda sonraki satıra geç
 			}
-			
+
 			property.BasicInfo = &basicInfos
 			property.Location = &location
 			property.PropertyDetails = &propertyDetails
+
+
+
+			//Resimleri getiren fonksiyon
+			GetImagesByPropertyID := func(ctx context.Context, propertyID uuid.UUID) ([]*models.Image, error) {
+				rows, err := database.DBPool.Query(ctx, `
+				SELECT image_id, property_id, name, file_path
+				FROM images
+				WHERE property_id = $1
+			`, propertyID)
+				if err != nil {
+					fmt.Println("Resim sorgulama hatası: ", err)
+					return nil, err
+				}
+				defer rows.Close()
+
+				var images []*models.Image
+				for rows.Next() {
+					var image models.Image
+					err := rows.Scan(&image.ImageID, &image.PropertyID, &image.ImageName, &image.FilePath)
+					if err != nil {
+						fmt.Println("Resim satırı tarama hatası: ", err)
+						continue
+					}
+					images = append(images, &image)
+				}
+
+				if err := rows.Err(); err != nil {
+					fmt.Println("Resim satırları yineleme hatası: ", err)
+					return nil, err
+				}
+
+				return images, nil
+			}
+			// Resimleri getir
+			images, err := GetImagesByPropertyID(ctx, property.PropertyID)
+			if err != nil {
+				fmt.Println("Resim getirme hatası: ", err)
+				//Hata durumunda ne yapılacağına karar verin, örneğin boş bir dilim atayın
+				property.PropertyMedia = []*models.PropertyMedia{}
+			} else {
+				// PropertyMedia'yı doldur
+				propertyMedia := &models.PropertyMedia{
+					PropertyID: property.PropertyID,
+					Image:      images, // Resimleri doğrudan ata
+				}
+				property.PropertyMedia = []*models.PropertyMedia{propertyMedia} // Slice içinde sakla
+			}
+
 			properties = append(properties, &property)
 		}
 		return properties, nil
 	}
+
+	
+
 	ctx := context.Background()
 	properties, err := GetPropertiesByJoin(ctx)
-	if err != nil{
+	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).SendString("Verileri alırken hata oluştu")
 	}
 
@@ -102,15 +153,14 @@ func HomeWeb(c fiber.Ctx) error {
 
 	start := offset
 	end := offset + limit
-	if end > len(properties){
+	if end > len(properties) {
 		end = len(properties)
 	}
 	paginationProperties := properties[start:end]
 
-
 	path := "home"
 	return c.Render(path, fiber.Map{
-		"Title": "Kömürcü Emlak - Anasayfa",
+		"Title":      "Kömürcü Emlak - Anasayfa",
 		"Properties": paginationProperties,
 	})
 }
@@ -142,6 +192,10 @@ func BlogsWeb(c fiber.Ctx) error {
 	})
 }
 func ListingSingle(c fiber.Ctx) error {
+
+
+
+	
 	path := "listing-single"
 	return c.Render(path, fiber.Map{
 		"Title": "Daire",
@@ -152,7 +206,7 @@ func ListingWeb(c fiber.Ctx) error {
 	categoryFilter := c.Query("category")
 	offset, _ := strconv.Atoi(c.Query("offset","0"))
 	limit, _ := strconv.Atoi(c.Query("limit", "12"))
-	GetPropertiesByJoin := func(ctx context.Context) ([]*models.Property, error){
+	GetPropertiesByJoin := func(ctx context.Context) ([]*models.Property, error) {
 		rows, err := database.DBPool.Query(ctx, `
 			SELECT
 				p.property_id as property_id,
@@ -191,17 +245,66 @@ func ListingWeb(c fiber.Ctx) error {
 			var location models.Location
 			var propertyDetails models.PropertyDetails
 
-			err := rows.Scan( 
+			err := rows.Scan(
 				&property.PropertyID, &basicInfos.PropertyID, &basicInfos.Type, &basicInfos.Category, &basicInfos.MainTitle, &basicInfos.Price, &location.PropertyID, &location.Address, &propertyDetails.PropertyID, &propertyDetails.PropertyMessage, &propertyDetails.Bedrooms, &propertyDetails.Bathrooms, &propertyDetails.Area,
 			)
-			if err != nil{
+			if err != nil {
 				fmt.Println("Satır tarama hatası: ", err)
 				continue // Hata durumunda sonraki satıra geç
 			}
-			
+
 			property.BasicInfo = &basicInfos
 			property.Location = &location
 			property.PropertyDetails = &propertyDetails
+
+
+
+			//Resimleri getiren fonksiyon
+			GetImagesByPropertyID := func(ctx context.Context, propertyID uuid.UUID) ([]*models.Image, error) {
+				rows, err := database.DBPool.Query(ctx, `
+				SELECT image_id, property_id, name, file_path
+				FROM images
+				WHERE property_id = $1
+			`, propertyID)
+				if err != nil {
+					fmt.Println("Resim sorgulama hatası: ", err)
+					return nil, err
+				}
+				defer rows.Close()
+
+				var images []*models.Image
+				for rows.Next() {
+					var image models.Image
+					err := rows.Scan(&image.ImageID, &image.PropertyID, &image.ImageName, &image.FilePath)
+					if err != nil {
+						fmt.Println("Resim satırı tarama hatası: ", err)
+						continue
+					}
+					images = append(images, &image)
+				}
+
+				if err := rows.Err(); err != nil {
+					fmt.Println("Resim satırları yineleme hatası: ", err)
+					return nil, err
+				}
+
+				return images, nil
+			}
+			// Resimleri getir
+			images, err := GetImagesByPropertyID(ctx, property.PropertyID)
+			if err != nil {
+				fmt.Println("Resim getirme hatası: ", err)
+				//Hata durumunda ne yapılacağına karar verin, örneğin boş bir dilim atayın
+				property.PropertyMedia = []*models.PropertyMedia{}
+			} else {
+				// PropertyMedia'yı doldur
+				propertyMedia := &models.PropertyMedia{
+					PropertyID: property.PropertyID,
+					Image:      images, // Resimleri doğrudan ata
+				}
+				property.PropertyMedia = []*models.PropertyMedia{propertyMedia} // Slice içinde sakla
+			}
+
 			properties = append(properties, &property)
 		}
 		return properties, nil

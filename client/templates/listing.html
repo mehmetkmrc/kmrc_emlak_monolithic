@@ -296,8 +296,30 @@
                                                     <div class="listing-item">
                                                         <div class="geodir-category-listing">
                                                             <div class="geodir-category-img">
-                                                                <a href="listing-single.html" class="geodir-category-img_item">
-                                                                    <div class="bg" data-bg="images/all/1.jpg"></div>
+                                                                <a href="/listing-single" class="geodir-category-img_item">
+                                                                    {{if .PropertyMedia}}
+                                                                        {{if len .PropertyMedia}}
+                                                                            {{$firstPropertyMedia := index .PropertyMedia 0}} <!-- İlk PropertyMedia'yı al -->
+                                                                            {{if $firstPropertyMedia.Image}} <!-- İlk PropertyMedia'nın Image'ı var mı? -->
+                                                                              {{if len $firstPropertyMedia.Image}}
+                                                                                {{$firstImage := index $firstPropertyMedia.Image 0}}
+                                                                                {{if len $firstImage.FilePath}} <!-- İlk Image'ın FilePath'i var mı? -->
+                                                                                    <div class="bg" data-bg="{{index $firstImage.FilePath 0}}"></div>
+                                                                                {{else}}
+                                                                                    <div class="bg" data-bg="images/all/1.jpg"></div>  <!-- Varsayılan Resim -->
+                                                                                {{end}}
+                                                                              {{else}}
+                                                                                <div class="bg" data-bg="/images/default-image.jpg"></div>  <!-- Varsayılan Resim -->
+                                                                              {{end}}
+                                                                            {{else}}
+                                                                                <div class="bg" data-bg="/images/default-image.jpg"></div>  <!-- Varsayılan Resim -->
+                                                                            {{end}}
+                                                                        {{else}}
+                                                                            <div class="bg" data-bg="/images/default-image.jpg"></div>  <!-- Varsayılan Resim -->
+                                                                        {{end}}
+                                                                    {{else}}
+                                                                        <div class="bg" data-bg="/images/default-image.jpg"></div>  <!-- Varsayılan Resim -->
+                                                                    {{end}}
                                                                     <div class="overlay"></div>
                                                                 </a>
                                                                 <div class="geodir-category-location">
@@ -325,7 +347,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="geodir-category-footer">
-                                                                <a href="agent-single.html" class="gcf-company"><img src="images/avatar/2.jpg" alt=""><span>By Niko Furingee </span></a>
+                                                                <a href="agent-single.html" class="gcf-company"><img src="images/agents/Ramazankomurcu.png" alt=""><span>Ramazan Kömürcü tarafından </span></a>
                                                                 <a href="listing-single.html" class="gid_link"><span>View Details</span> <i class="fa-solid fa-caret-right"></i></a>
                                                             </div>
                                                         </div>
