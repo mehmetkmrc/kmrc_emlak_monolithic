@@ -1,0 +1,289 @@
+for web.go file:
+func ListingSingle(c fiber.Ctx) error {
+	propertyIDStr := c.Params("property_id")
+	property_ID, err := uuid.Parse(propertyIDStr)
+	if err != nil{
+		return err
+	}
+
+	GetPropertiesByJoin := func (ctx context.Context) ([]*models.Property, error) {
+		rows, err := database.DBPool.Query(ctx, `
+			SELECT
+				p.property_id as property_id,
+				bi.basic_info_id as basic_info_id,
+				bi.property_type as property_type,
+				bi.category as category,
+				bi.main_title as main_title,
+				bi.price as price,
+				bi.keywords as keywords,
+				loc.property_id as property_id,
+				loc.address as adress,
+				a.amenities_id as amenities_id,
+				a.wifi as wifi,
+				a.pool as pool,
+				a.security as security,
+				a.laundry_room as laundry_room,
+				a.equipped_kitchen as equipped_kitchen,
+				a.air_conditioning as air_conditioning,
+				a.parking as parking,
+				a.garage_atached as garage_atached,
+				a.fireplace as fireplace,
+				a.window_covering as window_covering,
+				a.backyard as backyard,
+				a.fitness_gym as fitness_gym,
+				a.elevator as elevator,
+				a.others_name as others_name,
+				a.others_checked as others_checked,
+				n.nearby_id as nearby_id,
+				n.places as places, 
+				n.distance as distance,
+				pd.property_id as property_id,
+				pd.property_message as property_message,
+				pd.bedrooms as bedrooms,
+				pd.bathrooms as bathrooms,
+				pd.area as area,
+				pd.parking as parking
+			FROM
+				property p
+			LEFT JOIN
+				basic_infos bi ON p.property_id = bi.property_id
+			LEFT JOIN
+				location loc ON p.property_id = loc.property_id
+			LEFT JOIN 
+				amenities a ON p.property_id = a.property_id
+			LEFT JOIN
+				nearby n ON p.property_id = n.property_id
+			LEFT JOIN
+				property_details pd ON p.property_id = pd.property_id
+		`)
+		if err != nil{
+			fmt.Println("Sorgu Hatası: ", err)
+			return nil, err
+		}
+		defer rows.Close()
+
+		var properties []*models.Property
+
+		for rows.Next(){
+			var property models.Property
+			var basicInfos models.BasicInfo
+			var location models.Location
+			var amenities models.Amenities
+			var nearby models.Nearby
+			var propertyDetails models.PropertyDetails
+
+
+			err := rows.Scan(
+				&property.PropertyID, &basicInfos.PropertyID, &basicInfos.Type, &basicInfos.Category, &basicInfos.MainTitle, &basicInfos.Price, &basicInfos.Keywords, &location.PropertyID, &location.Address, &amenities.Wifi, &amenities.Pool, &amenities.Security, &amenities.LaundryRoom, &amenities.EquippedKitchen, &amenities.AirConditioning, &amenities.Parking, &amenities.GarageAtached, &amenities.Fireplace, &amenities.WindowCovering, &amenities.Backyard, &amenities.FitnessGym, &amenities.Elevator, &amenities.OthersName, &amenities.OthersChecked, &nearby.Distance, &nearby.Places, &nearby.Distance, &propertyDetails.PropertyID, &propertyDetails.PropertyMessage, &propertyDetails.Bedrooms, &propertyDetails.Bathrooms, &propertyDetails.Area,
+			)
+			if err != nil {
+				fmt.Println("Satır tarama hatası: ", err)
+				continue 
+			}
+
+			property.BasicInfo = &basicInfos
+			property.Location = &location
+			property.PropertyDetails = &propertyDetails
+			property.Amenities = &amenities
+			property.Nearby = &nearby
+
+			//Resimleri getiren fonksiyon
+			GetImagesByPropertyID := func(ctx context.Context, propertyID uuid.UUID) ([]*models.Image, error) {
+				rows, err := database.DBPool.Query(ctx, `
+				SELECT image_id, property_id, name, file_path
+				FROM images
+				WHERE property_id = $1
+			`, propertyID)
+				if err != nil {
+					fmt.Println("Resim sorgulama hatası: ", err)
+					return nil, err
+				}
+				defer rows.Close()
+
+				var images []*models.Image
+				for rows.Next() {
+					var image models.Image
+					err := rows.Scan(&image.ImageID, &image.PropertyID, &image.ImageName, &image.FilePath)
+					if err != nil {
+						fmt.Println("Resim satırı tarama hatası: ", err)
+						continue
+					}
+					images = append(images, &image)
+				}
+
+				if err := rows.Err(); err != nil {
+					fmt.Println("Resim satırları yineleme hatası: ", err)
+					return nil, err
+				}
+
+				return images, nil
+			}
+			// Resimleri getir
+			images, err := GetImagesByPropertyID(ctx, property.PropertyID)
+			if err != nil {
+				fmt.Println("Resim getirme hatası: ", err)
+				//Hata durumunda ne yapılacağına karar verin, örneğin boş bir dilim atayın
+				property.PropertyMedia = []*models.PropertyMedia{}
+			} else {
+				// PropertyMedia'yı doldur
+				propertyMedia := &models.PropertyMedia{
+					PropertyID: property.PropertyID,
+					Image:      images, // Resimleri doğrudan ata
+				}
+				property.PropertyMedia = []*models.PropertyMedia{propertyMedia} // Slice içinde sakla
+			}
+
+			properties = append(properties, &property)
+		}
+		return properties, nil
+	}
+
+	properties, err := GetPropertiesByJoin(c.Context())
+	if err != nil{
+		return err
+	}
+
+	var propertyDocs []interface{}
+	var title string
+	var relatedProperties []interface{}
+
+	for _, property := range properties{
+		propertyDoc := map[string]interface{}{
+			"property_id": property.PropertyID,
+			"title": property.BasicInfo.MainTitle,
+		}
+		propertyDocs = append(propertyDocs, propertyDoc)
+	}
+	var filteredProperties []interface{}
+	//Sadece belirtilen property_id'ye ait mülkleri filtrele
+	for _, property := range properties {
+		if property.PropertyID == property_ID{
+			title = strings.ToUpper(property.BasicInfo.MainTitle)//Title ı buradan al
+			propertyDoc := map[string]interface{}{
+				"property_id": property.PropertyID,
+				"title": property.BasicInfo.MainTitle,
+			}
+
+			var basicInfoDocs []interface{}
+			for _, basicInfoDoc := range property.BasicInfo{
+				basicInfoDocument := map[string]interface{}{
+					"basic_info_id":property.BasicInfo.BasicInfoID,
+					"property_id": property.PropertyID,
+					"main_title": property.PropertyTitle,
+					"property_type": property.BasicInfo.Type,
+					"category": property.BasicInfo.Category,
+					"price": property.BasicInfo.Price,
+					"keywords": property.BasicInfo.Keywords,
+				}
+				basicInfoDocs = append(basicInfoDocs, basicInfoDocument)
+			}
+			var propertyMediaDocs []interface{}
+			for _, propertyMediaDoc := range property.PropertyMedia{
+				propertyMediaDocument := map[string]interface{}{
+					"property_media_id": property.PropertyMedia.PropertyMediaID,
+					"property_id": property.PropertyID,
+					"image_id": property.PropertyMedia.ImageID,
+					"type": property.PropertyMedia.Type,
+				}
+				propertyMediaDocs = append(propertyMediaDocs, propertyMediaDocument)
+			}
+			var imageDocs []interface{}
+			for _, imageDoc := range property.PropertyMedia.Image{
+				imageDocument := map[string]interface{}{
+					"property_id": property.PropertyID,
+					"image_id": property.PropertyMedia.ImageID,
+					"name": imageDoc.ImageName,
+					"file_path": imageDoc.FilePath,
+				}
+				imageDocs = append(imageDocs, imageDocument)
+			}
+			var locationDocs []interface{}
+			for _, locationDoc := range property.Location{
+				locationDocument := map[string]interface{}{
+					"property_id": property.PropertyID,
+					"location_id": property.Location.LocationID,
+					"phone": property.Location.Phone,
+					"email": property.Location.Email,
+					"address": property.Location.Address,
+					"city": property.Location.City,
+				}
+				locationDocs = append(locationDocs, locationDocument)
+			}
+			var propertyDetailDocs []interface{}
+			for _, propertyDetailDoc := range property.PropertyDetails{
+				propertyDetailDocument := map[string]interface{}{
+					"property_id": property.PropertyID,
+					"property_detail_id": property.PropertyDetails.PropertyDetailsID,
+					"area": property.PropertyDetails.Area,
+					"bedrooms": property.PropertyDetails.Bedrooms,
+					"bathrooms": property.PropertyDetails.Bathrooms,
+					"parking": property.PropertyDetails.Parking,
+					"accomodation": property.PropertyDetails.Accomodation,
+					"website": property.PropertyDetails.Website,
+					"property_message": property.PropertyDetails.PropertyMessage,
+				}
+				propertyDetailDocs = append(propertyDetailDocs, propertyDetailDocument)
+			}
+			var amenitiesDocs []interface{}
+			for _, amenitiesDoc := range property.Amenities{
+				amenitiesDocument := map[string]interface{}{
+					"property_id": property.PropertyID,
+					"amenities_id": property.Amenities.AmenitiesID,
+					"wifi": property.Amenities.Wifi,
+					"pool": property.Amenities.Pool,
+					"security": property.Amenities.Security,
+					"laundry_room": property.Amenities.LaundryRoom,
+					"equipped_kitchen": property.Amenities.EquippedKitchen,
+					"air_conditioning": property.Amenities.AirConditioning,
+					"parking": property.Amenities.Parking,
+					"garage_atached": property.Amenities.GarageAtached,
+					"fireplace": property.Amenities.Fireplace,
+					"window_covering": property.Amenities.WindowCovering,
+					"backyard": property.Amenities.Backyard,
+					"fitness_gym": property.Amenities.FitnessGym,
+					"elevator": property.Amenities.Elevator,
+					"others_name": property.Amenities.OthersName,
+					"others_checked": property.Amenities.OthersChecked,
+				}
+				amenitiesDocs = append(amenitiesDocs, amenitiesDocument)
+			}
+
+			// var videoWidgetDocs []interface{}
+			// for _, videoWidgetDoc := range property.VideoWidget{
+			// 	videoWidget
+			// }
+		}
+	}
+	
+	path := "listing-single"
+	return c.Render(path, fiber.Map{
+		"Title": title,
+		"FilteredProperties": filteredProperties,
+		"AllProperties": propertyDocs,
+		"RelatedProperties": relatedProperties,
+	}, )
+}
+
+For models.go:
+type Property struct {
+	UserID uuid.UUID `json:"user_id"`
+	PropertyID uuid.UUID `json:"property_id"`
+	PropertyTitle string `json:"title"`
+	TariffPlan string `json:"tariff_plan"`
+	Date time.Time `json:"date"`
+	PropertyDetails *PropertyDetails `json:"property_details"`
+	VideoWidget []*VideoWidget `json:"video_widget"`
+	Location *Location `json:"location"`
+	Amenities []*Amenities `json:"amenities"`
+	AccordionWidget []*AccordionWidget `json:"accordion_widget"`
+	PropertyMedia []*PropertyMedia `json:"property_media"`
+	BasicInfo *BasicInfo `json:"basic_info"`
+	Nearby 	[]*Nearby `json:"nearby"`
+	PlansBrochures []*PlansBrochures `json:"plans_brochures"`
+}
+
+
+for main.go:
+app.Get("/listing-single", web.ListingSingle)
+
+
