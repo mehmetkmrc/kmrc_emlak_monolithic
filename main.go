@@ -33,6 +33,7 @@ func add(x, y int) int {
 func main() {
 	database.InitiliazeDatabaseConnection()
 	engine := html.New(viewPath, renderType)
+	engine.Reload(true)
 	engine.AddFunc("unescape", func(s string) template.HTML {
 		return template.HTML(s)
 	})
@@ -91,7 +92,7 @@ func main() {
 	app.Get("/contacts", web.ContactsWeb)
 	app.Get("/blog-single", web.BlogSingleWeb)
 	app.Get("/blogs", web.BlogsWeb)
-	app.Get("/listing-single", web.ListingSingle)
+	app.Get("/listing-single/:property_id", web.ListingSingle)
 	app.Get("/listing", web.ListingWeb)
 	app.Get("/projects", web.ProjectWeb)
 	route0 := app.Group("/dashboard")

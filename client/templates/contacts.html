@@ -1,233 +1,211 @@
-<!DOCTYPE HTML>
-<html lang="en">
-    <head>
-        <!--=============== basic  ===============-->
-        <meta charset="UTF-8">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>{{.Title}}</title>
-        <!--=============== css  ===============-->	
-        <link type="text/css" rel="stylesheet" href="/css/plugins.css">
-        <link type="text/css" rel="stylesheet" href="/css/style.css">
-        <!--=============== favicons ===============-->
-        <link rel="shortcut icon" href="images/kmrc-logo.png">
-    </head>
-    <body>
-        <!--loader-->
-        <div class="loader-wrap">
-            <div class="loader-inner">
-                <svg>
-                    <defs>
-                        <filter id="goo">
-                            <fegaussianblur in="SourceGraphic" stdDeviation="2" result="blur" />
-                            <fecolormatrix in="blur"   values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 5 -2" result="gooey" />
-                            <fecomposite in="SourceGraphic" in2="gooey" operator="atop"/>
-                        </filter>
-                    </defs>
-                </svg>
-            </div>
-        </div>
-        <!--loader end-->
-        <!--  main   -->
-        <div id="main">
-            <!--header-->
-            {{template "partials/header" .}}
-            <!--header-end-->
-            <!--warpper-->
-            <div class="wrapper">
-                <!--content-->
-                <div class="content">
-                    <!--section-->
-                    <div class="section hero-section hero-section_sin">
-                        <div class="hero-section-wrap">
-                            <div class="hero-section-wrap-item">
-                                <div class="container">
-                                    <div class="hero-section-container">
-                                        <div class="hero-section-title">
-                                            <h2>Bize Ulaşın</h2>
-                                            <h5>Burada iletişim adreslerimizi görebilirsiniz.</h5>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="hs-scroll-down-wrap">
-                                    <div class="scroll-down-item">
-                                        <div class="mousey">
-                                            <div class="scroller"></div>
-                                        </div>
-                                        <span>Aşağı Kaydır</span>
-                                    </div>
-                                    <div class="svg-corner svg-corner_white"  style="bottom:0;right: -39px; transform: rotate( 90deg)" ></div>
-                                    <div class="svg-corner svg-corner_white"  style="bottom:0;left:  -39px;"></div>
-                                </div>
-                                <div class="bg-wrap bg-hero bg-parallax-wrap-gradien fs-wrapper" data-scrollax-parent="true">
-                                    <div class="bg" data-bg="/images/all/14.jpg" data-scrollax="properties: { translateY: '30%' }"></div>
+<!--loader-->
+<div class="loader-wrap">
+    <div class="loader-inner">
+        <svg>
+            <defs>
+                <filter id="goo">
+                    <fegaussianblur in="SourceGraphic" stdDeviation="2" result="blur" />
+                    <fecolormatrix in="blur"   values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 5 -2" result="gooey" />
+                    <fecomposite in="SourceGraphic" in2="gooey" operator="atop"/>
+                </filter>
+            </defs>
+        </svg>
+    </div>
+</div>
+<!--loader end-->
+<!--  main   -->
+<div id="main">
+    <!--header-->
+    {{template "partials/header" .}}
+    <!--header-end-->
+    <!--warpper-->
+    <div class="wrapper">
+        <!--content-->
+        <div class="content">
+            <!--section-->
+            <div class="section hero-section hero-section_sin">
+                <div class="hero-section-wrap">
+                    <div class="hero-section-wrap-item">
+                        <div class="container">
+                            <div class="hero-section-container">
+                                <div class="hero-section-title">
+                                    <h2>Bize Ulaşın</h2>
+                                    <h5>Burada iletişim adreslerimizi görebilirsiniz.</h5>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <!--section-end-->				
-                    <!--container-->
-                    <div class="container">
-                        <!--breadcrumbs-list-->
-                        <div class="breadcrumbs-list bl_flat">
-                            <a href="#">Anasayfa</a><a href="#">Sayfalar</a><span>İletişim</span>
-                            <div class="breadcrumbs-list_dec"><i class="fa-thin fa-arrow-up"></i></div>
-                        </div>
-                        <!--breadcrumbs-list end-->					
-                        <!--main-content-->
-                        <div class="main-content ms_vir_height">
-                            <!--boxed-container-->
-                            <div class="boxed-container">
-                                <!-- contacts-cards-wrap  -->	
-                                <div class="contacts-cards-wrap">
-                                    <div class="row">
-                                        <!-- contacts-card-item -->	
-                                        <div class="col-lg-4">
-                                            <div class="contacts-card-item">
-                                                <i class="fa-regular fa-location-dot"></i>
-                                                <span>Lokasyon</span>
-                                                <p>Buradan lokasyonumuzu öğrenebilir, ofisimizi ziyaret edebilirsiniz. Sizleri ofisimizde görmekten mutluluk duyarız😊</p>
-                                                <a href="#">USA 27TH Brooklyn NY</a>
-                                            </div>
-                                        </div>
-                                        <!-- contacts-card-item end-->	
-                                        <!-- contacts-card-item -->	
-                                        <div class="col-lg-4">
-                                            <div class="contacts-card-item">
-                                                <i class="fa-regular fa-phone-rotary"></i>
-                                                <span>İletişim Numaramız</span>
-                                                <p>Buradan Emlak temsilcimiz ve diğer temsilcilere ulaçşabililr, soru, görüş ve önerilerinizi bildirebilirsiniz.</p>
-                                                <a href="#"> +905363256210</a>
-                                                <a href="#"> +905394601363</a>
-                                            </div>
-                                        </div>
-                                        <!-- contacts-card-item end-->
-                                        <!-- contacts-card-item -->	
-                                        <div class="col-lg-4">
-                                            <div class="contacts-card-item">
-                                                <i class="fa-regular fa-mailbox"></i>
-                                                <span>Mail Adresimiz</span>
-                                                <p>Bize mail adresimizden de ulaşabilirsiniz.</p>
-                                                <a href="#">kmrcemlak@komurcuemlak.com</a>
-                                            </div>
-                                        </div>
-                                        <!-- contacts-card-item end-->
-                                    </div>
+                        <div class="hs-scroll-down-wrap">
+                            <div class="scroll-down-item">
+                                <div class="mousey">
+                                    <div class="scroller"></div>
                                 </div>
-                                <!-- contacts-cards-wrap end   -->						
-                                <div class="row">
-                                    <!-- contacts-opt-wrap -->	
-                                    <div class="col-lg-7">
-                                        <div class="contacts-opt-wrap">
-                                            <div class="contact-wh_title">Çalışma Saatleri</div>
-                                            <div class="contact-wh">
-                                                <div class="contact-wh-item">Pazartesi - Cuma:<strong> 08:00 - 20:00</strong></div>
-                                                <div class="contact-wh-item">Cumartesi:<strong> 09:00 - 18:00</strong></div>
-                                                <div class="contact-wh-item">Pazar:<strong> Kapalı</strong></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- contacts-opt-wrap end-->	
-                                    <!-- contacts-opt-wrap -->	
-                                    <div class="col-lg-5">
-                                        <div class="contacts-opt-wrap">
-                                            <div class="contact-social">
-                                                <span class="cs-title">Sosyal Medyadan Bize Ulaşın: </span>
-                                                <div class="contact-social-container">
-                                                    <a href="#" target="_blank"><i class="fa-brands fa-facebook-f"></i></a> 
-                                                    <a href="#" target="_blank"><i class="fa-brands fa-x-twitter"></i></a> 
-                                                    <a href="#" target="_blank"><i class="fa-brands fa-instagram"></i></a> 
-                                                    <a href="#" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
-                                                    <a href="#" target="_blank"><i class="fa-brands fa-youtube"></i></a>										 
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- contacts-card-item end-->
-                                </div>
-                                <div class="contacts-form-wrap">
-                                    <div class="row">
-                                        <!-- contacts-opt-wrap -->	
-                                        <div class="col-lg-6">
-                                            <div class="boxed-content">
-                                                <div class="boxed-content-title">
-                                                    <h3>İletişime Geçin</h3>
-                                                </div>
-                                                <div class="boxed-content-item">
-                                                    <div class="comment-form custom-form contactform-wrap">
-                                                        <form  class="comment-form"    action="php/contact.php" name="contactform" id="contactform">
-                                                            <fieldset>
-                                                                <div id="message"></div>
-                                                                <div class="row">
-                                                                    <div class="col-sm-6">
-                                                                        <div class="cs-intputwrap">
-                                                                            <i class="fa-light fa-user"></i>
-                                                                            <input   name="name" type="text" id="name"   placeholder="İsminiz" onClick="this.select()" value="">
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-sm-6">
-                                                                        <div class="cs-intputwrap">
-                                                                            <i class="fa-light fa-envelope"></i>
-                                                                            <input type="text"  name="email" id="email" placeholder="Email Adresiniz *" onClick="this.select()"  value="">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <textarea name="comments"  id="comments" cols="40" rows="3" placeholder="Mesajınız:"></textarea>
-                                                                <button class="commentssubmit" id="submit_cnt"   style="margin-top: 20px">Mesajı Gönder</button>
-                                                            </fieldset>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- contacts-opt-wrap end-->	
-                                        <!-- contacts-opt-wrap -->	
-                                        <div class="col-lg-6">
-                                            <div class="map-container mapC_vis3">
-                                                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d752.5768124412473!2d28.944134569670084!3d41.01853349820931!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14caba23983b8dab%3A0xb3134911ad24477f!2zS8O2bcO8cmPDvCBHYXlyaW1lbmt1bCAmIEluxZ9hYXQ!5e0!3m2!1str!2str!4v1730048686520!5m2!1str!2str" width="900" height="550" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                                                <div class="scrollContorl"></div>
-                                            </div>
-                                        </div>
-                                        <!-- contacts-card-item end-->
-                                    </div>
-                                </div>
+                                <span>Aşağı Kaydır</span>
                             </div>
-                            <!--boxed-container end-->
+                            <div class="svg-corner svg-corner_white"  style="bottom:0;right: -39px; transform: rotate( 90deg)" ></div>
+                            <div class="svg-corner svg-corner_white"  style="bottom:0;left:  -39px;"></div>
                         </div>
-                        <!--main-content end-->
-                        <div class="to_top-btn-wrap">
-                            <div class="to-top to-top_btn"><span>Başa Dön</span> <i class="fa-solid fa-arrow-up"></i></div>
-                            <div class="svg-corner svg-corner_white"  style="top:0;left:  -40px; transform: rotate(-90deg)"></div>
-                            <div class="svg-corner svg-corner_white"  style="top:0;right: -40px; transform: rotate(-180deg)"></div>
+                        <div class="bg-wrap bg-hero bg-parallax-wrap-gradien fs-wrapper" data-scrollax-parent="true">
+                            <div class="bg" data-bg="/images/all/14.jpg" data-scrollax="properties: { translateY: '30%' }"></div>
                         </div>
                     </div>
-                    <!-- container end-->
                 </div>
-                <!--content  end-->
-                <!--main-footer-->
-                {{template "partials/footer" .}}
-                <!--main-footer end-->
             </div>
-            <!--warpper end-->
-            <!--wish-list-wrap-->
-            {{template "partials/wish_list" .}}
-            <!--wish-list-wrap end-->
-            <div class="mob-nav-overlay fs-wrapper"></div>
-            <div class="body-overlay fs-wrapper wishlist-wrap-overlay clwl_btn"></div>
-            <!--register form -->
-            {{template "partials/signupform" .}}
-            <!--register form end -->	
-            <!-- progress-bar  -->
-            <div class="progress-bar-wrap">
-                <div class="progress-bar color-bg"></div>
+            <!--section-end-->				
+            <!--container-->
+            <div class="container">
+                <!--breadcrumbs-list-->
+                <div class="breadcrumbs-list bl_flat">
+                    <a href="#">Anasayfa</a><a href="#">Sayfalar</a><span>İletişim</span>
+                    <div class="breadcrumbs-list_dec"><i class="fa-thin fa-arrow-up"></i></div>
+                </div>
+                <!--breadcrumbs-list end-->					
+                <!--main-content-->
+                <div class="main-content ms_vir_height">
+                    <!--boxed-container-->
+                    <div class="boxed-container">
+                        <!-- contacts-cards-wrap  -->	
+                        <div class="contacts-cards-wrap">
+                            <div class="row">
+                                <!-- contacts-card-item -->	
+                                <div class="col-lg-4">
+                                    <div class="contacts-card-item">
+                                        <i class="fa-regular fa-location-dot"></i>
+                                        <span>Lokasyon</span>
+                                        <p>Buradan lokasyonumuzu öğrenebilir, ofisimizi ziyaret edebilirsiniz. Sizleri ofisimizde görmekten mutluluk duyarız😊</p>
+                                        <a href="#">USA 27TH Brooklyn NY</a>
+                                    </div>
+                                </div>
+                                <!-- contacts-card-item end-->	
+                                <!-- contacts-card-item -->	
+                                <div class="col-lg-4">
+                                    <div class="contacts-card-item">
+                                        <i class="fa-regular fa-phone-rotary"></i>
+                                        <span>İletişim Numaramız</span>
+                                        <p>Buradan Emlak temsilcimiz ve diğer temsilcilere ulaçşabililr, soru, görüş ve önerilerinizi bildirebilirsiniz.</p>
+                                        <a href="#"> +905363256210</a>
+                                        <a href="#"> +905394601363</a>
+                                    </div>
+                                </div>
+                                <!-- contacts-card-item end-->
+                                <!-- contacts-card-item -->	
+                                <div class="col-lg-4">
+                                    <div class="contacts-card-item">
+                                        <i class="fa-regular fa-mailbox"></i>
+                                        <span>Mail Adresimiz</span>
+                                        <p>Bize mail adresimizden de ulaşabilirsiniz.</p>
+                                        <a href="#">kmrcemlak@komurcuemlak.com</a>
+                                    </div>
+                                </div>
+                                <!-- contacts-card-item end-->
+                            </div>
+                        </div>
+                        <!-- contacts-cards-wrap end   -->						
+                        <div class="row">
+                            <!-- contacts-opt-wrap -->	
+                            <div class="col-lg-7">
+                                <div class="contacts-opt-wrap">
+                                    <div class="contact-wh_title">Çalışma Saatleri</div>
+                                    <div class="contact-wh">
+                                        <div class="contact-wh-item">Pazartesi - Cuma:<strong> 08:00 - 20:00</strong></div>
+                                        <div class="contact-wh-item">Cumartesi:<strong> 09:00 - 18:00</strong></div>
+                                        <div class="contact-wh-item">Pazar:<strong> Kapalı</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- contacts-opt-wrap end-->	
+                            <!-- contacts-opt-wrap -->	
+                            <div class="col-lg-5">
+                                <div class="contacts-opt-wrap">
+                                    <div class="contact-social">
+                                        <span class="cs-title">Sosyal Medyadan Bize Ulaşın: </span>
+                                        <div class="contact-social-container">
+                                            <a href="#" target="_blank"><i class="fa-brands fa-facebook-f"></i></a> 
+                                            <a href="#" target="_blank"><i class="fa-brands fa-x-twitter"></i></a> 
+                                            <a href="#" target="_blank"><i class="fa-brands fa-instagram"></i></a> 
+                                            <a href="#" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
+                                            <a href="#" target="_blank"><i class="fa-brands fa-youtube"></i></a>										 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- contacts-card-item end-->
+                        </div>
+                        <div class="contacts-form-wrap">
+                            <div class="row">
+                                <!-- contacts-opt-wrap -->	
+                                <div class="col-lg-6">
+                                    <div class="boxed-content">
+                                        <div class="boxed-content-title">
+                                            <h3>İletişime Geçin</h3>
+                                        </div>
+                                        <div class="boxed-content-item">
+                                            <div class="comment-form custom-form contactform-wrap">
+                                                <form  class="comment-form"    action="php/contact.php" name="contactform" id="contactform">
+                                                    <fieldset>
+                                                        <div id="message"></div>
+                                                        <div class="row">
+                                                            <div class="col-sm-6">
+                                                                <div class="cs-intputwrap">
+                                                                    <i class="fa-light fa-user"></i>
+                                                                    <input   name="name" type="text" id="name"   placeholder="İsminiz" onClick="this.select()" value="">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <div class="cs-intputwrap">
+                                                                    <i class="fa-light fa-envelope"></i>
+                                                                    <input type="text"  name="email" id="email" placeholder="Email Adresiniz *" onClick="this.select()"  value="">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <textarea name="comments"  id="comments" cols="40" rows="3" placeholder="Mesajınız:"></textarea>
+                                                        <button class="commentssubmit" id="submit_cnt"   style="margin-top: 20px">Mesajı Gönder</button>
+                                                    </fieldset>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- contacts-opt-wrap end-->	
+                                <!-- contacts-opt-wrap -->	
+                                <div class="col-lg-6">
+                                    <div class="map-container mapC_vis3">
+                                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d752.5768124412473!2d28.944134569670084!3d41.01853349820931!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14caba23983b8dab%3A0xb3134911ad24477f!2zS8O2bcO8cmPDvCBHYXlyaW1lbmt1bCAmIEluxZ9hYXQ!5e0!3m2!1str!2str!4v1730048686520!5m2!1str!2str" width="900" height="550" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                        <div class="scrollContorl"></div>
+                                    </div>
+                                </div>
+                                <!-- contacts-card-item end-->
+                            </div>
+                        </div>
+                    </div>
+                    <!--boxed-container end-->
+                </div>
+                <!--main-content end-->
+                <div class="to_top-btn-wrap">
+                    <div class="to-top to-top_btn"><span>Başa Dön</span> <i class="fa-solid fa-arrow-up"></i></div>
+                    <div class="svg-corner svg-corner_white"  style="top:0;left:  -40px; transform: rotate(-90deg)"></div>
+                    <div class="svg-corner svg-corner_white"  style="top:0;right: -40px; transform: rotate(-180deg)"></div>
+                </div>
             </div>
-            <!-- progress-bar end -->			
+            <!-- container end-->
         </div>
-        <!-- Main end -->
-        <!--=============== scripts  ===============-->   
-        <script  src="/js/jquery.min.js"></script>
-        <script  src="/js/plugins.js"></script>
-        <script  src="/js/scripts.js"></script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDwJSRi0zFjDemECmFl9JtRj1FY7TiTRRo&libraries=places"></script>
-        <script src="/js/map-single.js"></script>
-    </body>
-</html>
+        <!--content  end-->
+        <!--main-footer-->
+        {{template "partials/footer" .}}
+        <!--main-footer end-->
+    </div>
+    <!--warpper end-->
+    <!--wish-list-wrap-->
+    {{template "partials/wish_list" .}}
+    <!--wish-list-wrap end-->
+    <div class="mob-nav-overlay fs-wrapper"></div>
+    <div class="body-overlay fs-wrapper wishlist-wrap-overlay clwl_btn"></div>
+    <!--register form -->
+    {{template "partials/signupform" .}}
+    <!--register form end -->	
+    <!-- progress-bar  -->
+    <div class="progress-bar-wrap">
+        <div class="progress-bar color-bg"></div>
+    </div>
+    <!-- progress-bar end -->			
+</div>
+<!-- Main end -->
