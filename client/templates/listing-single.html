@@ -30,29 +30,34 @@
             </div>
             <!--single-carousle-container-->
             <div class="fw-carousel-container">
-                <div class="fw-carousel-wrap ">
-                    <!-- fw-carousel  -->
+                <div class="fw-carousel-wrap">
+                    <!-- fw-carousel -->
                     <div class="fw-carousel lightgallery">
                         <div class="swiper-container swiper-container-horizontal" style="cursor: grab;">
                             <div class="swiper-wrapper">
-                                {{ range $image := .Property.PropertyMedia }}
-                                {{ range $img := $image.Image }}
-                                    <!-- swiper-slide-->
-                                    <div class="swiper-slide hov_zoom" style="margin-right: 10px;">
-                                        <img src="{{$img.FilePath}}" alt="{{$img.ImageName}}">
-                                        <a href="{{$img.FilePath}}" class="box-media-zoom popup-image"><i class="fal fa-search"></i></a>
-                                        <div class="show-info">
-                                            <span>info</span>
-                                            <div class="tooltip-info">
-                                                <h5>Room Details</h5>
-                                                <p>{{.Property.BasicInfo.MainTitle}}</p>
+                                {{ if .Property.PropertyMedia }}
+                                    {{ range $image := .Property.PropertyMedia }}
+                                        {{ range $img := $image.Image }}
+                                            <!-- swiper-slide -->
+                                            <div class="swiper-slide hov_zoom" style="margin-right: 10px;">
+                                                <img src="{{$img.FilePath}}" alt="{{$img.ImageName}}">
+                                                <a href="{{$img.FilePath}}" class="box-media-zoom popup-image">
+                                                    <i class="fal fa-search"></i>
+                                                </a>
+                                                <div class="show-info">
+                                                    <span>info</span>
+                                                    <div class="tooltip-info">
+                                                        <h5>Room Details</h5>
+                                                        <p>{{ $.Property.BasicInfo.MainTitle }}</p>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <!-- swiper-slide end-->
+                                            <!-- swiper-slide end -->
+                                        {{ end }}
+                                    {{ end }}
+                                {{ else }}
+                                    <p>Resim bulunamadı.</p>
                                 {{ end }}
-                            {{ end }}
-
                             </div>
                             <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
                         </div>
@@ -60,16 +65,21 @@
                     <!-- fw-carousel end -->
                 </div>
                 <!-- fw-carousel-wrap end -->
-                <div class="fw-carousel-button-prev slider-button" tabindex="0" role="button" aria-label="Previous slide"><i
-                        class="fa-solid fa-caret-left"></i></div>
-                <div class="fw-carousel-button-next slider-button" tabindex="0" role="button" aria-label="Next slide"><i
-                        class="fa-solid fa-caret-right"></i></div>
+                <div class="fw-carousel-button-prev slider-button" tabindex="0" role="button" aria-label="Previous slide">
+                    <i class="fa-solid fa-caret-left"></i>
+                </div>
+                <div class="fw-carousel-button-next slider-button" tabindex="0" role="button" aria-label="Next slide">
+                    <i class="fa-solid fa-caret-right"></i>
+                </div>
                 <div class="fwc-controls_wrap">
                     <div class="solid-pagination_btns fwc-pagination swiper-pagination-clickable swiper-pagination-bullets">
-                        <!-- Dinamik olarak oluşturulan sayfalandırma butonları buraya gelecek -->
+                        {{ range $index, $image := .Property.PropertyMedia }}
+                            <span class="swiper-pagination-bullet" tabindex="0" role="button" aria-label="Go to slide {{ add $index 1 }}"></span>
+                        {{ end }}
                     </div>
                 </div>
             </div>
+            
             <!--single-carousle-container-->
             <div class="container">
                 <div class="main-content">
@@ -88,7 +98,7 @@
                                             <a href="http://www.tumblr.com/share?v=3&u=https%3A%2F%2Frenstate.kwst.net%2Fsite%2Flight%2Flisting-single.html"
                                                 title="Share this page on tumblr" class="pop share-icon share-icon-tumblr"></a>
                                             <a href="https://twitter.com/share?via=in1.com&text=Rentstate - Real Estate Agency Template"
-                                                title="Share this page on twitter" class="pop share-icon share-icon-twitter"></a>
+                                                title="Share this page on X" class="pop share-icon share-icon-twitter"></a>
                                             <a href="http://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Frenstate.kwst.net%2Fsite%2Flight%2Flisting-single.html&title=Rentstate - Real Estate Agency Template&summary=&source=in1.com"
                                                 title="Share this page on linkedin" class="pop share-icon share-icon-linkedin"></a>
                                         </div>
@@ -184,11 +194,7 @@
                                         <!--boxed-content-item-->
                                         <div class="boxed-content-item">
                                             <p>{{.Property.PropertyDetails.PropertyMessage}}</p>
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas in pulvinar neque.
-                                                Nulla finibus lobortis pulvinar. Donec a consectetur nulla. Nulla posuere sapien vitae
-                                                lectus suscipit, et pulvinar nisi tincidunt. Aliquam erat volutpat. Curabitur convallis
-                                                fringilla diam sed aliquam. Sed tempor iaculis massa faucibus feugiat. In fermentum
-                                                facilisis massa, a consequat purus viverra.</p>
+                                            
                                             <div class="pp-single-opt-wrap">
                                                 <div class="pp-single-opt-links">
                                                     <ul>
@@ -237,6 +243,24 @@
                                                         {{end}}
                                                         {{if $amenities.LaundryRoom}}
                                                         <li><a href="#"><i class="fal fa-washer"></i> Laundry Room</a></li>
+                                                        {{end}}
+                                                        {{if $amenities.EquippedKitchen}}
+                                                        <li><a href="#"><i class="fal fa-utensils"></i> Equipped Kitchen</a></li>
+                                                        {{end}}
+                                                        {{if $amenities.GarageAtached}}
+                                                        <li><a href="#"><i class="fal fa-garage"></i> Garage Atached</a></li>
+                                                        {{end}}
+                                                        {{if $amenities.Fireplace}}
+                                                        <li><a href="#"><i class="fal fa-fire"></i> Fire Place</a></li>
+                                                        {{end}}
+                                                        {{if $amenities.WindowCovering}}
+                                                        <li><a href="#"><i class="fal fa-blinds"></i> Window Covering</a></li>
+                                                        {{end}}
+                                                        {{if $amenities.Backyard}}
+                                                        <li><a href="#"><i class="fal fa-fence"></i> Backyard</a></li>
+                                                        {{end}}
+                                                        {{if $amenities.Elevator}}
+                                                        <li><a href="#"><i class="fal fa-elevator"></i> Elevator</a></li>
                                                         {{end}}
                                                         {{ end }}
                                                     </ul>
@@ -433,7 +457,7 @@
                                                             <div class="property-contacts_profile">
                                                                 <a href="agent-single.html" class="property-contacts_profile_link">
                                                                     <img src="images/avatar/2.jpg" alt="">
-                                                                    <span>Agent:</span>Niko Furingee
+                                                                    <span>Aracı:</span>Ramazan Kömürcü
                                                                 </a>
                                                             </div>
                                                             <div class="property-contacts-links">

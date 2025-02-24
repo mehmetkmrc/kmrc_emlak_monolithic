@@ -191,6 +191,8 @@ func BlogsWeb(c fiber.Ctx) error {
 		"Title": "Haberler",
 	}, "layouts/main")
 }
+
+
 func ListingSingle(c fiber.Ctx) error {
 	propertyIDStr := c.Params("property_id") // URL'den property ID'yi al
 	if propertyIDStr == "" {

@@ -207,7 +207,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const laundryRoom = document.querySelector('input[name="laundry_room"]').checked;
             const equippedKitchen = document.querySelector('input[name="equipped_kitchen"]').checked;
             const airConditioning = document.querySelector('input[name="air_conditioning"]').checked;
-            const parking1 = document.querySelector('input[name="parking"]').checked;
+            const parking1 = document.querySelector('input[name="parking_"]').checked;
             const garageAtached = document.querySelector('input[name="garage_atached"]').checked;
             const fireplace = document.querySelector('input[name="fireplace"]').checked;
             const windowCovering = document.querySelector('input[name="window_covering"]').checked;
