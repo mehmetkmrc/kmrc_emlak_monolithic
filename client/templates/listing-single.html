@@ -29,6 +29,7 @@
                 </div>
             </div>
             <!--single-carousle-container-->
+            <!--single-carousle-container-->
             <div class="fw-carousel-container">
                 <div class="fw-carousel-wrap">
                     <!-- fw-carousel -->
@@ -36,23 +37,25 @@
                         <div class="swiper-container swiper-container-horizontal" style="cursor: grab;">
                             <div class="swiper-wrapper">
                                 {{ if .Property.PropertyMedia }}
-                                    {{ range $image := .Property.PropertyMedia }}
-                                        {{ range $img := $image.Image }}
-                                            <!-- swiper-slide -->
-                                            <div class="swiper-slide hov_zoom" style="margin-right: 10px;">
-                                                <img src="{{$img.FilePath}}" alt="{{$img.ImageName}}">
-                                                <a href="{{$img.FilePath}}" class="box-media-zoom popup-image">
-                                                    <i class="fal fa-search"></i>
-                                                </a>
-                                                <div class="show-info">
-                                                    <span>info</span>
-                                                    <div class="tooltip-info">
-                                                        <h5>Room Details</h5>
-                                                        <p>{{ $.Property.BasicInfo.MainTitle }}</p>
+                                    {{ range $mediaIndex, $propertyMedia := .Property.PropertyMedia }}
+                                        {{ range $imageIndex, $image := $propertyMedia.Image }}
+                                            {{ range $filePathIndex, $filePath := $image.FilePath }}
+                                                <!-- swiper-slide -->
+                                                <div class="swiper-slide hov_zoom" style="margin-right: 10px;">
+                                                    <img src="/{{ $filePath }}" alt="{{ index $image.ImageName $filePathIndex }}">
+                                                    <a href="/{{ $filePath }}" class="box-media-zoom popup-image">
+                                                        <i class="fal fa-search"></i>
+                                                    </a>
+                                                    <div class="show-info">
+                                                        <span>info</span>
+                                                        <div class="tooltip-info">
+                                                            <h5>Room Details</h5>
+                                                            <p>{{ $.Property.BasicInfo.MainTitle }}</p>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <!-- swiper-slide end -->
+                                                <!-- swiper-slide end -->
+                                            {{ end }}
                                         {{ end }}
                                     {{ end }}
                                 {{ else }}
@@ -73,8 +76,12 @@
                 </div>
                 <div class="fwc-controls_wrap">
                     <div class="solid-pagination_btns fwc-pagination swiper-pagination-clickable swiper-pagination-bullets">
-                        {{ range $index, $image := .Property.PropertyMedia }}
-                            <span class="swiper-pagination-bullet" tabindex="0" role="button" aria-label="Go to slide {{ add $index 1 }}"></span>
+                        {{ range $mediaIndex, $propertyMedia := .Property.PropertyMedia }}
+                            {{ range $imageIndex, $image := $propertyMedia.Image }}
+                                {{ range $filePathIndex, $filePath := $image.FilePath }}
+                                    <span class="swiper-pagination-bullet" tabindex="0" role="button" aria-label="Go to slide {{ add $filePathIndex 1 }}"></span>
+                                {{ end }}
+                            {{ end }}
                         {{ end }}
                     </div>
                 </div>
@@ -130,8 +137,7 @@
                                                 </div>
                                                 <div class="hero-section-opt">
                                                     <div class="property-single-header-date author_avatar_ps">
-                                                        <a href="author-single.html"> <img src="images/avatar/2.jpg" alt=""> By Niko
-                                                            Furingee</a>
+                                                        <a href="author-single.html"> <img src="/images/agents/Ramazankomurcu.png" alt=""> Ramazan Kömürcü tarafından</a>
                                                     </div>
                                                     <div class="property-single-header-date"><span>Developer Company:</span><a href="#">House
                                                             Construction</a></div>

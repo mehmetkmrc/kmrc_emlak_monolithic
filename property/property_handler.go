@@ -7,7 +7,7 @@ import (
 	"kmrc_emlak_mono/auth"
 	"kmrc_emlak_mono/database"
 	"kmrc_emlak_mono/dto"
-	
+	"strings"
 
 	"path/filepath"
 
@@ -542,18 +542,20 @@ func AddImage(c fiber.Ctx) error {
 
 	//Tüm dosyaları işle
 	for _, file := range files {
-		fileExt := filepath.Ext(file.Filename)
-		fileName := fmt.Sprintf("%s%s", imageID, fileExt) // Tüm osyalar aynı imageID'yi kullanıyor.
-		savePath := fmt.Sprintf("uploads/%s", fileName)
-
-		//Dosyayı Kaydet
-		if err := c.SaveFile(file, savePath); err != nil{
+		fileExt := filepath.Ext(file.Filename)                          // Dosya uzantısını al (.jpg, .png vs.)
+		fileBaseName := strings.TrimSuffix(file.Filename, fileExt)      // Dosya adını uzantısız al
+		fileName := fmt.Sprintf("%s-%s%s", fileBaseName, uuid.New(), fileExt) // Orijinal ad + yeni ID + uzantı
+		savePath := fmt.Sprintf("uploads/%s", fileName)                 // Kaydedilecek yolu hazırla
+	
+		// Dosyayı kaydet
+		if err := c.SaveFile(file, savePath); err != nil {
 			return response.Error_Response(c, "Error saving file", err, nil, fiber.StatusInternalServerError)
 		}
-
+	
 		filePaths = append(filePaths, savePath)
-		imageNames = append(imageNames, file.Filename) //Orijinal dosya adını sakla
+		imageNames = append(imageNames, file.Filename) // Orijinal dosya adını sakla
 	}
+	
 
 	//Image modelini oluştur
 	image := &models.Image{
