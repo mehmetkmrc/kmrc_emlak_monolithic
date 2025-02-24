@@ -23,8 +23,9 @@
     <div class="wrapper">
         <div class="content">
             <div class="container">
+
                 <div class="breadcrumbs-list bl_flat">
-                    <a href="#">Home</a><a href="#">Properties</a><a href="#">New York</a><span>Property Single 2</span>
+                    <a href="/">Anasayfa</a><a href="/listing">Mülkler</a><a href="#">Istanbul</a><span>{{.Property.BasicInfo.MainTitle}}</span>
                     <div class="breadcrumbs-list_dec"><i class="fa-thin fa-arrow-up"></i></div>
                 </div>
             </div>
@@ -47,9 +48,9 @@
                                                         <i class="fal fa-search"></i>
                                                     </a>
                                                     <div class="show-info">
-                                                        <span>info</span>
+                                                        <span>bilgi</span>
                                                         <div class="tooltip-info">
-                                                            <h5>Room Details</h5>
+                                                            <h5>Mülk Detayları</h5>
                                                             <p>{{ $.Property.BasicInfo.MainTitle }}</p>
                                                         </div>
                                                     </div>
@@ -96,18 +97,9 @@
                                 <!--boxed-container-->
                                 <div class="scroll-content-wrap">
                                     <div class="share-holder init-fix-column">
-                                        <span class="share-title"> Share </span>
+                                        <span class="share-title"> Paylaş </span>
                                         <div class="share-container isShare">
-                                            <a href="http://www.facebook.com/share.php?u=https%3A%2F%2Frenstate.kwst.net%2Fsite%2Flight%2Flisting-single.html"
-                                                title="Share this page on facebook" class="pop share-icon share-icon-facebook"></a>
-                                            <a href="http://pinterest.com/pin/create/button/?url=https%3A%2F%2Frenstate.kwst.net%2Fsite%2Flight%2Flisting-single.html&media=&description="
-                                                title="Share this page on pinterest" class="pop share-icon share-icon-pinterest"></a>
-                                            <a href="http://www.tumblr.com/share?v=3&u=https%3A%2F%2Frenstate.kwst.net%2Fsite%2Flight%2Flisting-single.html"
-                                                title="Share this page on tumblr" class="pop share-icon share-icon-tumblr"></a>
-                                            <a href="https://twitter.com/share?via=in1.com&text=Rentstate - Real Estate Agency Template"
-                                                title="Share this page on X" class="pop share-icon share-icon-twitter"></a>
-                                            <a href="http://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Frenstate.kwst.net%2Fsite%2Flight%2Flisting-single.html&title=Rentstate - Real Estate Agency Template&summary=&source=in1.com"
-                                                title="Share this page on linkedin" class="pop share-icon share-icon-linkedin"></a>
+                                            
                                         </div>
                                     </div>
                                     <div class="list-single-opt_header hsc_flat_bci">
@@ -131,7 +123,7 @@
                                                     <h2>{{.Property.BasicInfo.MainTitle}}</h2>
                                                     <h4><i class="fa-solid fa-location-dot"></i> <span>{{.Property.Location.Address}}</span></h4>
                                                     <div class="property-single-header-price">
-                                                        <strong>Price:</strong> <span class="pshp_item"><span>$</span>{{.Property.BasicInfo.Price}}
+                                                        <strong>Fiyat:</strong> <span class="pshp_item"><span>₺</span>{{.Property.BasicInfo.Price}}
                                                         </span>
                                                     </div>
                                                 </div>
@@ -139,13 +131,12 @@
                                                     <div class="property-single-header-date author_avatar_ps">
                                                         <a href="author-single.html"> <img src="/images/agents/Ramazankomurcu.png" alt=""> Ramazan Kömürcü tarafından</a>
                                                     </div>
-                                                    <div class="property-single-header-date"><span>Developer Company:</span><a href="#">House
-                                                            Construction</a></div>
-                                                    <div class="property-single-header-date"><span>Status:</span>Shutdown 2025</div>
+                                                    <div class="property-single-header-date"><span>Yayınlayan Şirket:</span><a href="#">Kömürcü Gayrimenkul</a></div>
+                                                    <div class="property-single-header-date"><span>Statüsü:</span>İlanda</div>
                                                     <div class="hs-pv_wrap">
                                                         <div class="pv-item">
                                                             <i class="fa-light fa-glasses"></i>
-                                                            <span> Viewed - <strong>335</strong></span>
+                                                            <span> Görüntüleme - <strong>335</strong></span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -159,14 +150,14 @@
                                     <div class="ps-facts-wrapper">
                                         <!--ps-facts-item-->
                                         <div class="ps-facts-item">
-                                            <h4>Bedroom</h4>
+                                            <h4>Yatak Odası</h4>
                                             <h5>{{.Property.PropertyDetails.Bedrooms}}</h5>
                                             <i class="fa-light fa-bed"></i>
                                         </div>
                                         <!--ps-facts-item end-->
                                         <!--ps-facts-item-->
                                         <div class="ps-facts-item">
-                                            <h4>Bethroom</h4>
+                                            <h4>Banyo</h4>
                                             <h5>{{.Property.PropertyDetails.Bathrooms}}</h5>
                                             <i class="fa-light fa-bath"></i>
                                         </div>
@@ -174,15 +165,15 @@
             
                                         <!--ps-facts-item-->
                                         <div class="ps-facts-item">
-                                            <h4>Area</h4>
-                                            <h5>{{.Property.PropertyDetails.Area}} ft</h5>
+                                            <h4>Alan</h4>
+                                            <h5>{{.Property.PropertyDetails.Area}} m²</h5>
                                             <i class="fa-light fa-chart-area"></i>
                                         </div>
                                         <!--ps-facts-item end-->
             
                                         <!--ps-facts-item-->
                                         <div class="ps-facts-item">
-                                            <h4>Parking</h4>
+                                            <h4>Park Sayısı</h4>
                                             <h5>{{.Property.PropertyDetails.Parking}}</h5>
                                             <i class="fa-light fa-car"></i>
                                         </div>
@@ -194,7 +185,7 @@
                                     <div class="boxed-content">
                                         <!--boxed-content-title-->
                                         <div class="boxed-content-title">
-                                            <h3>About this Property</h3>
+                                            <h3>Mülk Hakkında</h3>
                                         </div>
                                         <!--boxed-content-title end-->
                                         <!--boxed-content-item-->
@@ -204,12 +195,11 @@
                                             <div class="pp-single-opt-wrap">
                                                 <div class="pp-single-opt-links">
                                                     <ul>
-                                                        <li><a href="#" download=""><i class="fa-light fa-file-pdf"></i> Download
-                                                                Brochure </a></li>
-                                                        <li><a href="#"><i class="fa-light fa-layer-group"></i> View Floor Plans</a>
+                                                        <li><a href="#" download=""><i class="fa-light fa-file-pdf"></i> Broşürü İndir </a></li>
+                                                        <li><a href="#"><i class="fa-light fa-layer-group"></i> Kat Planını Görüntüle</a>
                                                         </li>
                                                     </ul>
-                                                    <a href="#" class="pp-single-opt-link_silngle">Visit Website</a>
+                                                    <a href="#" class="pp-single-opt-link_silngle">Websitesini Ziyaret Et</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -220,7 +210,7 @@
                                     <div class="boxed-content">
                                         <!--boxed-content-title-->
                                         <div class="boxed-content-title">
-                                            <h3>Property Amenities</h3>
+                                            <h3>Mülkün Sahip Oldukları</h3>
                                         </div>
                                         <!--boxed-content-title end-->
                                         <!--boxed-content-item-->
@@ -230,43 +220,43 @@
                                                     <ul>
                                                         {{ range $amenities := .Property.Amenities }}
                                                         {{if $amenities.FitnessGym}}
-                                                        <li><a href="#"><i class="fal fa-dumbbell"></i> Gym</a></li>
+                                                        <li><a href="#"><i class="fal fa-dumbbell"></i> Spor Salonu</a></li>
                                                         {{end}}
                                                         {{if $amenities.Wifi}}
                                                         <li><a href="#"><i class="fal fa-wifi"></i> Wi Fi</a></li>
                                                         {{end}}
                                                         {{if $amenities.Parking}}
-                                                        <li><a href="#"><i class="fal fa-parking"></i> Parking</a></li>
+                                                        <li><a href="#"><i class="fal fa-parking"></i> Park</a></li>
                                                         {{end}}
                                                         {{if $amenities.AirConditioning}}
-                                                        <li><a href="#"><i class="fal fa-cloud"></i> Air Conditioned</a></li>
+                                                        <li><a href="#"><i class="fal fa-cloud"></i> Klima</a></li>
                                                         {{end}}
                                                         {{if $amenities.Pool}}
-                                                        <li><a href="#"><i class="fal fa-swimmer"></i> Pool</a></li>
+                                                        <li><a href="#"><i class="fal fa-swimmer"></i> Havuz</a></li>
                                                         {{end}}
                                                         {{if $amenities.Security}}
-                                                        <li><a href="#"><i class="fal fa-cctv"></i> Security</a></li>
+                                                        <li><a href="#"><i class="fal fa-cctv"></i> Güvenlik</a></li>
                                                         {{end}}
                                                         {{if $amenities.LaundryRoom}}
-                                                        <li><a href="#"><i class="fal fa-washer"></i> Laundry Room</a></li>
+                                                        <li><a href="#"><i class="fal fa-washer"></i> Çamaşır Odası</a></li>
                                                         {{end}}
                                                         {{if $amenities.EquippedKitchen}}
-                                                        <li><a href="#"><i class="fal fa-utensils"></i> Equipped Kitchen</a></li>
+                                                        <li><a href="#"><i class="fal fa-utensils"></i> Donanımlı Mutfak</a></li>
                                                         {{end}}
                                                         {{if $amenities.GarageAtached}}
-                                                        <li><a href="#"><i class="fal fa-garage"></i> Garage Atached</a></li>
+                                                        <li><a href="#"><i class="fal fa-garage"></i> Garaj</a></li>
                                                         {{end}}
                                                         {{if $amenities.Fireplace}}
-                                                        <li><a href="#"><i class="fal fa-fire"></i> Fire Place</a></li>
+                                                        <li><a href="#"><i class="fal fa-fire"></i> Şömine</a></li>
                                                         {{end}}
                                                         {{if $amenities.WindowCovering}}
-                                                        <li><a href="#"><i class="fal fa-blinds"></i> Window Covering</a></li>
+                                                        <li><a href="#"><i class="fal fa-blinds"></i> Pencere örtüsü</a></li>
                                                         {{end}}
                                                         {{if $amenities.Backyard}}
-                                                        <li><a href="#"><i class="fal fa-fence"></i> Backyard</a></li>
+                                                        <li><a href="#"><i class="fal fa-fence"></i> Arka bahçe</a></li>
                                                         {{end}}
                                                         {{if $amenities.Elevator}}
-                                                        <li><a href="#"><i class="fal fa-elevator"></i> Elevator</a></li>
+                                                        <li><a href="#"><i class="fal fa-elevator"></i> Asansör</a></li>
                                                         {{end}}
                                                         {{ end }}
                                                     </ul>
@@ -286,7 +276,7 @@
                                         <div class="banner-widget_content">
                                             <div class="video-box-btn" id="html5-videos" data-html="#video1"><i
                                                     class="fas fa-play"></i></div>
-                                            <h5><span>Property Video Presentation</span></h5>
+                                            <h5><span>Mülk Video Gösterimi</span></h5>
                                         </div>
                                         <div  id="video1" class="popup_video" data-videolink="video/2.mp4">
                                             <div class="vsc-controller"></div>
@@ -328,7 +318,7 @@
                                     <div class="boxed-content">
                                         <!--boxed-content-title-->
                                         <div class="boxed-content-title">
-                                            <h3>Property Location </h3>
+                                            <h3>Mülk Lokasyonu </h3>
                                         </div>
                                         <!--boxed-content-title end-->
                                         <!--boxed-content-item-->
@@ -348,7 +338,7 @@
                                                     <div class="nerby-list-wrap">
                                                         <div class="nerby-list-container">
                                                             <div class="nerby-list">
-                                                                <span class="nerby-title">What's Nearby</span>
+                                                                <span class="nerby-title">Yakında Neler Var?</span>
                                                                 <div class="nerby-list-box">
                                                                     <ul>
                                                                         {{ range $nearby := .Property.Nearby }}
@@ -357,7 +347,7 @@
                                                                         {{ end }}
                                                                     </ul>
                                                                     <a href="#" class="commentssubmit commentssubmit_fw"
-                                                                        style="margin-top: 10px">Get Directions</a>
+                                                                        style="margin-top: 10px">Rotayı Getir</a>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -376,7 +366,7 @@
                                     <div class="charts-container">
                                         <div class="dec-title">
                                             <div class="dec-title_item">
-                                                Dynamics of Price Changes
+                                                Fiyat Değişimi
                                                 <div class="svg-corner svg-corner_dark">
                                                     <svg width="50" height="50" viewBox="0 0 50 50" fill="none"
                                                         xmlns="http://www.w3.org/2000/svg">
@@ -392,25 +382,25 @@
                                                         <div class="graph" data-percent="50%">
                                                             <div class="gil" style="height: 50%;"><span>$130.00</span></div>
                                                         </div>
-                                                        <div class="graph-price-item-title">March</div>
+                                                        <div class="graph-price-item-title">Mart</div>
                                                     </div>
                                                     <div class="graph-price-item">
                                                         <div class="graph" data-percent="65%">
                                                             <div class="gil" style="height: 65%;"><span>$145.00</span></div>
                                                         </div>
-                                                        <div class="graph-price-item-title">April</div>
+                                                        <div class="graph-price-item-title">Nisan</div>
                                                     </div>
                                                     <div class="graph-price-item">
                                                         <div class="graph" data-percent="55%">
                                                             <div class="gil" style="height: 55%;"><span>$135.00</span></div>
                                                         </div>
-                                                        <div class="graph-price-item-title">May</div>
+                                                        <div class="graph-price-item-title">Mayıs</div>
                                                     </div>
                                                     <div class="graph-price-item">
                                                         <div class="graph" data-percent="78%">
                                                             <div class="gil" style="height: 78%;"><span>$155.500</span></div>
                                                         </div>
-                                                        <div class="graph-price-item-title">June</div>
+                                                        <div class="graph-price-item-title">Haziran</div>
                                                     </div>
                                                 </div>
                                                 <div class="graph-price-counter">
@@ -429,7 +419,7 @@
                                     <div class="boxed-content">
                                         <!--boxed-content-title-->
                                         <div class="boxed-content-title">
-                                            <h3>Property Tags</h3>
+                                            <h3>Etiketler</h3>
                                         </div>
                                         <!--boxed-content-title end-->
                                         <!--boxed-content-item-->
@@ -453,7 +443,7 @@
                                             <div class="boxed-content">
                                                 <!--boxed-content-title-->
                                                 <div class="boxed-content-title">
-                                                    <h3>Request a Showing</h3>
+                                                    <h3>Gösterim Talebinde Bulunun</h3>
                                                 </div>
                                                 <!--boxed-content-title end-->
                                                 <!--boxed-content-item-->
@@ -462,12 +452,12 @@
                                                         <div class="property-contacts-item sh-links">
                                                             <div class="property-contacts_profile">
                                                                 <a href="agent-single.html" class="property-contacts_profile_link">
-                                                                    <img src="images/avatar/2.jpg" alt="">
+                                                                    <img src="/images/agents/Ramazankomurcu.png" alt="">
                                                                     <span>Aracı:</span>Ramazan Kömürcü
                                                                 </a>
                                                             </div>
                                                             <div class="property-contacts-links">
-                                                                <a href="tel:+18475555555" class="tolt pcl_btn"
+                                                                <a href="tel:+905363256210" class="tolt pcl_btn"
                                                                     data-microtip-position="left" data-tooltip="Call"><i
                                                                         class="fa-solid fa-phone"></i></a>
                                                                 <a href="#" class="show-messenger-links pcl_btn tolt"
@@ -486,19 +476,19 @@
                                                                         class="fa-brands fa-facebook-messenger"></i></a>
                                                             </div>
                                                         </div>
-                                                        <div class="log-separator"><span>or</span></div>
-                                                        <p>Use the form below to select a viewing time and date.</p>
+                                                        <div class="log-separator"><span>ya da</span></div>
+                                                        <p>Aşağıdaki formu kullanarak görüntüleme saatini ve tarihini seçin.</p>
                                                     </div>
                                                     <div class="custom-form" id="single_cf">
                                                         <form method="post" name="contact-property-form">
                                                             <div class="cs-intputwrap">
                                                                 <i class="fa-light fa-user"></i>
-                                                                <input name="name" type="text" placeholder="Your name"
+                                                                <input name="name" type="text" placeholder="İsminiz"
                                                                     onclick="this.select()" value="">
                                                             </div>
                                                             <div class="cs-intputwrap">
                                                                 <i class="fa-light fa-phone-office"></i>
-                                                                <input name="phone" type="text" placeholder="Your Phone"
+                                                                <input name="phone" type="text" placeholder="Telefon Numaranız"
                                                                     onclick="this.select()" value="">
                                                             </div>
                                                             <div class="row">
@@ -506,7 +496,7 @@
                                                                     <div class="cs-intputwrap">
                                                                         <i class="fa-light fa-calendar"></i>
                                                                         <div class="date-container">
-                                                                            <input type="text" placeholder="Date" id="res_date"
+                                                                            <input type="text" placeholder="Tarih" id="res_date"
                                                                                 name="datepicker-here" value="">
                                                                         </div>
                                                                     </div>
@@ -529,7 +519,7 @@
                                                                 </div>
                                                             </div>
                                                             <button onclick="window.location.href='listing.html'"
-                                                                class="commentssubmit commentssubmit_fw">Send Request</button>
+                                                                class="commentssubmit commentssubmit_fw">İsteği Gönder</button>
                                                         </form>
                                                     </div>
                                                 </div>
@@ -546,7 +536,7 @@
                     </div>
                     <div class="boxed-container">
                         <div class="boxed-content-title bcst_ca">
-                            <h3>Similar Properties</h3>
+                            <h3>Benzer İlanlar</h3>
                         </div>
                         <div class="single-carousel-wrap">
                             <div class="single-carousel">
@@ -571,7 +561,7 @@
                 </div>
                 <!--main-content end-->
                 <div class="to_top-btn-wrap">
-                    <div class="to-top to-top_btn"><span>Back to top</span> <i class="fa-solid fa-arrow-up"></i></div>
+                    <div class="to-top to-top_btn"><span>En Başa Dön</span> <i class="fa-solid fa-arrow-up"></i></div>
                     <div class="svg-corner svg-corner_white" style="top:0;left: -40px; transform: rotate(-90deg)">
                         <svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M40 40V0C40 22.0914 22.0914 40 0 40H40Z" fill="#ffffff"></path>
