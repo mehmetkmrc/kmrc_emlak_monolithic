@@ -150,11 +150,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
            
            // **4. Property Media oluştur**
-            const galleryType = document.querySelector('select[name="type"]').value;
-            const fileInput = document.querySelector('input[type="file"][multiple]');
-
-           // **Resimleri yükleme ve Property Media oluşturma işlemini ayrı bir fonksiyonda yap**
-            await handlePropertyMedia(propertyID, galleryType, fileInput);
+           const galleryType = document.querySelector('select[name="type"]').value;
+           await handlePropertyMedia(propertyID, galleryType);
 
 
             // **6. Property Details oluştur
@@ -364,71 +361,92 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 // **Resimleri yükleme ve Property Media oluşturma fonksiyonu**
-async function handlePropertyMedia(propertyID, galleryType, fileInput) {
-     const files = fileInput.files;
+// Yeni handlePropertyMedia fonksiyonu
+async function handlePropertyMedia(propertyID, galleryType) {
+    console.log("handlePropertyMedia başladı");
+    
+    // Global değişkenden resimleri al
+    const files = globalImgArray || [];
+    
+    console.log("Toplam yüklenecek resim sayısı:", files.length);
+    
+    if (files.length === 0) {
+        console.warn("Yüklenecek resim bulunamadı!");
+        // İsteğe bağlı: burada uyarı gösterebilirsiniz veya devam edebilirsiniz
+        return true; // Resim olmasa da devam et
+    }
+    
+    try {
+        // FormData oluştur
+        const formData = new FormData();
+        formData.append("property_id", propertyID.property_id);
+        
+        // Tüm dosyaları ekle
+        for (let i = 0; i < files.length; i++) {
+            formData.append("image", files[i]);
+            console.log(`Eklenen dosya ${i+1}:`, files[i].name);
+        }
 
-     if (files.length > 0) {
-         try {
-//             // Create a single FormData instance for all files
-             const formData = new FormData();
-             formData.append("property_id", propertyID.property_id);
-            
-//             // Add all files to the same FormData
-             for (let i = 0; i < files.length; i++) {
-                 formData.append("image", files[i]);
-             }
+        // Sunucuya gönder
+        console.log("Sunucuya resimler gönderiliyor...");
+        const addImageResponse = await fetch("http://127.0.0.1:8081/property/add-image", {
+            method: "POST",
+            body: formData
+        });
 
-//             // Single request to upload all images
-             const addImageResponse = await fetch("http://127.0.0.1:8081/property/add-image", {
-                 method: "POST",
-                 body: formData
-             });
+        if (!addImageResponse.ok) {
+            const errorText = await addImageResponse.text();
+            console.error("Resim yükleme API hatası:", errorText);
+            showModal("error", "Hata!", `Resimler yüklenirken bir hata oluştu! Hata: ${errorText}`);
+            return false;
+        }
 
-             if (!addImageResponse.ok) {
-                 const errorText = await addImageResponse.text();
-                 showModal("error", "Hata!", `Resimler yüklenirken bir hata oluştu! Hata: ${errorText}`);
-                 return;
-             }
+        const addImageResult = await addImageResponse.json();
+        console.log("Resim yükleme API yanıtı:", addImageResult);
 
-             const addImageResult = await addImageResponse.json();
+        if (addImageResult.status !== 200) {
+            showModal("error", "Hata!", "Resimler yüklenemedi: " + addImageResult.message);
+            return false;
+        }
 
-             if (addImageResult.status !== 200) {
-                 showModal("error", "Hata!", "Resimler yüklenemedi: " + addImageResult.message);
-                 return;
-             }
+        // Property media oluştur
+        const propertyMediaData = {
+            property_id: propertyID.property_id,
+            image_id: addImageResult.data.image_id,
+            type: galleryType
+        };
+        
+        console.log("Property Media oluşturuluyor:", propertyMediaData);
+        const addPropertyMediaResponse = await fetch("http://127.0.0.1:8081/property/add-property-media", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(propertyMediaData)
+        });
 
-//             // Create property media entry with the image ID
-             const propertyMediaData = {
-                 property_id: propertyID.property_id,
-                 image_id: addImageResult.data.image_id,
-                 type: galleryType
-             };
-             const addPropertyMediaResponse = await fetch("http://127.0.0.1:8081/property/add-property-media", {
-                 method: "POST",
-                 headers: {
-                     "Content-Type": "application/json"
-                 },
-                 body: JSON.stringify(propertyMediaData)
-             });
+        if (!addPropertyMediaResponse.ok) {
+            const errorText = await addPropertyMediaResponse.text();
+            console.error("Property Media API hatası:", errorText);
+            showModal("error", "Hata!", `Property Media oluşturulurken bir hata oluştu! Hata: ${errorText}`);
+            return false;
+        }
 
-             if (!addPropertyMediaResponse.ok) {
-                 const errorText = await addPropertyMediaResponse.text();
-                 showModal("error", "Hata!", `Property Media oluşturulurken bir hata oluştu! Hata: ${errorText}`);
-                 return;
-             }
+        const addPropertyMediaResult = await addPropertyMediaResponse.json();
+        console.log("Property Media API yanıtı:", addPropertyMediaResult);
 
-             const addPropertyMediaResult = await addPropertyMediaResponse.json();
-
-             if (addPropertyMediaResult.status !== 200) {
-                 showModal("error", "Hata!", "Property Media oluşturulamadı: " + addPropertyMediaResult.message);
-                 return;
-             }
-
-         } catch (error) {
-             showModal("error", "Hata!", "Bağlantı hatası: " + error.message);
-             return;
-         }
-     }
+        if (addPropertyMediaResult.status !== 200) {
+            showModal("error", "Hata!", "Property Media oluşturulamadı: " + addPropertyMediaResult.message);
+            return false;
+        }
+        
+        console.log("Resim yükleme işlemi başarılı!");
+        return true;
+    } catch (error) {
+        console.error("Resim yükleme hatası:", error);
+        showModal("error", "Hata!", "Bağlantı hatası: " + error.message);
+        return false;
+    }
 }
 
 
