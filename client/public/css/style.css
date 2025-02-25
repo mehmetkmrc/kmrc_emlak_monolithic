@@ -225,9 +225,9 @@ blockquote p {
 	float: left;
 	top: 50%;
 	margin-left: 30px;
-	height: 12px;
-	line-height: 12px;
-	margin-top: -6px;
+	height: 30px;
+	line-height: 5px;
+	margin-top: -15px;
 }
 .logo-holder img {
 	height: 100%;
@@ -6661,7 +6661,7 @@ nav li ul a:before , nav li ul a:after {
     height: 80px;
 }
 .header-inner {
-    padding: 0 0 0 10px;
+    padding: 0 10px 20px 10px;
 }	
 .wrapper {
     margin-top:80px;
