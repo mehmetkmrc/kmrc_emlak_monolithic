@@ -29,8 +29,8 @@ var config = {
                 label: 'Properties Views',
                 fill: true,
                 animation: false,
-                backgroundColor: "#EE7838",
-                borderColor: "#EE7838",
+                backgroundColor: "#ff0000",
+                borderColor: "#ff0000",
                 data: [16, 12, 37, 33, 44, 98, 20]
             },
             {
