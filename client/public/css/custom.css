@@ -80,3 +80,145 @@
     position: relative;
     padding-bottom: 100%;
   }
+
+  #nearby-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Öğeler arası boşluk */
+}
+
+#nearby-list .nearby-item {
+    background-color: #f8f9fa; /* Açık gri arka plan */
+    border: 1px solid #dee2e6; /* Hafif gri border */
+    border-radius: 8px; /* Yuvarlatılmış köşeler */
+    padding: 10px 15px; /* İç boşluk */
+    font-size: 14px;
+    color: #343a40; /* Yazı rengi */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+#nearby-list .nearby-item:hover {
+    background-color: #e9ecef; /* Hover efekti */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+#nearby-list .nearby-item button {
+    background: #ff6b6b; /* Kırmızı silme butonu */
+    border: none;
+    color: white;
+    padding: 3px 7px;
+    border-radius: 5px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+#nearby-list .nearby-item button:hover {
+    background: #ff4c4c;
+}
+.upload__img-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.upload__img-box {
+    position: relative;
+    margin: 5px;
+    width: 120px; /* thumbnail genişliği */
+    height: 120px; /* thumbnail yüksekliği */
+    overflow: hidden;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.upload__img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* büyük resimleri kırpar ama çerçeveye sığdırır */
+    cursor: pointer;   /* tıklanabilir izlenimi verir */
+}
+
+.upload__img-box button {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.upload__btn {
+    display: inline-block;
+    padding: 10px 25px;
+    background-color: #ff0000;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-align: center;
+    font-size: 14px;
+}
+
+.upload__btn:hover {
+    background-color: rgba(255, 0, 0, 0.432);
+    transform: translateY(-2px);
+}
+
+.upload__btn p {
+    margin: 0;
+}
+
+.upload__inputfile {
+    display: none; /* Orijinal input’u gizle */
+}
+
+.upload__img-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.upload__img-box {
+    position: relative;
+    margin: 5px;
+    width: 120px;
+    height: 120px;
+    overflow: hidden;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.upload__img-box img, .upload__img-box .img-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.upload__img-close {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: red;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+}
+

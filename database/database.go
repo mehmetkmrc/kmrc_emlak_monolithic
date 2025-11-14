@@ -10,7 +10,7 @@ import (
 
 var DBPool *pgxpool.Pool
 var DBErr error
-var url = "postgres://postgres:ITM-2020@localhost:5432/kmrc_emlak?sslmode=disable"
+var url = "postgres://postgres:KMRC-computer-2025@localhost:5432/kmrc_emlak?sslmode=disable"
 
 func InitiliazeDatabaseConnection() {
 

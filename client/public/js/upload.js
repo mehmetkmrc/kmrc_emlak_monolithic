@@ -1,3 +1,6 @@
+let globalNearbyArray = []; // Nearby verilerini tutacak
+let globalImgArray = []; // Resim upload için zaten kullanıyordun
+
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("documentLoader");
 
@@ -91,8 +94,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 email: email,
                 city: city,
                 address: address,
-                longitude: longitude,
-                latitude: latitude,
+                latitude: latitudeInput.value.toString(),
+                longitude: longitudeInput.value.toString(),
             };
 
             const locationResponse = await fetch("http://127.0.0.1:8081/property/add-location", {
@@ -117,36 +120,56 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-           // **3. Adım: Nearby oluştur**
-           const places = document.querySelector('select[name="places"]').value;
-           const distance = document.querySelector('input[name="distance"]').value;
+            // **3. Adım: Nearby oluştur**
+            if (globalNearbyArray.length === 0) {
+                console.log("Nearby verisi yok, atlanıyor.");
+            } else {
+                for (const item of globalNearbyArray) {
+                    const nearbyItem = {
+                        property_id: propertyID.property_id,
+                        places: item.places,
+                        distance: item.distance
+                    };
 
-           const nearbyData = {
-               property_id: propertyID.property_id, // **PropertyID'yi kullanın**
-               places: places,
-               distance: distance,
-           };
+                    try {
+                        // **3. Adım: Nearby oluştur** (form submit sırasında)
+                        for (let i = 0; i < globalNearbyArray.length; i++) {
+                            
 
-           const nearbyResponse = await fetch("http://127.0.0.1:8081/property/add-nearby", {
-               method: "POST",
-               headers: {
-                   "Content-Type": "application/json",
-               },
-               body: JSON.stringify(nearbyData),
-           });
+                            const nearbyData = {
+                                property_id: propertyID.property_id,
+                                places: globalNearbyArray[i].places,
+                                distance: globalNearbyArray[i].distance,
+                            };
 
-           if (!nearbyResponse.ok) {
-               const errorText = await nearbyResponse.text();
-               showModal("error", "Hata!", `Nearby oluşturulurken bir hata oluştu! Hata: ${errorText}`);
-               return;
-           }
+                            const nearbyResponse = await fetch("http://127.0.0.1:8081/property/add-nearby", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify(nearbyData),
+                            });
 
-           const nearbyResult = await nearbyResponse.json();
-           console.log("Nearby Response:", nearbyResult);
-           if (nearbyResult.status !== 200) {
-               showModal("error", "Hata!", "Nearby oluşturulamadı: " + nearbyResult.message);
-               return;
-           }
+                            if (!nearbyResponse.ok) {
+                                const errorText = await nearbyResponse.text();
+                                showModal("error", "Hata!", `Nearby oluşturulurken bir hata oluştu! Hata: ${errorText}`);
+                                return;
+                            }
+
+                            const nearbyResult = await nearbyResponse.json();
+                            if (nearbyResult.status !== 200) {
+                                showModal("error", "Hata!", "Nearby oluşturulamadı: " + nearbyResult.message);
+                                return;
+                            }
+                        }
+
+                    } catch (error) {
+                        console.error("Nearby API hatası:", error);
+                        showModal("error", "Hata!", `Nearby oluşturulurken bir hata oluştu! Hata: ${error.message}`);
+                        return;
+                    }
+                }
+            }
+
+
 
            
            // **4. Property Media oluştur**
@@ -196,6 +219,72 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
+            let otherAmenitiesArray = [];
+
+function setupOtherAmenities() {
+    const container = document.getElementById("other-amenities-container");
+
+    function addNewOtherAmenity() {
+        const div = document.createElement("div");
+        div.classList.add("other-amenity");
+        div.style.display = "flex";
+        div.style.alignItems = "center";
+        div.style.gap = "10px";
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.placeholder = "Diğer Özellikleri buraya yazın...";
+        input.style.flex = "1";
+        input.style.padding = "8px 12px";
+        input.style.borderRadius = "5px";
+        input.style.border = "1px solid #ccc";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.classList.add("other-amenity-checkbox");
+        checkbox.style.width = "20px";
+        checkbox.style.height = "20px";
+
+        const label = document.createElement("label");
+        label.style.margin = "0";
+        label.style.fontWeight = "500";
+        label.textContent = "Var";
+
+        div.appendChild(input);
+        div.appendChild(checkbox);
+        div.appendChild(label);
+
+        container.appendChild(div);
+
+        // Checkbox event
+        checkbox.addEventListener("change", function () {
+            if (this.checked && input.value.trim() !== "") {
+                otherAmenitiesArray.push(input.value.trim());
+                this.disabled = true;
+                input.disabled = true;
+
+                addNewOtherAmenity();
+            }
+        });
+    }
+
+    // İlk input event’i
+    const firstCheckbox = container.querySelector(".other-amenity-checkbox");
+    const firstInput = container.querySelector("input[type='text']");
+
+    firstCheckbox.addEventListener("change", function () {
+        if (this.checked && firstInput.value.trim() !== "") {
+            otherAmenitiesArray.push(firstInput.value.trim());
+            this.disabled = true;
+            firstInput.disabled = true;
+
+            addNewOtherAmenity();
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", setupOtherAmenities);
+
 
             // **7. Amenities oluştur
             const wifi = document.querySelector('input[name="wifi"]').checked;
@@ -212,8 +301,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const fitnessGym = document.querySelector('input[name="fitness_gym"]').checked;
             const elevator = document.querySelector('input[name="elevator"]').checked;
             // Yeni alanlar
-            const othersName = document.querySelector('input[name="others_name"]').value; // Inputtan değeri al
-            const othersChecked = document.querySelector('input[name="others_checked"]').checked; // Checkbox'ın durumunu al
+           // Diğer özellikleri gönder
+            const othersArray = otherAmenitiesArray; // Dinamik olarak eklenen tüm değerler
+
 
             const amenitiesData = {
                 property_id: propertyID.property_id, // Daha önce aldığınız propertyID
@@ -230,8 +320,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 backyard: backyard,
                 fitness_gym: fitnessGym,
                 elevator: elevator,
-                others_name: othersName, // Yeni alan
-                others_checked: othersChecked, // Yeni alan
+                others: othersArray // Burada tüm dinamik değerler gönderilecek
             };
 
             const addAmenitiesResponse = await fetch("http://127.0.0.1:8081/property/add-amenities", {

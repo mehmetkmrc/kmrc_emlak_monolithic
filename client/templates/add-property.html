@@ -414,8 +414,12 @@
                                                         <!-- listsearch-input-item -->											
                                                     </div>
                                                 </div>
-                                                <div class="map-container" style="margin-bottom: 30px">
-                                                    <div id="singleMap" class="drag-map single-map-container fs-wrapper" data-latitude="40.7427837" data-longitude="-73.11445617675781"></div>
+                                                <div class="map-container" style="margin-bottom: 30px; height: 400px;">
+                                                    <div id="singleMap"
+     data-latitude="41.018572" 
+     data-longitude="28.94480"
+     style="height:400px;"></div>
+
                                                 </div>
                                                 <div class="dashboard-widget-title-single">What's Nearby</div>
                                                 <div class="row">
@@ -448,61 +452,58 @@
                                                     <div class="col-lg-2">
                                                         <!-- listsearch-input-item -->
                                                         <div class="cs-intputwrap">
-                                                            <button class="commentssubmit cs_amin_btn">Update</button>
+                                                            <button type="button" class="commentssubmit cs_amin_btn" id="add-nearby-btn">Ekle</button>
                                                         </div>
                                                         <!-- listsearch-input-item -->											
                                                     </div>
                                                 </div>
+                                                <div id="nearby-list" style="margin-top:10px;"></div>
                                             </div>
                                         </div>
                                         <!--dasboard-content-item end-->										
                                         <!--dasboard-content-item-->
                                         <div class="dasboard-content-item" style="margin-top: 20px">
-                                            <div class="dashboard-widget-title-single"> Property Media</div>
-                                            <div class="custom-form">
-                                                <div class="row">
-                                                    <div class="col-lg-8">
-                                                        <!-- listsearch-input-item -->
-                                                        <div class="cs-intputwrap">
-                                                            <i class="fa-light fa-building"></i>
-                                                            <select data-placeholder="Categories" class="chosen-select on-radius no-search-select" name="type" >
-                                                                <option>Gallery Type</option>
-                                                                <option value="Grid tipi">Grid Gallery</option>
-                                                                <option value="Carousel">Carousel</option>
-                                                                <option value="Slider">Slider</option>
-                                                            </select>
-                                                        </div>
-                                                        <!-- listsearch-input-item -->										
-                                                        <!-- listsearch-input-item -->
-                                                        <div class="upload__box">
-                                                            <div class="upload__btn-box">
-                                                              <label class="upload__btn">
-                                                                <p>Images Yükle</p>
-                                                                <input type="file" multiple="" data-max_length="20" class="upload__inputfile">
-                                                              </label>
-                                                            </div>
-                                                            <div class="upload__img-wrap"></div>
-                                                          </div>          
-                                                        <!-- listsearch-input-item -->											
-                                                    </div>
-                                                    
-                                                    <div class="col-lg-4">
-                                                        <div class="sin-uidb">Background Image for Grid Gallery</div>
-                                                        <!-- listsearch-input-item -->
-                                                        <div class="upload__box">
-                                                            <div class="upload__btn-box">
-                                                              <label class="upload__btn">
-                                                                <p>Images Yükle</p>
-                                                                <input type="file" multiple="" data-max_length="20" class="upload__inputfile">
-                                                              </label>
-                                                            </div>
-                                                            <div class="upload__img-wrap"></div>
-                                                          </div>
-                                                        <!-- listsearch-input-item -->											
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+    <div class="dashboard-widget-title-single">Property Medya</div>
+    <div class="custom-form">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="cs-intputwrap">
+                    <i class="fa-light fa-building"></i>
+                    <select class="chosen-select on-radius no-search-select" name="type">
+                        <option>Galeri Tipi Seçin</option>
+                        <option value="Grid tipi">Grid Galeri</option>
+                        <option value="Carousel">Carousel</option>
+                        <option value="Slider">Slider</option>
+                    </select>
+                </div>
+
+                <div class="upload__box">
+                    <div class="upload__btn-box">
+                        <label class="upload__btn">
+                            <p style="color: aliceblue;">📁 Resimleri Seç veya Sürükle</p>
+  <input type="file" multiple class="upload__inputfile" data-max_length="20">
+                        </label>
+                    </div>
+                    <div class="upload__img-wrap"></div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="sin-uidb">Grid Galeri için Arka Plan Görseli</div>
+                <div class="upload__box">
+                    <div class="upload__btn-box">
+                        <label class="upload__btn">
+                            <p style="color: aliceblue;">📁 Resimleri Seç veya Sürükle</p>
+  <input type="file" multiple class="upload__inputfile" data-max_length="20">
+                        </label>
+                    </div>
+                    <div class="upload__img-wrap"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
                                         <!--dasboard-content-item end-->											
                                         <!--dasboard-content-item-->
                                         <div class="dasboard-content-item" style="margin-top: 20px">
@@ -621,26 +622,30 @@
                                                                 <input id="amenities-checkbox" type="checkbox" name="elevator" {{if .Elevator}}checked{{end}}>
                                                                 <label for="amenities-checkbox">Elevator in building</label>
                                                             </li>
-                                                            <li>
-                                                                <div class="col-lg-6">
-                                                                    <div class="cs-intputwrap">
-                                                                        <input type="text"   placeholder="Other Amenities:" name="others_name">
-                                                                    </div>
+                                                            <li id="other-amenities-container" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                                                                <div class="other-amenity" style="display: flex; align-items: center; gap: 10px;">
+                                                                    <input type="text" placeholder="Diğer Özellikleri buraya yazın..." style="flex:1; padding:8px 12px; border-radius:5px; border:1px solid #ccc;">
+                                                                    <input type="checkbox" class="other-amenity-checkbox" style="width:20px; height:20px;">
+                                                                    <label style="margin:0; font-weight:500;">Var</label>
                                                                 </div>
-                                                                <input type="checkbox" name="others_checked" id="others_checked">
-                                                                <label for="others_checked">Var</label>
                                                             </li>
+
+
                                                         </ul>
                                                     </div>
                                                     <div class="col-lg-6">
                                                         <div class="dashboard-widget-title-single">Upload Plans and Brochure:</div>
                                                         <!-- listsearch-input-item -->
                                                         <form class="fuzone">
-                                                            <div class="fu-text">
-                                                                <span><i class="fa-light fa-cloud-arrow-up"></i> Click here or drop files to upload</span>
-                                                                <div class="photoUpload-files fl-wrap"></div>
+                                                            <div class="upload__box">
+                                                                <div class="upload__btn-box">
+                                                                    <label class="upload__btn">
+                                                                        <p style="color: aliceblue;">📁 Resimleri Seç veya Sürükle</p>
+                                            <input type="file" multiple class="upload__inputfile" data-max_length="20">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="upload__img-wrap"></div>
                                                             </div>
-                                                            <input type="file" class="upload" multiple>
                                                         </form>
                                                         <!-- listsearch-input-item -->									
                                                     </div>
