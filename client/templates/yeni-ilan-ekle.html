@@ -1,0 +1,862 @@
+<!--loader-->
+<div class="loader-wrap">
+    <div class="loader-inner">
+        <svg>
+            <defs>
+                <filter id="goo">
+                    <fegaussianblur in="SourceGraphic" stdDeviation="2" result="blur" />
+                    <fecolormatrix in="blur"   values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 5 -2" result="gooey" />
+                    <fecomposite in="SourceGraphic" in2="gooey" operator="atop"/>
+                </filter>
+            </defs>
+        </svg>
+    </div>
+</div>
+<!--loader end-->
+<!--  main   -->
+<div id="main">
+    <!--header-->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-inner">
+                <a href="/" class="logo-holder"><img src="/images/kmrc-emlak-logo-paint.png" alt=""></a>
+                <!--  navigation --> 
+                <div class="nav-holder main-menu">
+                    <nav>
+                        <ul class="no-list-style">
+                            <li>
+                                <a href="#" class="act-link">Anasayfa <i class="fa-solid fa-caret-down"></i></a>
+                                <!--second level -->   
+                                <ul>
+                                    <li><a href="index.html">Slider</a></li>
+                                    <li><a href="index2.html">Video</a></li>
+                                    <li><a href="index3.html">Slideshow</a></li>
+                                    <li><a href="index4.html">Parallax Image</a></li>
+                                    <li><a href="dashboard.html">User Dasboard</a></li>
+                                </ul>
+                                <!--second level end-->
+                            </li>
+                            <li>
+                                <a href="#">Listings <i class="fa-solid fa-caret-down"></i></a>
+                                <!--second level -->
+                                <ul>
+                                    <li><a href="listing.html">Style 1</a></li>
+                                    <li><a href="listing2.html">Style 2</a></li>
+                                    <li><a href="listing3.html">Style 3</a></li>
+                                    <li><a href="listing4.html">Style 4</a></li>
+                                    <li>
+                                        <a href="#">Single <i class="fa-solid fa-caret-right"></i></a>
+                                        <!--third  level  -->
+                                        <ul>
+                                            <li><a href="ilan.html">Style 1</a></li>
+                                            <li><a href="ilan2.html">Style 2</a></li>
+                                            <li><a href="ilan3.html">Style 3</a></li>
+                                        </ul>
+                                        <!--third  level end-->
+                                    </li>
+                                </ul>
+                                <!--second level end-->
+                            </li>
+                            <li>
+                                <a href="blog.html">News</a>
+                            </li>
+                            <li>
+                                <a href="#">Pages <i class="fa-solid fa-caret-down"></i></a>
+                                <!--second level -->   
+                                <ul>
+                                    <li><a href="about.html">About</a></li>
+                                    <li><a href="contacts.html">Contacts</a></li>
+                                    <li><a href="agent-single.html">Agent single</a></li>
+                                    <li><a href="help.html">How it Works</a></li>
+                                    <li><a href="pricing.html">Pricing</a></li>
+                                    <li><a href="blog-single.html">Blog Single</a></li>
+                                    <li><a href="add-listing.html">Add Listing</a></li>
+                                </ul>
+                                <!--second level end-->                                
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <!-- navigation  end -->						
+                <!-- nav-button-wrap-->
+                <div class="nav-button-wrap">
+                    <div class="nav-button">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+                <!-- nav-button-wrap end-->						
+                <!-- header-search-wrap  -->	
+                <div class="header-search-wrap novis_search">
+                    <div class="header-search">
+                        <div class="header-search-nav">
+                            <div class="header-search-nav_container">
+                                <div class="header-search-radio">
+                                    <input class="hidden radio-label" type="radio" name="accept-offers" id="sale-button" checked="checked">
+                                    <label class="button-label" for="sale-button">Sale</label>
+                                    <input class="hidden radio-label" type="radio" name="accept-offers" id="rent-button">
+                                    <label class="button-label" for="rent-button">Rent</label>							
+                                    <input class="hidden radio-label" type="radio" name="accept-offers" id="comm-button">
+                                    <label class="button-label" for="comm-button">Commercial</label>								
+                                </div>
+                            </div>
+                        </div>
+                        <div class="header-search-container">
+                            <div class="custom-form">
+                                <!-- listsearch-input-item -->
+                                <div class="cs-intputwrap">
+                                    <i class="fa-light fa-house"></i>
+                                    <input type="text"   placeholder="Keywords..." >
+                                </div>
+                                <!-- listsearch-input-item -->									
+                                <!-- listsearch-input-item -->
+                                <div class="cs-intputwrap">
+                                    <i class="fa-light fa-location-dot"></i>
+                                    <input type="text"   placeholder="Location..." >
+                                </div>
+                                <!-- listsearch-input-item -->										
+                                <!-- listsearch-input-item -->
+                                <div class="cs-intputwrap">
+                                    <div class="price-range-wrap ">
+                                        <label>Price Range</label>
+                                        <div class="price-rage-item">
+                                            <input type="text" class="price-range-double" data-min="100" data-max="100000"  name="price-range1"  data-step="1" value="1" data-prefix="$">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- listsearch-input-item -->										
+                                <button onclick="window.location.href='listing.html'" class="commentssubmit commentssubmit_fw">Search</button>	
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- header-search-wrap  end -->	
+                <div class="header-search-btn tolt" data-microtip-position="bottom"  data-tooltip="Search"><i class="fa-regular fa-magnifying-glass"></i> </div>
+                <a href="add-listing.html" class="header-btn"><span>Add Your Propperty</span></a>
+                <div class="wish_btn swl_btn tolt" data-microtip-position="bottom"  data-tooltip="Wishlist">
+                    <div class="wish_btn-item"><i class="fa-thin fa-heart"></i><span class="wish_count">3</span></div>
+                </div>
+                <div class="header-user-menu">
+                    <div class="header-user-name">
+                        <span>Hello , <strong> Ramazan</strong></span>
+                        <img src="/images/agents/Ramazankomurcu.png" alt=""> 
+                    </div>
+                    <div class="header-user-menu_wrap">
+                        <ul>
+                            <li><a href="dashboard.html" class="hum_act"> Dashboard</a></li>
+                            <li><a href="dashboard-editprofile.html"> Edit profile</a></li>
+                            <li><a href="add-listing.html"> Add Listing</a></li>
+                            <li><a href="dashboard-properties.html">  Properties</a></li>
+                        </ul>
+                        <a href="index.html" class="hum_log-out_btn"><i class="fa-light fa-power-off"></i> Log Out  </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="body-overlay fs-wrapper search-form-overlay close-search-form"></div>
+    <!--header-end-->
+    <!--warpper-->
+    <div class="wrapper">
+        <!--content-->
+        <div class="content">
+            <!--container-->
+            <div class="container">
+                <!--breadcrumbs-list-->
+                <div class="breadcrumbs-list bl_flat">
+                    <a href="/">Anasayfa</a><a href="/dashboard">Kullanıcı Paneli</a><span>Yeni Emlak Ekle</span>
+                    <div class="breadcrumbs-list_dec"><i class="fa-thin fa-arrow-up"></i></div>
+                </div>
+                <!--breadcrumbs-list end-->					
+                <!--main-content-->
+                <form id="documentLoader" >
+                <div class="main-content  ms_vir_height">
+                    
+                        <!--boxed-container-->
+                    <div class="boxed-container">
+                        <div class="row">
+                            <!-- user-dasboard-menu_wrap -->	
+                            <div class="col-lg-3">
+                                <div class="boxed-content btf_init">
+                                    <div class="user-dasboard-menu_wrap">
+                                        <div class="user-dasboard-menu-header">
+                                            <div class="user-dasboard-menu_header-avatar">
+                                                <img src="/images/agents/Ramazankomurcu.png" alt=""> 
+                                                <span>Hoşgeldiniz :  <strong> Ramazan</strong></span>
+                                                <a href="dashboard-editprofile.html" class="usmha_edit tolt" data-microtip-position="left"  data-tooltip="Edit Profile"><i class="fa-light fa-user-pen"></i></a>
+                                                <div class="db-menu_modile_btn"><strong>Menü</strong><i class="fa-regular fa-bars"></i></div>
+                                            </div>
+                                        </div>
+                                        <div class="user-dasboard-menu faq-nav ">
+                                            <ul>
+                                                <li><a href="/kullanici-panel"> Kullanıcı Paneli</a></li>
+                                                <li><a href="dashboard-listing.html"> Reklamlar </a></li>
+                                                <li><a href="dashboard-requests.html"> Talepleriniz<span>6</span> </a></li>
+                                                <li><a href="/kullanici-panel/yeni-ilan-ekle" class="act-scrlink"> Emlak Ekle </a></li>
+                                                <li><a href="dashboard-editprofile.html">  Profili Düzenle</a></li>
+                                            </ul>
+                                            <a href="index.html" class="hum_log-out_btn"><i class="fa-light fa-power-off"></i> Çıkış Yap  </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- user-dasboard-menu_wrap end-->
+                            <!-- pricing-column -->	
+
+                            
+                                <div class="col-lg-9">
+                                    <div class="dashboard-title">
+                                        <div class="dashboard-title-item"><span>Emlak Ekle</span></div>
+                                        <!--Tariff Plan menu-->
+                                        <div class="tfp-det-container">
+                                            <div class="db-date"><i class="fa-regular fa-calendar"></i><strong></strong></div>
+                                            <div class="tfp-btn"><span>Kullanıcı Planınız : </span> <strong>Uzatılmış</strong></div>
+                                            <div class="tfp-det">
+                                                <p>Şu an  <a href="#">Uzatılmış plandasınız</a> . Detayları görmek ya da güncellemek için linke tıklayınız. </p>
+                                                <a href="#" class="tfp-det-btn color-bg">Detayları Görüntüle <i class="fa-solid fa-caret-right"></i></a>
+                                            </div>
+                                        </div>
+                                        <!--Tariff Plan menu end-->						
+                                    </div>
+                                    <div class="db-container">
+                                        <!--dasboard-content-item-->
+                                        <div class="dasboard-content-item">
+                                            <div class="dashboard-widget-title-single">Temel Bilgiler</div>
+                                            <div class="custom-form">
+                                                <div class="row">
+                                                    <div class="col-lg-6">
+                                                        <!-- listsearch-input-item -->
+                                                        <div class="cs-intputwrap">
+                                                            <i class="fa-light fa-input-text"></i>
+                                                            <input type="text" name="main_title"  placeholder="Ana Başlık" >
+                                                        </div>
+                                                        <!-- listsearch-input-item -->											
+                                                    </div>
+                                                    <div class="col-lg-3">
+                                                        <!-- listsearch-input-item -->
+                                                        <div class="cs-intputwrap">
+                                                            <i class="fa-light fa-building"></i>
+                                                            <select data-placeholder="Categories" class="chosen-select on-radius no-search-select" name="property_type" >
+                                                                <option>Emlak Türü</option>
+                                                                <option value="Sale" >Satılık</option>
+                                                                <option value="Rent" >Kiralık</option>
+                                                                <option value="Commercial" >Ticari</option>
+                                                            </select>
+                                                        </div>
+                                                        <!-- listsearch-input-item -->										
+                                                    </div>
+                                                    <div class="col-lg-3">
+                                                        <div class="cs-intputwrap">
+                                                            <i class="fa-light fa-layer-group"></i>
+                                                            <select data-placeholder="Categories" class="chosen-select on-radius no-search-select" name="category" >
+                                                                <option>Tüm Kategoriler</option>
+                                                                <option value="House">Müstakil</option>
+                                                                <option value="Apartment">Apartman</option>
+                                                                <option value="Hotel">Otel</option>
+                                                                <option value="Villa">Villa</option>
+                                                                <option value="Office">Ofis</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <!-- listsearch-input-item -->
+                                                        <div class="cs-intputwrap">
+                                                            <i class="fa-light fa-money-bill"></i>
+                                                            <input type="text" name="price"  placeholder="Fiyat Bilgisi Giriniz: " >
+                                                        </div>
+                                                        <!-- listsearch-input-item -->										
+                                                    </div>
+                                                    <div class="col-lg-8">
+                                                        <!-- listsearch-input-item -->
+                                                        <div class="cs-intputwrap">
+                                                            <i class="fa-light fa-tags"></i>
+                                                            <input type="text"   name="keywords" placeholder="Anahtar Kelimesi Giriniz: " >
+                                                        </div>
+                                                        <!-- listsearch-input-item -->										
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--dasboard-content-item end-->
+                                        <!--dasboard-content-item-->
+                                        <div class="dasboard-content-item" style="margin-top: 20px">
+                                            <div class="dashboard-widget-title-single">Lokasyon / İletişim</div>
+                                            <div class="custom-form">
+                                                <div class="row">
+                                                    <div class="col-lg-4">
+                                                        <!-- listsearch-input-item -->
+                                                        <div class="cs-intputwrap">
+                                                            <i class="fa-light fa-phone-office"></i>
+                                                            <input type="text" name="phone" placeholder="Telefon Numarası (Başında 0 olmadan yazınız)" >
+                                                        </div>
+                                                        <!-- listsearch-input-item -->											
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <!-- listsearch-input-item -->
+                                                        <div class="cs-intputwrap">
+                                                            <i class="fa-light fa-envelope"></i>
+                                                            <input type="text" name="email"  placeholder="E-mail giriniz:" >
+                                                        </div>
+                                                        <!-- listsearch-input-item -->	
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <!-- listsearch-input-item -->
+                                                        <div class="cs-intputwrap list" style="z-index: 9999;">
+                                                            <i class="fa-light fa-city"></i>
+                                                            <select data-placeholder="All Cities" class="chosen-select on-radius no-search-select" name="city">
+                                                                <option>Şehir Seçiniz: </option>
+                                                                <option value="Adana">Adana</option>
+                                                                <option value="Adıyaman">Adıyaman</option>
+                                                                <option value="Afyonkarahisar">Afyonkarahisar</option>
+                                                                <option value="Ağrı">Ağrı</option>
+                                                                <option value="Aksaray">Aksaray</option>
+                                                                <option value="Amasya">Amasya</option>
+                                                                <option value="Ankara">Ankara</option>
+                                                                <option value="Antalya">Antalya</option>
+                                                                <option value="Ardahan">Ardahan</option>
+                                                                <option value="Artvin">Artvin</option>
+                                                                <option value="Aydın">Aydın</option>
+                                                                <option value="Balıkesir">Balıkesir</option>
+                                                                <option value="Bartın">Bartın</option>
+                                                                <option value="Batman">Batman</option>
+                                                                <option value="Bayburt">Bayburt</option>
+                                                                <option value="Bilecik">Bilecik</option>
+                                                                <option value="Bingöl">Bingöl</option>
+                                                                <option value="Bitlis">Bitlis</option>
+                                                                <option value="Bolu">Bolu</option>
+                                                                <option value="Burdur">Burdur</option>
+                                                                <option value="Bursa">Bursa</option>
+                                                                <option value="Çanakkale">Çanakkale</option>
+                                                                <option value="Çankırı">Çankırı</option>
+                                                                <option value="Çorum">Çorum</option>
+                                                                <option value="Denizli">Denizli</option>
+                                                                <option value="Diyarbakır">Diyarbakır</option>
+                                                                <option value="Düzce">Düzce</option>
+                                                                <option value="Edirne">Edirne</option>
+                                                                <option value="Elazığ">Elazığ</option>
+                                                                <option value="Erzincan">Erzincan</option>
+                                                                <option value="Erzurum">Erzurum</option>
+                                                                <option value="Eskişehir">Eskişehir</option>
+                                                                <option value="Gaziantep">Gaziantep</option>
+                                                                <option value="Giresun">Giresun</option>
+                                                                <option value="Gümüşhane">Gümüşhane</option>
+                                                                <option value="Hakkari">Hakkari</option>
+                                                                <option value="Hatay">Hatay</option>
+                                                                <option value="Iğdır">Iğdır</option>
+                                                                <option value="Isparta">Isparta</option>
+                                                                <option value="İstanbul">İstanbul</option>
+                                                                <option value="İzmir">İzmir</option>
+                                                                <option value="Kahramanmaraş">Kahramanmaraş</option>
+                                                                <option value="Karabük">Karabük</option>
+                                                                <option value="Karaman">Karaman</option>
+                                                                <option value="Kars">Kars</option>
+                                                                <option value="Kastamonu">Kastamonu</option>
+                                                                <option value="Kayseri">Kayseri</option>
+                                                                <option value="Kırıkkale">Kırıkkale</option>
+                                                                <option value="Kırklareli">Kırklareli</option>
+                                                                <option value="Kırşehir">Kırşehir</option>
+                                                                <option value="Kilis">Kilis</option>
+                                                                <option value="Kocaeli">Kocaeli</option>
+                                                                <option value="Konya">Konya</option>
+                                                                <option value="Kütahya">Kütahya</option>
+                                                                <option value="Malatya">Malatya</option>
+                                                                <option value="Manisa">Manisa</option>
+                                                                <option value="Mardin">Mardin</option>
+                                                                <option value="Mersin">Mersin</option>
+                                                                <option value="Muğla">Muğla</option>
+                                                                <option value="Muş">Muş</option>
+                                                                <option value="Nevşehir">Nevşehir</option>
+                                                                <option value="Niğde">Niğde</option>
+                                                                <option value="Ordu">Ordu</option>
+                                                                <option value="Osmaniye">Osmaniye</option>
+                                                                <option value="Rize">Rize</option>
+                                                                <option value="Sakarya">Sakarya</option>
+                                                                <option value="Samsun">Samsun</option>
+                                                                <option value="Siirt">Siirt</option>
+                                                                <option value="Sinop">Sinop</option>
+                                                                <option value="Sivas">Sivas</option>
+                                                                <option value="Şanlıurfa">Şanlıurfa</option>
+                                                                <option value="Şırnak">Şırnak</option>
+                                                                <option value="Tekirdağ">Tekirdağ</option>
+                                                                <option value="Tokat">Tokat</option>
+                                                                <option value="Trabzon">Trabzon</option>
+                                                                <option value="Tunceli">Tunceli</option>
+                                                                <option value="Uşak">Uşak</option>
+                                                                <option value="Van">Van</option>
+                                                                <option value="Yalova">Yalova</option>
+                                                                <option value="Yozgat">Yozgat</option>
+                                                                <option value="Zonguldak">Zonguldak</option>
+                                                            </select>
+                                                        </div>
+                                                        <!-- listsearch-input-item end-->	
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <!-- listsearch-input-item -->
+                                                        <div class="cs-intputwrap">
+                                                            <i class="fa-light fa-address-card"></i>
+                                                            <input type="text" name="address"   placeholder="Açık Adres Giriniz: " >
+                                                        </div>
+                                                        <!-- listsearch-input-item -->											
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <!-- listsearch-input-item -->
+                                                        <div class="cs-intputwrap">
+                                                            <i class="fa-light fa-right"></i>
+                                                            <input type="text" id="long"   placeholder="Boylam (Haritada işaretleyiciyi sürükleyin)" name="longitude"   readonly>
+                                                        </div>
+                                                        <!-- listsearch-input-item -->											
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <!-- listsearch-input-item -->
+                                                        <div class="cs-intputwrap">
+                                                            <i class="fa-light fa-up"></i>
+                                                            <input type="text" id="lat"   placeholder="Enlem (Haritada işaretleyiciyi sürükleyin)" name="latitude"  readonly>
+                                                        </div>
+                                                        <!-- listsearch-input-item -->											
+                                                    </div>
+                                                </div>
+                                                <div class="map-container" style="margin-bottom: 30px; height: 400px;">
+                                                    <div id="singleMap"
+     data-latitude="41.018572" 
+     data-longitude="28.94480"
+     style="height:400px;"></div>
+
+                                                </div>
+                                                <div class="dashboard-widget-title-single">Yakında Neler Var?</div>
+                                                <div class="row">
+                                                    <div class="col-lg-4">
+                                                        <!-- listsearch-input-item -->
+                                                        <div class="cs-intputwrap">
+                                                            <i class="fa-light fa-city"></i>
+                                                            <select data-placeholder="Places" name="places" class="chosen-select on-radius no-search-select" >
+                                                                <option>Tüm Yerler</option>
+                                                                <option value="Okul">Okul:</option>
+                                                                <option value="Alışveriş Merkezi">Alışveriş Merkezi: </option>
+                                                                <option value="Polis Karakolu">Polis İstasyonu: </option>
+                                                                <option value="Hastane">Hastane: </option>
+                                                                <option value="Oyun Okulu" >Oyun Okulu: </option>
+                                                                <option value="Parklar">Parklar: </option>
+                                                            </select>
+                                                        </div>
+                                                        <!-- listsearch-input-item -->											
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <!-- listsearch-input-item -->
+                                                        <div class="cs-intputwrap">
+                                                            <div class="price-range-wrap fl-wrap">                
+                                                                <label>Uzaklık  </label>
+                                                                <input type="text" class="price-range" name="distance" data-min="0" data-max="10000"   data-step="10" value="m">
+                                                            </div>
+                                                        </div>
+                                                        <!-- listsearch-input-item -->											
+                                                    </div>
+                                                    <div class="col-lg-2">
+                                                        <!-- listsearch-input-item -->
+                                                        <div class="cs-intputwrap">
+                                                            <button type="button" class="commentssubmit cs_amin_btn" id="add-nearby-btn">Ekle</button>
+                                                        </div>
+                                                        <!-- listsearch-input-item -->											
+                                                    </div>
+                                                </div>
+                                                <div id="nearby-list" style="margin-top:10px;"></div>
+                                            </div>
+                                        </div>
+                                        <!--dasboard-content-item end-->										
+                                        <!--dasboard-content-item-->
+                                        <div class="dasboard-content-item" style="margin-top: 20px">
+    <div class="dashboard-widget-title-single">Medya</div>
+    <div class="custom-form">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="cs-intputwrap">
+                    <i class="fa-light fa-building"></i>
+                    <select class="chosen-select on-radius no-search-select" name="type">
+                        <option>Galeri Tipi Seçin</option>
+                        <option value="Grid tipi">Izgara Tipi Galeri</option>
+                        <option value="Carousel">Atlıkarınca    </option>
+                        <option value="Slider">Kaydırıcı</option>
+                    </select>
+                </div>
+
+                <div class="upload__box">
+                    <div class="upload__btn-box">
+                        <label class="upload__btn">
+                            <p style="color: aliceblue;">📁 Resimleri Seç veya Sürükle</p>
+  <input type="file" multiple class="upload__inputfile" data-max_length="20">
+                        </label>
+                    </div>
+                    <div class="upload__img-wrap"></div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="sin-uidb">Izgara Galeri için Arka Plan Görseli</div>
+                <div class="upload__box">
+                    <div class="upload__btn-box">
+                        <label class="upload__btn">
+                            <p style="color: aliceblue;">📁 Resimleri Seç veya Sürükle</p>
+  <input type="file" multiple class="upload__inputfile" data-max_length="20">
+                        </label>
+                    </div>
+                    <div class="upload__img-wrap"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+                                        <!--dasboard-content-item end-->											
+                                        <!--dasboard-content-item-->
+                                        <div class="dasboard-content-item" style="margin-top: 20px">
+                                            <div class="dashboard-widget-title-single">Emlak Detayları</div>
+                                            <div class="custom-form">
+                                                <div class="row">
+                                                    <div class="col-lg-6">
+                                                        <div class="row">
+                                                            <div class="col-lg-6">
+                                                                <!-- listsearch-input-item -->
+                                                                <div class="cs-intputwrap">
+                                                                    <i class="fa-light fa-chart-area"></i>
+                                                                    <input type="text"   placeholder="Metrekare(m²):"  name="area">
+                                                                </div>
+                                                                <!-- listsearch-input-item -->												
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <!-- listsearch-input-item -->
+                                                                <div class="cs-intputwrap">
+                                                                    <i class="fa-light fa-bed"></i>
+                                                                    <input type="text"   placeholder="Yatak Odası:"  name="bedrooms">
+                                                                </div>
+                                                                <!-- listsearch-input-item -->												
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <!-- listsearch-input-item -->
+                                                                <div class="cs-intputwrap">
+                                                                    <i class="fa-light fa-bath"></i>
+                                                                    <input type="text"   placeholder="Banyo:"  name="bathrooms">
+                                                                </div>
+                                                                <!-- listsearch-input-item -->												
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <!-- listsearch-input-item -->
+                                                                <div class="cs-intputwrap">
+                                                                    <i class="fa-light fa-car"></i>
+                                                                    <input type="text"   placeholder="Park Alanı:"  name="parking">
+                                                                </div>
+                                                                <!-- listsearch-input-item -->												
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <!-- listsearch-input-item -->
+                                                                <div class="cs-intputwrap">
+                                                                    <i class="fa-light fa-users"></i>
+                                                                    <input type="text"   placeholder="Konaklama:"  name="accomodation">
+                                                                </div>
+                                                                <!-- listsearch-input-item -->												
+                                                            </div>
+                                                            <div class="col-lg-6">
+                                                                <!-- listsearch-input-item -->
+                                                                <div class="cs-intputwrap">
+                                                                    <i class="fa-light fa-globe-pointer"></i>
+                                                                    <input type="text"   placeholder="Web sitesi:"  name="website">
+                                                                </div>
+                                                                <!-- listsearch-input-item -->												
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="cs-intputwrap">				
+                                                            <textarea name="property_message" id="comments" cols="40" rows="3" placeholder="Emlak Detayları:"></textarea>							
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="dashboard-widget-title-single">Olanaklar:</div>
+                                                        <ul class="  filter-tags no-list-style ds-tg">
+                                                            <li>
+                                                                <input id="amenities-checkbox" type="checkbox" name="wifi" {{if .Wifi}}checked{{end}}>
+                                                                <label for="amenities-checkbox"> Wi Fi</label>
+                                                            </li>
+                                                            <li>
+                                                                <input id="amenities-checkbox" type="checkbox" name="pool" {{if .Pool}}checked{{end}}>
+                                                                <label for="amenities-checkbox">Havuz</label>
+                                                            </li>
+                                                            <li>
+                                                                <input id="amenities-checkbox" type="checkbox" name="security" {{if .Security}}checked{{end}}>
+                                                                <label for="amenities-checkbox"> Güvenlik</label>
+                                                            </li>
+                                                            <li>
+                                                                <input id="amenities-checkbox" type="checkbox" name="laundry_room" {{if .LaundryRoom}}checked{{end}} >
+                                                                <label for="amenities-checkbox"> Çamaşır Odası</label>
+                                                            </li>
+                                                            <li>
+                                                                <input id="amenities-checkbox" type="checkbox" name="equipped_kitchen" {{if .EquippedKitchen}}checked{{end}} >
+                                                                <label for="amenities-checkbox"> Donanımlı Mutfak</label>
+                                                            </li>
+                                                            <li>
+                                                                <input id="amenities-checkbox" type="checkbox" name="air_conditioning" {{if .AirConditioning}}checked{{end}}>
+                                                                <label for="amenities-checkbox">Klima</label>
+                                                            </li>
+                                                            <li>
+                                                                <input id="amenities-checkbox" type="checkbox" name="parking_" {{if .Parking}}checked{{end}}>
+                                                                <label for="amenities-checkbox">Park</label>
+                                                            </li>
+                                                            <li>
+                                                                <input id="amenities-checkbox" type="checkbox" name="garage_atached" {{if .GarageAtached}}checked{{end}} >
+                                                                <label for="amenities-checkbox">Garaj</label>
+                                                            </li>
+                                                            <li>
+                                                                <input id="amenities-checkbox" type="checkbox" name="fireplace" {{if .Fireplace}}checked{{end}}>
+                                                                <label for="amenities-checkbox"> Şömine</label>
+                                                            </li>
+                                                            <li>
+                                                                <input id="amenities-checkbox" type="checkbox" name="window_covering" {{if .WindowCovering}}checked{{end}}>
+                                                                <label for="amenities-checkbox"> Pencere Kaplaması</label>
+                                                            </li>
+                                                            <li>
+                                                                <input id="amenities-checkbox" type="checkbox" name="backyard" {{if .Backyard}}checked{{end}}>
+                                                                <label for="amenities-checkbox">Arka Bahçe</label>
+                                                            </li>
+                                                            <li>
+                                                                <input id="amenities-checkbox" type="checkbox" name="fitness_gym" {{if .FitnessGym}}checked{{end}}>
+                                                                <label for="amenities-checkbox">Fitness Salonu</label>
+                                                            </li>
+                                                            <li>
+                                                                <input id="amenities-checkbox" type="checkbox" name="elevator" {{if .Elevator}}checked{{end}}>
+                                                                <label for="amenities-checkbox">Asansör</label>
+                                                            </li>
+                                                            <li id="other-amenities-container" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                                                                <div class="other-amenity" style="display: flex; align-items: center; gap: 10px;">
+                                                                    <input type="text" placeholder="Diğer Özellikleri buraya yazın..." style="flex:1; padding:8px 12px; border-radius:5px; border:1px solid #ccc;">
+                                                                    <input type="checkbox" class="other-amenity-checkbox" style="width:20px; height:20px;">
+                                                                    <label style="margin:0; font-weight:500;">Var</label>
+                                                                </div>
+                                                            </li>
+
+
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="dashboard-widget-title-single">Plan ve Broşürleri Ekle:</div>
+                                                        <!-- listsearch-input-item -->
+                                                        <form class="fuzone">
+                                                            <div class="upload__box">
+                                                                <div class="upload__btn-box">
+                                                                    <label class="upload__btn">
+                                                                        <p style="color: aliceblue;">📁 Resimleri Seç veya Sürükle</p>
+                                            <input type="file" multiple class="upload__inputfile" data-max_length="20">
+                                                                    </label>
+                                                                </div>
+                                                                <div class="upload__img-wrap"></div>
+                                                            </div>
+                                                        </form>
+                                                        <!-- listsearch-input-item -->									
+                                                    </div>
+                                                    <div class="col-lg-12">
+                                                        <div class="dashboard-widget-title-single" style="margin-top: 20px">
+                                                            Akordeon Widget'ı
+                                                            <div class="onoffswitch-wrap_db">
+                                                                <div class="onoffswitch">
+                                                                    <input type="checkbox" name="accordion_exist" class="onoffswitch-checkbox" id="myonoffswitch5" {{if .AccordionExist}}checked{{end}}>
+                                                                    <label class="onoffswitch-label" for="myonoffswitch5">
+                                                                    <span class="onoffswitch-inner"></span>
+                                                                    <span class="onoffswitch-switch"></span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- add_acc-item-wrap -->
+                                                        <div class="add_acc-item-wrap">
+                                                            <div class="add_acc-container">
+                                                                <div class="add_acc-item">
+                                                                    <!-- listsearch-input-item -->
+                                                                    <div class="cs-intputwrap">
+                                                                        <i class="fa-light fa-globe-pointer"></i>
+                                                                        <input type="text"   placeholder="Accardion title:"  name="accordion_title">
+                                                                    </div>
+                                                                    <!-- listsearch-input-item -->	 						
+                                                                    <div class="cs-intputwrap">				
+                                                                        <textarea name="accordion_details"   cols="40" rows="3" placeholder="Accardion Details:"></textarea>							
+                                                                    </div>
+                                                                    <span class="remove-rp tolt" data-microtip-position="left" data-tooltip="Remove Item"><i class="fa-light fa-trash"></i></span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="add-acc">Ek Özellikler Ekle</div>
+                                                        </div>
+                                                        <!-- add_acc-item-wrap end -->									
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="dashboard-widget-title-single" style="margin-top: 20px">
+                                                            Video Widget
+                                                            <div class="onoffswitch-wrap_db">
+                                                                <div class="onoffswitch">
+                                                                    <input type="checkbox" name="video_exist" class="onoffswitch-checkbox" id="myonoffswitch51" {{if .VideoExist}}checked{{end}}>
+                                                                    <label class="onoffswitch-label" for="myonoffswitch51">
+                                                                    <span class="onoffswitch-inner"></span>
+                                                                    <span class="onoffswitch-switch"></span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- listsearch-input-item -->
+                                                        <div class="cs-intputwrap">
+                                                            <i class="fa-light fa-input-text"></i>
+                                                            <input type="text"   placeholder="Video Başlığı" name="video_title">
+                                                        </div>
+                                                        <!-- listsearch-input-item -->								
+                                                        <!-- listsearch-input-item -->
+                                                        <div class="cs-intputwrap">
+                                                            <i class="fa-brands fa-youtube"></i>
+                                                            <input type="text"   placeholder="Youtube urlsi" name="youtube_url">
+                                                        </div>
+                                                        <!-- listsearch-input-item -->
+                                                        <!-- listsearch-input-item -->
+                                                        <div class="cs-intputwrap">
+                                                            <i class="fa-brands fa-vimeo-v"></i>
+                                                            <input type="text"   placeholder="Vimeo urlsi" name="vimeo_url">
+                                                        </div>
+                                                        <!-- listsearch-input-item -->
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="dashboard-widget-title-single" style="margin-top: 20px">Premium Özellikler</div>
+                                                        <!-- listsearch-input-item -->
+                                                        <div class="cs-intputwrap">
+                                                            <div class="content-widget-switcher">
+                                                                <span class="content-widget-switcher-title">Benzer emlak</span>
+                                                                <div class="onoffswitch">
+                                                                    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitchmc423" checked="">
+                                                                    <label class="onoffswitch-label" for="myonoffswitchmc423">
+                                                                    <span class="onoffswitch-inner"></span>
+                                                                    <span class="onoffswitch-switch"></span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- listsearch-input-item -->									
+                                                        <!-- listsearch-input-item -->
+                                                        <div class="cs-intputwrap">
+                                                            <div class="content-widget-switcher">
+                                                                <span class="content-widget-switcher-title">Fiyat Değişimi</span>
+                                                                <div class="onoffswitch">
+                                                                    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitchmc2423" checked="">
+                                                                    <label class="onoffswitch-label" for="myonoffswitchmc2423">
+                                                                    <span class="onoffswitch-inner"></span>
+                                                                    <span class="onoffswitch-switch"></span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- listsearch-input-item -->	
+                                                        <!-- listsearch-input-item -->
+                                                        <div class="cs-intputwrap">
+                                                            <div class="content-widget-switcher">
+                                                                <span class="content-widget-switcher-title">Gooogle Haritalar</span>
+                                                                <div class="onoffswitch">
+                                                                    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitchmc823" checked="">
+                                                                    <label class="onoffswitch-label" for="myonoffswitchmc823">
+                                                                    <span class="onoffswitch-inner"></span>
+                                                                    <span class="onoffswitch-switch"></span>
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- listsearch-input-item -->						
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Spinner -->
+                                            <div id="loader" class="css3-spinner d-none" style="--cnvs-loader-color:var(--cnvs-themecolor);">
+                                                <div class="css3-spinner-bounce1"></div>
+                                                <div class="css3-spinner-bounce2"></div>
+                                                <div class="css3-spinner-bounce3"></div>
+                                            </div>
+                                            <button type="submit" class="commentssubmit" style="margin-top: 10px"><span>Mülkü Ekle</span></button>		
+                                        </div>
+                                        <!--dasboard-content-item end-->
+                                    </div>
+                                </div>
+                            
+
+                                
+                            
+                            
+
+                            <!-- pricing-column end-->											
+                        </div>
+                        <div class="limit-box"></div>
+                    </div>
+                    <!--boxed-container end-->
+                    </form>
+                </div>
+                <!--main-content end-->
+                <div class="to_top-btn-wrap">
+                    <div class="to-top to-top_btn"><span>Başa Dön</span> <i class="fa-solid fa-arrow-up"></i></div>
+                    <div class="svg-corner svg-corner_white"  style="top:0;left:  -40px; transform: rotate(-90deg)"></div>
+                    <div class="svg-corner svg-corner_white"  style="top:0;right: -40px; transform: rotate(-180deg)"></div>
+                </div>
+            </div>
+            <!-- container end-->
+        </div>
+        <!--content  end-->
+        <!--main-footer-->
+        {{template "partials/footer" .}}
+        <!--main-footer end-->
+    </div>
+    <!--warpper end-->
+        
+    <!--wish-list-wrap-->
+    <div class="wish-list-wrap">
+        <div class="wish-list-close clwl_btn"><i class="fa-regular fa-xmark"></i></div>
+        <div class="wish-list_header">
+            <div class="wish-list-title">Your Wishlist <span>3</span></div>
+        </div>
+        <div class="wish-list-container">
+            <!--wish-list-item-->
+            <div class="wish-list-item fl-wrap">
+                <div class="wish-list-img"><a href="ilan.html"><img src="images/all/thumbnails/1.jpg" alt=""></a>  
+                </div>
+                <div class="wish-list-descr">
+                    <h4><a href="ilan.html">Urban House</a></h4>
+                    <div class="geodir-category-location fl-wrap"><a href="#"> 40 Journal Square  , NJ, USA</a></div>
+                    <div class="wish-list-price"> $ 320,000</div>
+                    <div class="clear-wishlist"><i class="fa-regular fa-trash-can"></i></div>
+                </div>
+            </div>
+            <!--wish-list-item end-->
+            <!--wish-list-item-->
+            <div class="wish-list-item fl-wrap">
+                <div class="wish-list-img"><a href="ilan.html"><img src="images/all/thumbnails/2.jpg" alt=""></a>  
+                </div>
+                <div class="wish-list-descr">
+                    <h4><a href="ilan.html">Luxury Family Home</a></h4>
+                    <div class="geodir-category-location fl-wrap"><a href="#">  40 Journal Square  , NJ, USA</a></div>
+                    <div class="wish-list-price">  $ 1500 - per month</div>
+                    <div class="clear-wishlist"><i class="fa-regular fa-trash-can"></i></div>
+                </div>
+            </div>
+            <!--wish-list-item end-->
+            <!--wish-list-item-->
+            <div class="wish-list-item fl-wrap">
+                <div class="wish-list-img"><a href="ilan.html"><img src="images/all/thumbnails/3.jpg" alt=""></a>  
+                </div>
+                <div class="wish-list-descr">
+                    <h4><a href="ilan.html">Modern Apartment</a></h4>
+                    <div class="geodir-category-location fl-wrap"><a href="#">  40 Journal Square  , NJ, USA</a></div>
+                    <div class="wish-list-price"> $ 1,600,000</div>
+                    <div class="clear-wishlist"><i class="fa-regular fa-trash-can"></i></div>
+                </div>
+            </div>
+            <!--wish-list-item end-->					
+        </div>
+        <div class="wish-list-footer">
+            <div class="clear_wishlist">  Clear Wishlist</div>
+        </div>
+    </div>
+    <!--wish-list-wrap end-->
+    <div class="mob-nav-overlay fs-wrapper"></div>
+    <div class="body-overlay fs-wrapper wishlist-wrap-overlay clwl_btn"></div>
+    <!-- progress-bar  -->
+    <div class="progress-bar-wrap">
+        <div class="progress-bar color-bg"></div>
+    </div>
+    <!-- progress-bar end -->			
+</div>
+<!-- Main end -->
+

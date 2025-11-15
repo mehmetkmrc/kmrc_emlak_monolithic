@@ -4,10 +4,12 @@ import (
 	"context"
 	"fmt"
 	"kmrc_emlak_mono/database"
+	"kmrc_emlak_mono/dto"
 	"kmrc_emlak_mono/models"
 	"strconv"
-	"github.com/google/uuid"
+
 	"github.com/gofiber/fiber/v3"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -558,16 +560,22 @@ func ProjectWeb(c fiber.Ctx) error {
 
 func DashboardWeb(c fiber.Ctx) error {
 
-	//user_ID := c.Params("user_id")
+	 user := c.Locals("UserDetail")
+    if user == nil {
+        return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
+    }
+
+    userInfo := user.(*dto.GetUserResponse)
 	
-	path := "dashboard"
+	path := "kullanici-panel"
 	return c.Render(path, fiber.Map{
-		"Title": "Dashboard",
+		"Title": "Kullanıcı Paneli",
+		"User": userInfo,
 	}, "layouts/main")
 }
 
 func AddPropertyWeb(c fiber.Ctx) error{
-	path := "add-property"
+	path := "yeni-ilan-ekle"
 	return c.Render(path, fiber.Map{
 		"Title": "Mülk Ekle",
 	}, "layouts/main")

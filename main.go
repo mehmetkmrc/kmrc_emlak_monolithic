@@ -95,9 +95,9 @@ func main() {
 	app.Get("/ilan/:property_id", web.ListingSingle)
 	app.Get("/listing", web.ListingWeb)
 	app.Get("/projects", web.ProjectWeb)
-	route0 := app.Group("/dashboard")
+	route0 := app.Group("/kullanici-panel")
 	route0.Get("/", web.DashboardWeb, auth.IsAuthorized, auth.GetUserDetail,   auth.RateLimiter(120, time.Minute))
-	route0.Get("/add-new-property", web.AddPropertyWeb, auth.IsAuthorized, auth.GetUserDetail,  auth.RateLimiter(120, time.Minute))
+	route0.Get("/yeni-ilan-ekle", web.AddPropertyWeb, auth.IsAuthorized, auth.GetUserDetail,  auth.RateLimiter(120, time.Minute))
 	app.Post("/logout", auth.IsAuthorized, auth.Logout)
 	//app.Get("/login", web.LoginPage, auth.RateLimiter(5, time.Minute))
 
