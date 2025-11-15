@@ -121,53 +121,43 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             // **3. Adım: Nearby oluştur**
-            if (globalNearbyArray.length === 0) {
-                console.log("Nearby verisi yok, atlanıyor.");
-            } else {
-                for (const item of globalNearbyArray) {
-                    const nearbyItem = {
-                        property_id: propertyID.property_id,
-                        places: item.places,
-                        distance: item.distance
-                    };
+            if (globalNearbyArray.length > 0) {
 
-                    try {
-                        // **3. Adım: Nearby oluştur** (form submit sırasında)
-                        for (let i = 0; i < globalNearbyArray.length; i++) {
-                            
+    try {
+        for (let i = 0; i < globalNearbyArray.length; i++) {
 
-                            const nearbyData = {
-                                property_id: propertyID.property_id,
-                                places: globalNearbyArray[i].places,
-                                distance: globalNearbyArray[i].distance,
-                            };
+            const nearbyData = {
+                property_id: propertyID.property_id,
+                places: globalNearbyArray[i].places,
+                distance: globalNearbyArray[i].distance,
+            };
 
-                            const nearbyResponse = await fetch("http://127.0.0.1:8081/property/add-nearby", {
-                                method: "POST",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify(nearbyData),
-                            });
+            const nearbyResponse = await fetch("http://127.0.0.1:8081/property/add-nearby", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(nearbyData),
+            });
 
-                            if (!nearbyResponse.ok) {
-                                const errorText = await nearbyResponse.text();
-                                showModal("error", "Hata!", `Nearby oluşturulurken bir hata oluştu! Hata: ${errorText}`);
-                                return;
-                            }
-
-                            const nearbyResult = await nearbyResponse.json();
-                            if (nearbyResult.status !== 200) {
-                                showModal("error", "Hata!", "Nearby oluşturulamadı: " + nearbyResult.message);
-                                return;
-                            }
-                        }
-
-                    } catch (error) {
-                        console.error("Nearby API hatası:", error);
-                        showModal("error", "Hata!", `Nearby oluşturulurken bir hata oluştu! Hata: ${error.message}`);
-                        return;
-                    }
-                }
+            if (!nearbyResponse.ok) {
+                const errorText = await nearbyResponse.text();
+                showModal("error", "Hata!", `Nearby oluşturulurken hata: ${errorText}`);
+                return;
             }
+
+            const nearbyResult = await nearbyResponse.json();
+
+            if (nearbyResult.status !== 200) {
+                showModal("error", "Hata!", "Nearby oluşturulamadı: " + nearbyResult.message);
+                return;
+            }
+        }
+
+    } catch (error) {
+        console.error("Nearby API hatası:", error);
+        showModal("error", "Hata!", `Nearby oluşturulurken hata: ${error.message}`);
+    }
+}
+
 
 
 
@@ -423,7 +413,7 @@ document.addEventListener("DOMContentLoaded", setupOtherAmenities);
 
 
 
-            showModal("success", "Başarılı!", "Ürün başarıyla eklendi!");
+            showModal("success", "Başarılı!", "Emlak başarıyla eklendi!");
 
 
         } catch (error) {

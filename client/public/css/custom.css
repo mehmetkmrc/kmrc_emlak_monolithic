@@ -222,3 +222,22 @@
     font-size: 14px;
 }
 
+.map-container {
+    position: relative; /* ÖNEMLİ */
+}
+
+/* Listenin harita üzerine gelmesi için: */
+.map-overlay-list {
+    position: absolute;
+    top: 10px;           /* Haritanın üstünden boşluk */
+    left: 10px;          /* Soldan boşluk */
+    z-index: 9999;       /* Haritanın üstünde dursun */
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 8px;
+    max-height: 300px;   /* Çok uzarsa scroll çıksın */
+    overflow-y: auto;
+    width: 200px;        /* Genişlik */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+

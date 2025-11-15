@@ -1,0 +1,133 @@
+/* ================================
+   MODAL BACKDROP
+================================ */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.45);
+    z-index: 9998;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+/* fade sınıfı */
+.modal.fade {
+    opacity: 0;
+}
+
+/* modal gösterildiğinde */
+.modal.show {
+    display: block;
+    opacity: 1;
+}
+
+/* ================================
+   DIALOG
+================================ */
+.modal-dialog {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin: 3rem auto;
+    transform: translateY(-20px);
+    transition: transform 0.25s ease;
+}
+
+.modal.show .modal-dialog {
+    transform: translateY(0);
+}
+
+/* ================================
+   CONTENT
+================================ */
+.modal-content {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+/* ================================
+   HEADER
+================================ */
+.modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Close button */
+.btn.btn-icon {
+    cursor: pointer;
+}
+
+/* ================================
+   BODY
+================================ */
+.modal-body {
+    padding: 20px;
+}
+
+/* ================================
+   FOOTER
+================================ */
+.modal-footer {
+    padding: 12px 20px;
+    border-top: 1px solid #eee;
+    text-align: right;
+}
+
+/* Close buttons */
+[data-bs-dismiss="modal"] {
+    cursor: pointer;
+}
+
+/* Body scroll kilidi */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* Sadece modal içindeki .btn */
+.modal .btn {
+    display: inline-block;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+/* Sadece modal içindeki .btn-light */
+.modal .btn-light {
+    background-color: #f3f4f6; /* Açık gri */
+    color: #333;
+    border: 1px solid #e2e2e2;
+}
+
+.modal .btn-light:hover {
+    background-color: #e5e7eb;
+}
+
+.modal .btn-light:active {
+    background-color: #d6d8db;
+}
+
+/* Success/Error yazı renkleri (modal body içi güvenli) */
+.modal .text-success {
+    color: #28a745;
+}
+
+.modal .text-danger {
+    color: #dc3545;
+}

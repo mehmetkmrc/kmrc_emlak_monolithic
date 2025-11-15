@@ -255,7 +255,7 @@ func ListingSingle(c fiber.Ctx) error {
 		}
 	}
 	
-	path := "listing-single"
+	path := "ilan"
 	return c.Render(path, fiber.Map{
 		"Title": title,
 		"FilteredProperties": filteredProperties,
@@ -284,6 +284,6 @@ type Property struct {
 
 
 for main.go:
-app.Get("/listing-single", web.ListingSingle)
+app.Get("/ilan", web.ListingSingle)
 
 

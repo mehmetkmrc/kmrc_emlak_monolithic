@@ -216,6 +216,8 @@ func ListingSingle(c fiber.Ctx) error {
 				bi.keywords as keywords,
 				loc.property_id as property_id,
 				loc.address as adress,
+				loc.latitude as latitude,
+				loc.longitude as longitude,
 				a.amenities_id as amenities_id,
 				a.wifi as wifi,
 				a.pool as pool,
@@ -272,6 +274,8 @@ func ListingSingle(c fiber.Ctx) error {
 			&basicInfos.Keywords,
 			&location.PropertyID,
 			&location.Address,
+			&location.Latitude,
+			&location.Longitude,
 			&amenities.AmenitiesID,
 			&amenities.Wifi,
 			&amenities.Pool,
@@ -308,6 +312,29 @@ func ListingSingle(c fiber.Ctx) error {
 		property.Amenities = []*models.Amenities{&amenities}
 		property.Nearby = []*models.Nearby{&nearby}
 		property.PropertyDetails = &propertyDetails
+		GetNearbyByPropertyID := func(ctx context.Context, propertyID uuid.UUID) ([]*models.Nearby, error) {
+			rows, err := database.DBPool.Query(ctx, `
+				SELECT nearby_id, property_id, places, distance
+				FROM nearby
+				WHERE property_id = $1
+			`, propertyID)
+			if err != nil {
+				return nil, err
+			}
+			defer rows.Close()
+
+			var nearbyList []*models.Nearby
+			for rows.Next() {
+				var n models.Nearby
+				err := rows.Scan(&n.NearbyID, &n.PropertyID, &n.Places, &n.Distance)
+				if err != nil {
+					continue
+				}
+				nearbyList = append(nearbyList, &n)
+			}
+
+			return nearbyList, nil
+		}
 
 		//Resimleri getiren fonksiyon
 		GetImagesByPropertyID := func(ctx context.Context, propertyID uuid.UUID) ([]*models.Image, error) {
@@ -341,6 +368,7 @@ func ListingSingle(c fiber.Ctx) error {
 			return images, nil
 		}
 		// Resimleri getir
+
 		images, err := GetImagesByPropertyID(ctx, property.PropertyID)
 		if err != nil {
 			fmt.Println("Resim getirme hatası: ", err)
@@ -354,6 +382,14 @@ func ListingSingle(c fiber.Ctx) error {
 			}
 			property.PropertyMedia = []*models.PropertyMedia{propertyMedia} // Slice içinde sakla
 		}
+
+		nearbyList, err := GetNearbyByPropertyID(ctx, property.PropertyID)
+if err != nil {
+    property.Nearby = []*models.Nearby{}
+} else {
+    property.Nearby = nearbyList
+}
+
 		return &property, nil
 	}
 
@@ -363,7 +399,7 @@ func ListingSingle(c fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).SendString("Veri alınırken hata oluştu.")
 	}
 
-	path := "listing-single" // Şablon dosyanızın adı
+	path := "ilan" // Şablon dosyanızın adı
 	return c.Render(path, fiber.Map{
 		"Title":    property.BasicInfo.MainTitle, // Şablonunuza göre başlık
 		"Property": property,                      // Tüm mülk bilgilerini şablona gönderiyoruz.
