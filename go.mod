@@ -43,6 +43,7 @@ require (
 	github.com/gofiber/template v1.8.3 // indirect
 	github.com/gofiber/utils v1.1.0 // indirect
 	github.com/jackc/pgx/v5 v5.7.2
+	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.10.9
 	go.uber.org/zap v1.27.0
 )
