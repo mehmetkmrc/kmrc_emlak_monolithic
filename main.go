@@ -98,6 +98,8 @@ func main() {
 	route0 := app.Group("/kullanici-panel")
 	route0.Get("/", web.DashboardWeb, auth.IsAuthorized, auth.GetUserDetail,   auth.RateLimiter(120, time.Minute))
 	route0.Get("/yeni-ilan-ekle", web.AddPropertyWeb, auth.IsAuthorized, auth.GetUserDetail,  auth.RateLimiter(120, time.Minute))
+	route0.Get("/profili-duzenle", web.EditProfile, auth.IsAuthorized, auth.GetUserDetail,  auth.RateLimiter(120, time.Minute))
+	
 	app.Post("/logout", auth.IsAuthorized, auth.Logout)
 	//app.Get("/login", web.LoginPage, auth.RateLimiter(5, time.Minute))
 
@@ -119,6 +121,8 @@ func main() {
 	propertier.Post("/add-accordion-widget", property.AddAccordionWidget)
 	propertier.Post("/add-plans-brochures", property.AddPlansBrochures)
 	
+	
+	//Burası da user edit sayfası olaak
 	
 
 

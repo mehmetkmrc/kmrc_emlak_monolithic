@@ -15,6 +15,7 @@ type (
 		Email   string `json:"email"`
 		Name    string `json:"first_name"`
 		Surname string `json:"last_name"`
+		Phone 	string `json:"phone"`
 	}
 
 	GetUserResponse struct {
@@ -22,6 +23,7 @@ type (
 		Name        string    `json:"first_name"`
 		Surname     string    `json:"last_name"`
 		Email       string    `json:"email"`
+		Phone 		string 	  `json:"phone"`
 		CreatedAt   time.Time `json:"created_at"`
 	}
 

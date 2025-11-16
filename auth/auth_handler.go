@@ -252,6 +252,7 @@ func GetUserDetail(c fiber.Ctx) error {
 			Name:      userData.Name,
 			Surname:   userData.Surname,
 			Email:     userData.Email,
+			Phone: 		userData.Phone,
 			CreatedAt: userData.CreatedAt,
 		}
 	}

@@ -3,6 +3,7 @@ package web
 import (
 	"context"
 	"fmt"
+	
 	"kmrc_emlak_mono/database"
 	"kmrc_emlak_mono/dto"
 	"kmrc_emlak_mono/models"
@@ -580,3 +581,18 @@ func AddPropertyWeb(c fiber.Ctx) error{
 		"Title": "Mülk Ekle",
 	}, "layouts/main")
 }
+
+func EditProfile(c fiber.Ctx) error {
+    user := c.Locals("UserDetail")
+    if user == nil {
+        return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
+    }
+
+    userData := user.(*dto.GetUserResponse)
+
+    return c.Render("profili-duzenle", fiber.Map{
+        "Title": "Profili Düzenle",
+        "User":  userData,
+    }, "layouts/main")
+}
+
