@@ -1,0 +1,13 @@
+DROP TABLE IF EXISTS public.sessions;
+DROP TABLE IF EXISTS public.accordion_widget;
+DROP TABLE IF EXISTS public.video_widget;
+DROP TABLE IF EXISTS public.property_media;
+DROP TABLE IF EXISTS public.plans_brochures;
+DROP TABLE IF EXISTS public.nearby;
+DROP TABLE IF EXISTS public.location;
+DROP TABLE IF EXISTS public.amenities;
+DROP TABLE IF EXISTS public.basic_infos;
+DROP TABLE IF EXISTS public.property_details;
+DROP TABLE IF EXISTS public.images;
+DROP TABLE IF EXISTS public.property;
+DROP TABLE IF EXISTS public.users;
