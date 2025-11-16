@@ -47,4 +47,12 @@ type (
 		RefreshToken string  `json:"refresh_token"`
 		RefreshPublic string `json:"refresh_public"`
 	}
+	UserUpdateRequest struct {
+		UserID  string `json:"user_id"`
+        Name    string `json:"name"`
+        Surname string `json:"surname"`
+        Email   string `json:"email"`
+        Phone   string `json:"phone"`
+		AboutText string `json:"about_text"`
+	}
 )

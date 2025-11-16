@@ -1,4 +1,6 @@
 <!--loader-->
+<input type="hidden" id="userIDHidden" value="{{ .User.UserID }}">
+
 <div class="loader-wrap">
     <div class="loader-inner">
         <svg>
@@ -265,7 +267,7 @@
                                                         <textarea name="comments" id="comments" cols="40" rows="3"
                                                             placeholder="About Text:"></textarea>
                                                     </div>
-                                                    <button class="commentssubmit">Update</button>
+                                                    <button id="updateProfileBtn" class="commentssubmit">Update</button>
                                                 </div>
                                             </div>
                                             <!--dasboard-content-item end-->
@@ -320,7 +322,7 @@
                                                     </div>
                                                     <!-- listsearch-input-item -->
                                                 </div>
-                                                <button class="commentssubmit">Update</button>
+                                                <button id="updateProfileBtn">Update</button>
                                             </div>
                                             <!--dasboard-content-item end-->
                                         </div>

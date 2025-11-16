@@ -9,6 +9,7 @@ import (
 	"kmrc_emlak_mono/database"
 	"kmrc_emlak_mono/middleware"
 	"kmrc_emlak_mono/property"
+	"kmrc_emlak_mono/user"
 
 	"kmrc_emlak_mono/web"
 	"log"
@@ -120,6 +121,10 @@ func main() {
 	propertier.Post("/add-nearby", property.AddNearby)
 	propertier.Post("/add-accordion-widget", property.AddAccordionWidget)
 	propertier.Post("/add-plans-brochures", property.AddPlansBrochures)
+
+
+	userp := app.Group("/user")
+	userp.Put("/update-user-base-info", user.UpdateUser, auth.IsAuthorized,middleware.UserMiddleware, property.AddProperty,   auth.GetUserDetail)
 	
 	
 	//Burası da user edit sayfası olaak
