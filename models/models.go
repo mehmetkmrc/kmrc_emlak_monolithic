@@ -16,10 +16,22 @@ type User struct {
 	Surname   string    `json:"last_name"`
 	Email     string    `json:"email"`
 	Phone 	  string 	`json:"phone"`
-	About 	  string	`json:"about_text"`
+	AboutText string	`json:"about_text"`
 	Password  string    `json:"password"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+}
+
+type UserSocialLinks struct {
+	ID int `json:"id" db:"id"`
+	UserID string `json:"user_id" db:"user_id"`
+	Facebook string `json:"facebook" db:"facebook"`
+	Tiktok string `json:"tiktok" db:"tiktok"`
+	Instagram string `json:"instagram" db:"instagram"`
+	Twitter string `json:"twitter" db:"twitter"`
+	Youtube string `json:"youtube" db:"youtube"`
+	Linkedin string `json:"linkedin" db:"linkedin"`
+	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 }
 
 type Session struct{

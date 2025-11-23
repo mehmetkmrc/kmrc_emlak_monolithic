@@ -5,6 +5,7 @@ CREATE TABLE public.users (
     last_name text NOT NULL,
     email text NOT NULL UNIQUE,
     phone text,
+    about_text text,
     password text NOT NULL,
     created_at timestamp without time zone DEFAULT now(),
     updated_at time with time zone,

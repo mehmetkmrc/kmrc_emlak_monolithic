@@ -265,7 +265,7 @@
                                                     <!-- listsearch-input-item -->
                                                     <div class="cs-intputwrap">
                                                         <textarea name="comments" id="comments" cols="40" rows="3"
-                                                            placeholder="About Text:"></textarea>
+                                                            placeholder="About Text:">{{ .User.AboutText }}</textarea>
                                                     </div>
                                                     <button id="updateProfileBtn" class="commentssubmit">Update</button>
                                                 </div>
@@ -291,38 +291,44 @@
                                             <div class="dasboard-content-item">
                                                 <div class="dashboard-widget-title-single">Your Socials Links</div>
                                                 <div class="custom-form">
-                                                    <!-- listsearch-input-item -->
-                                                    <div class="cs-intputwrap">
-                                                        <i class="fa-brands fa-facebook-f"></i>
-                                                        <input type="text" placeholder="Facebook" value="">
-                                                    </div>
-                                                    <!-- listsearch-input-item -->
-                                                    <!-- listsearch-input-item -->
-                                                    <div class="cs-intputwrap">
-                                                        <i class="fa-brands fa-tiktok"></i>
-                                                        <input type="text" placeholder="TikTok" value="">
-                                                    </div>
-                                                    <!-- listsearch-input-item -->
-                                                    <!-- listsearch-input-item -->
-                                                    <div class="cs-intputwrap">
-                                                        <i class="fa-brands fa-instagram"></i>
-                                                        <input type="text" placeholder="Instagram" value="">
-                                                    </div>
-                                                    <!-- listsearch-input-item -->
-                                                    <!-- listsearch-input-item -->
-                                                    <div class="cs-intputwrap">
-                                                        <i class="fa-brands fa-x-twitter"></i>
-                                                        <input type="text" placeholder="X-Twitter" value="">
-                                                    </div>
-                                                    <!-- listsearch-input-item -->
-                                                    <!-- listsearch-input-item -->
-                                                    <div class="cs-intputwrap">
-                                                        <i class="fa-brands fa-youtube"></i>
-                                                        <input type="text" placeholder="Youtube" value="">
-                                                    </div>
-                                                    <!-- listsearch-input-item -->
+                                                <div class="cs-intputwrap">
+                                                <i class="fa-brands fa-facebook-f"></i>
+                                                <input type="text" placeholder="Facebook" id="facebook" value="{{ .Social.Facebook }}">
                                                 </div>
-                                                <button id="updateProfileBtn">Update</button>
+
+
+                                                <div class="cs-intputwrap">
+                                                <i class="fa-brands fa-tiktok"></i>
+                                                <input type="text" placeholder="TikTok" id="tiktok" value="{{ .Social.Tiktok }}">
+                                                </div>
+
+
+                                                <div class="cs-intputwrap">
+                                                <i class="fa-brands fa-instagram"></i>
+                                                <input type="text" placeholder="Instagram" id="instagram" value="{{ .Social.Instagram }}">
+                                                </div>
+
+
+                                                <div class="cs-intputwrap">
+                                                <i class="fa-brands fa-x-twitter"></i>
+                                                <input type="text" placeholder="X-Twitter" id="twitter" value="{{ .Social.Twitter }}">
+                                                </div>
+
+
+                                                <div class="cs-intputwrap">
+                                                <i class="fa-brands fa-youtube"></i>
+                                                <input type="text" placeholder="Youtube" id="youtube" value="{{ .Social.Youtube }}">
+                                                </div>
+
+
+                                                <div class="cs-intputwrap">
+                                                <i class="fa-brands fa-linkedin"></i>
+                                                <input type="text" placeholder="Linkedin" id="linkedin" value="{{ .Social.Linkedin }}">
+                                                </div>
+
+
+                                                <button id="saveSocialsBtn" class="commentssubmit">Save Socials</button>
+                                                </div>
                                             </div>
                                             <!--dasboard-content-item end-->
                                         </div>

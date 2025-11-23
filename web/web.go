@@ -3,7 +3,7 @@ package web
 import (
 	"context"
 	"fmt"
-	
+
 	"kmrc_emlak_mono/database"
 	"kmrc_emlak_mono/dto"
 	"kmrc_emlak_mono/models"
@@ -12,6 +12,7 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"go.uber.org/zap"
 )
 
 type PropertyRepository struct {
@@ -583,16 +584,82 @@ func AddPropertyWeb(c fiber.Ctx) error{
 }
 
 func EditProfile(c fiber.Ctx) error {
+    // 1) User login kontrolü
     user := c.Locals("UserDetail")
     if user == nil {
         return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
     }
 
     userData := user.(*dto.GetUserResponse)
+    userID := userData.UserID
 
+    // 2) USERS tablosundan bilgiler
+    query := `
+        SELECT 
+            first_name,
+            last_name,
+            email,
+            phone,
+            about_text
+        FROM users
+        WHERE user_id = $1
+    `
+
+    var profile models.User
+
+    row := database.DBPool.QueryRow(c.Context(), query, userID)
+
+    err := row.Scan(
+        &profile.Name,
+        &profile.Surname,
+        &profile.Email,
+        &profile.Phone,
+        &profile.AboutText,
+    )
+
+    if err != nil {
+        return c.Status(fiber.StatusInternalServerError).SendString("User data not found")
+    }
+
+    profile.UserID = userID
+
+    // -----------------------------------------
+    // 3) user_social_links tablosundan sosyal linkleri çek
+    // -----------------------------------------
+    social := &models.UserSocialLinks{UserID: userID}
+
+    socialQuery := `
+        SELECT facebook, tiktok, instagram, twitter, youtube, linkedin
+        FROM user_social_links
+        WHERE user_id = $1
+        LIMIT 1
+    `
+
+    socialRow := database.DBPool.QueryRow(c.Context(), socialQuery, userID)
+
+    err = socialRow.Scan(
+        &social.Facebook,
+        &social.Tiktok,
+        &social.Instagram,
+        &social.Twitter,
+        &social.Youtube,
+        &social.Linkedin,
+    )
+
+    if err != nil {
+        // Kayıt yoksa sorun değil
+        zap.S().Warn("No social links found for user: ", userID)
+    }
+
+    // -----------------------------------------
+    // 4) Render to View
+    // -----------------------------------------
     return c.Render("profili-duzenle", fiber.Map{
-        "Title": "Profili Düzenle",
-        "User":  userData,
+        "Title":  "Profili Düzenle",
+        "User":   profile,
+        "Social": social,
     }, "layouts/main")
 }
+
+
 

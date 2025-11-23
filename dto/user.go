@@ -48,11 +48,22 @@ type (
 		RefreshPublic string `json:"refresh_public"`
 	}
 	UserUpdateRequest struct {
-		UserID  string `json:"user_id"`
-        Name    string `json:"name"`
-        Surname string `json:"surname"`
-        Email   string `json:"email"`
-        Phone   string `json:"phone"`
-		AboutText string `json:"about_text"`
+		UserID  	string `json:"user_id"`
+        Name    	string `json:"first_name"`
+        Surname 	string `json:"last_name"`
+        Email   	string `json:"email"`
+        Phone   	string `json:"phone"`
+		AboutText 	string `json:"about_text"`
 	}
+	UpdateSocialLinksRequest struct {
+		UserID  	string `json:"user_id"`
+		Facebook string `json:"facebook"`
+		Tiktok string `json:"tiktok"`
+		Instagram string `json:"instagram"`
+		Twitter string `json:"twitter"`
+		Youtube string `json:"youtube"`
+		Linkedin string `json:"linkedin"`
+		UpdatedAt time.Time `json:"updated_at"`
+	}
+	
 )
