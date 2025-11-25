@@ -100,6 +100,7 @@ func main() {
 	route0.Get("/", web.DashboardWeb, auth.IsAuthorized, auth.GetUserDetail,   auth.RateLimiter(120, time.Minute))
 	route0.Get("/yeni-ilan-ekle", web.AddPropertyWeb, auth.IsAuthorized, auth.GetUserDetail,  auth.RateLimiter(120, time.Minute))
 	route0.Get("/profili-duzenle", web.EditProfile, auth.IsAuthorized, auth.GetUserDetail,  auth.RateLimiter(120, time.Minute))
+	route0.Get("/ilanlarim", web.ListingMyProperties, auth.IsAuthorized, auth.GetUserDetail,  auth.RateLimiter(120, time.Minute))
 	
 	app.Post("/logout", auth.IsAuthorized, auth.Logout)
 	//app.Get("/login", web.LoginPage, auth.RateLimiter(5, time.Minute))

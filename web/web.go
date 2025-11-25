@@ -550,9 +550,6 @@ func ListingWeb(c fiber.Ctx) error {
 }
 
 
-
-
-
 func ProjectWeb(c fiber.Ctx) error {
 	path := "projects"
 	return c.Render(path, fiber.Map{
@@ -661,5 +658,21 @@ func EditProfile(c fiber.Ctx) error {
     }, "layouts/main")
 }
 
+func ListingMyProperties(c fiber.Ctx) error {
+    // Kullanıcı bilgilerini Locals'tan al
+    user := c.Locals("UserDetail")
+    if user == nil {
+        return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
+    }
+    userData := user.(*dto.GetUserResponse)
+    userID := userData.UserID
+
+    
+
+    return c.Render("ilanlarım", fiber.Map{
+        "Title":      "İlanlarım",
+        "Properties": userID,
+    }, "layouts/main")
+}
 
 

@@ -64,6 +64,5 @@ type (
 		Youtube string `json:"youtube"`
 		Linkedin string `json:"linkedin"`
 		UpdatedAt time.Time `json:"updated_at"`
-	}
-	
+	}	
 )
