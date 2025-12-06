@@ -740,3 +740,825 @@ func AddPlansBrochures(c fiber.Ctx) error{
 	zap.S().Info("Plans and brochures saved successfully!", plansBrochures)
 	return response.Success_Response(c, plansBrochures, "Plans and brochures uploaded successfully", fiber.StatusOK)
 }
+
+
+
+
+
+func EditProperty(c fiber.Ctx) error {
+    reqBody := new(dto.MainPropertyUpdateRequest)
+    body := c.Body()
+
+    if err := json.Unmarshal(body, reqBody); err != nil {
+        return response.Error_Response(c, "error while parsing body", err, nil, fiber.StatusBadRequest)
+    }
+
+    // Payload al
+    payload, ok := c.Locals(auth.AuthPayload).(*auth.Payload)
+    if !ok {
+        return response.Error_Response(c, "payload not found", nil, nil, fiber.StatusUnauthorized)
+    }
+
+    userID, err := uuid.Parse(payload.ID)
+    if err != nil {
+        return response.Error_Response(c, "invalid user id", err, nil, fiber.StatusBadRequest)
+    }
+
+    // PropertyID body'den al
+    propertyID, err := uuid.Parse(reqBody.PropertyID)
+    if err != nil {
+        return response.Error_Response(c, "invalid property id", err, nil, fiber.StatusBadRequest)
+    }
+
+    // Model
+    property := &models.Property{
+        PropertyID:    propertyID,
+        UserID:        userID,
+        PropertyTitle:    reqBody.PropertyTitle,
+        
+    }
+
+	UpdateMainProperty :=func(ctx context.Context, property *models.Property) (*models.Property, error) {
+    repo := &PropertyRepository{dbPool: database.DBPool}
+
+    query := `
+        UPDATE property
+        SET 
+            tariff_plan = $1,
+            title = $2
+        WHERE 
+            property_id = $3
+            AND user_id = $4
+        RETURNING user_id, property_id, tariff_plan, date, title
+    `
+
+    row := repo.dbPool.QueryRow(
+        ctx,
+        query,
+        property.TariffPlan,
+        property.PropertyTitle,
+        property.PropertyID,
+        property.UserID,
+    )
+
+    err := row.Scan(
+        &property.UserID,
+        &property.PropertyID,
+        &property.TariffPlan,
+        &property.Date,
+        &property.PropertyTitle,
+    )
+
+    if err != nil {
+        return nil, err
+    }
+
+    return property, nil
+}
+
+
+    // Update repository
+    updatedProperty, err := UpdateMainProperty(c.Context(), property)
+    if err != nil {
+        return response.Error_Response(c, "error while updating property", err, nil, fiber.StatusInternalServerError)
+    }
+
+    zap.S().Info("Property Updated Successfully:", updatedProperty)
+
+    return c.JSON(updatedProperty)
+}
+
+func EditPropertyDetails(c fiber.Ctx) error {
+	reqBody := new(dto.PropertyDetailsUpdateRequest)
+	body := c.Body()
+	if err := json.Unmarshal(body, reqBody);
+	err != nil{
+		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
+	}
+
+
+	// Middleware aracılığıyla aktarılan propertyID'yi alın
+	// propertyID, ok := c.Locals("propertyID").(uuid.UUID)
+	// if !ok {
+	// 	return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
+	// }
+
+	area, err := strconv.ParseFloat(reqBody.Area, 32)
+	if err != nil{
+		return err
+	}
+
+
+	bedrooms, err := strconv.Atoi(reqBody.Bedrooms)
+	if err != nil{
+		return err
+	}
+	bathrooms, err := strconv.Atoi(reqBody.Bathrooms)
+	if err != nil{
+		return err
+	}
+	parkings, err := strconv.Atoi(reqBody.Parking)
+	if err != nil{
+		return err
+	}
+
+
+	PropertyDetailsUpdateRequestModel := func (dto.PropertyDetailsUpdateRequest) (*models.PropertyDetails, error) {
+		propertyDetail := new(models.PropertyDetails)
+		property_id, err := uuid.Parse(reqBody.PropertyID)
+		if err != nil {
+			return nil, err
+		}
+		propertyDetail = &models.PropertyDetails{
+			PropertyID: property_id,
+			PropertyDetailsID: uuid.New(),
+			Area: float32(area),
+			Bedrooms:  bedrooms,
+			Bathrooms: bathrooms,
+			Parking: parkings,
+			Accomodation: reqBody.Accomodation,
+			Website: reqBody.Website,
+			PropertyMessage: reqBody.PropertyMessage,
+		}
+		return propertyDetail, nil
+	}
+	propertyDetailModel, err := PropertyDetailsUpdateRequestModel(*reqBody)
+	if err != nil {
+		return response.Error_Response(c, "error while trying to convert propertyDetail create request to model", err, nil, fiber.StatusBadRequest)
+	}
+	Update := func (ctx context.Context, q *PropertyRepository, propertyDetailModel *models.PropertyDetails) (*models.PropertyDetails, error){
+		query := `
+					UPDATE property_details
+					SET
+						area = $3,
+						bedrooms = $4,
+						bathrooms = $5,
+						parking = $6,
+						accomodation = $7,
+						website = $8,
+						property_message = $9 
+					WHERE
+						property_id = $10
+						AND user_id = $11
+					RETURNING property_details_id, property_id, area, bedrooms, bathrooms, parking, accomodation, website, property_message`
+		queryRow := q.dbPool.QueryRow(ctx, query, propertyDetailModel.PropertyDetailsID ,propertyDetailModel.PropertyID, propertyDetailModel.Area, propertyDetailModel.Bedrooms, propertyDetailModel.Bathrooms, propertyDetailModel.Parking, propertyDetailModel.Accomodation, propertyDetailModel.Website, propertyDetailModel.PropertyMessage)
+		err := queryRow.Scan(&propertyDetailModel.PropertyDetailsID, &propertyDetailModel.PropertyID, &propertyDetailModel.Area, &propertyDetailModel.Bedrooms, &propertyDetailModel.Bathrooms, &propertyDetailModel.Parking, &propertyDetailModel.Accomodation, &propertyDetailModel.Website, &propertyDetailModel.PropertyMessage )
+		if err != nil{
+			return nil, err
+		}
+		return propertyDetailModel, nil
+	}
+	AddPropertyDetails := func (ctx context.Context, propertyDetail *models.PropertyDetails) (*models.PropertyDetails, error) {
+		repo := &PropertyRepository{dbPool: database.DBPool}
+		return Update(ctx, repo, propertyDetail)
+	}
+
+	property_detail, err := AddPropertyDetails(c.Context(), propertyDetailModel)
+	if err != nil{
+		return response.Error_Response(c, "error while trying to create property detail", err, nil, fiber.StatusBadRequest)
+	}
+	zap.S().Info("PropertDetails Updated Successfully! PropertyDetails:", property_detail)
+	return response.Success_Response(c, propertyDetailModel, "Property Model Updated Successfully", fiber.StatusOK)
+}
+
+func EditVideoWidget(c fiber.Ctx) error {
+	reqBody := new(dto.VideoWidgetUpdateRequest)
+	body := c.Body()
+	if err := json.Unmarshal(body, reqBody);
+	err != nil{
+		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
+	}
+	// Middleware aracılığıyla aktarılan propertyID'yi alın
+	// propertyID, ok := c.Locals("propertyID").(uuid.UUID)
+	// if !ok {
+	// 	return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
+	// }
+	VideoWidgetUpdateRequestModel := func (dto.VideoWidgetUpdateRequest) (*models.VideoWidget, error) {
+		videoWidget := new(models.VideoWidget)
+		property_id, err := uuid.Parse(reqBody.PropertyID)
+		if err != nil {
+			return nil, err
+		}
+		videoWidget = &models.VideoWidget{
+			PropertyID: property_id,
+			VideoWidgetID: uuid.New(),
+			VideoExist: reqBody.VideoExist,
+			VideoTitle: reqBody.VideoTitle,
+			YouTubeUrl: reqBody.YouTubeUrl,
+			VimeoUrl: reqBody.VimeoUrl,
+		}
+		return videoWidget, nil
+	}
+	videoWidgetModel, err := VideoWidgetUpdateRequestModel(*reqBody)
+	if err != nil {
+		return response.Error_Response(c, "error while trying to convert videoWidget create request to model", err, nil, fiber.StatusBadRequest)
+	}
+	Update := func (ctx context.Context, q *PropertyRepository, videoWidgetModel *models.VideoWidget ) (*models.VideoWidget, error) {
+		query := `
+			UPDATE video_widget
+			SET		
+				video_exist = $1, 
+				video_title = $2, 
+				youtube_url = $3, 
+				vimeo_url = $4
+			WHERE 
+				property_id = $5
+				AND video_widget_id = $6
+			RETURNING  property_id, video_widget_id, video_exist, video_title, youtube_url, vimeo_url`
+		queryRow := q.dbPool.QueryRow(ctx, query, videoWidgetModel.PropertyID, videoWidgetModel.VideoWidgetID, videoWidgetModel.VideoExist, videoWidgetModel.VideoTitle, videoWidgetModel.YouTubeUrl, videoWidgetModel.VimeoUrl)
+		err := queryRow.Scan(&videoWidgetModel.PropertyID, &videoWidgetModel.VideoWidgetID, &videoWidgetModel.VideoExist, &videoWidgetModel.VideoTitle, &videoWidgetModel.YouTubeUrl, &videoWidgetModel.VimeoUrl)
+		if err != nil{
+			return nil, err
+		}
+		return videoWidgetModel, nil
+	}
+	UpdateVideoWidget := func (ctx context.Context, videoWidget *models.VideoWidget) (*models.VideoWidget, error) {
+		repo := &PropertyRepository{dbPool: database.DBPool}
+		return Update(ctx, repo, videoWidget)
+	}
+
+	video_widget, err := UpdateVideoWidget(c.Context(), videoWidgetModel)
+	if err != nil{
+		return response.Error_Response(c, "error while trying to create video_widget", err, nil, fiber.StatusBadRequest)
+	}
+	zap.S().Info("VideoWidget Created Successfully! VideoWidget:", video_widget)
+	return response.Success_Response(c, videoWidgetModel, "VideoWidget Model created successfully", fiber.StatusOK)
+}
+
+func EditLocation(c fiber.Ctx) error{
+	reqBody := new(dto.LocationUpdateRequest)
+	body := c.Body()
+	if err := json.Unmarshal(body, reqBody);
+	err != nil {
+		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
+	}
+
+
+	// Middleware aracılığıyla aktarılan propertyID'yi alın
+	// propertyID, ok := c.Locals("propertyID").(uuid.UUID)
+	// if !ok {
+	// 	return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
+	// }
+
+	phoneInt, err := strconv.Atoi(reqBody.Phone) // Atoi fonksiyonunu çağır ve değerleri al
+	if err != nil {
+		// Dönüşüm hatası durumunda işlemi durdur ve hatayı döndür
+		return fmt.Errorf("invalid phone number format: %w", err)
+	}
+
+	// Longitude'u float32'ye dönüştürme
+	var longitudeFloat32 float32 // float32 olarak tanımla
+	if reqBody.Longitude != "" {    // Boş değilse dönüştür
+		longitudeFloat64, err := strconv.ParseFloat(reqBody.Longitude, 32)
+		if err != nil {
+			fmt.Println("Longitude dönüşüm hatası:", err) // Hatayı yazdır
+			return fmt.Errorf("invalid longitude format: %w", err)
+		}
+		longitudeFloat32 = float32(longitudeFloat64) // float32'ye dönüştür
+	}
+
+	// Latitude'u float32'ye dönüştürme
+	var latitudeFloat32 float32 // float32 olarak tanımla
+	if reqBody.Latitude != "" {   // Boş değilse dönüştür
+		latitudeFloat64, err := strconv.ParseFloat(reqBody.Latitude, 32)
+		if err != nil {
+			return fmt.Errorf("invalid latitude format: %w", err)
+		}
+		latitudeFloat32 = float32(latitudeFloat64) // float32'ye dönüştür
+	}
+
+	LocationUpdateRequestModel := func (dto.LocationUpdateRequest) (*models.Location, error) {
+		location := new(models.Location)
+		property_id, err := uuid.Parse(reqBody.PropertyID)
+		if err != nil {
+			return nil, err
+		}
+		location = &models.Location{
+			PropertyID: property_id,
+			LocationID: uuid.New(),
+			Phone: phoneInt,
+			Email: reqBody.Email,
+			City: models.CityLocation(reqBody.City),
+			Address: reqBody.Address,
+			Longitude: longitudeFloat32,
+			Latitude: latitudeFloat32,
+		}
+		return location, nil
+	}
+	locationModel, err := LocationUpdateRequestModel(*reqBody)
+	if err != nil {
+		return response.Error_Response(c, "error while trying to convet location create request model", err, nil, fiber.StatusBadRequest)
+	}
+	Update := func (ctx context.Context, q *PropertyRepository, locationModel *models.Location) (*models.Location, error) {
+		query := `
+			UPDATE location
+			SET
+				phone = $1,
+				email = $2,
+				city = $3,
+				address = $4,
+				longitude = $5,
+				latitude = $6
+			WHERE
+				location_id = $7
+				AND location_id = $8
+			RETURNING location_id, property_id, phone, email, city, address, longitude, latitude`
+		queryRow := q.dbPool.QueryRow(ctx, query,  locationModel.LocationID, locationModel.PropertyID, locationModel.Phone, locationModel.Email, locationModel.City, locationModel.Address, locationModel.Longitude, locationModel.Latitude)
+		err := queryRow.Scan(&locationModel.LocationID, &locationModel.PropertyID, &locationModel.Phone, &locationModel.Email, &locationModel.City, &locationModel.Address, &locationModel.Longitude, &locationModel.Latitude)
+		if err != nil{
+			return nil, err
+		}
+		return locationModel, nil
+	}
+	UpdateLocation := func (ctx context.Context, location *models.Location) (*models.Location, error) {
+		repo := &PropertyRepository{dbPool: database.DBPool}
+		return Update(ctx, repo, location)
+	}
+
+	location, err := UpdateLocation(c.Context(), locationModel)
+	if err != nil{
+		return response.Error_Response(c, "error while trying to create location", err, nil, fiber.StatusBadRequest)
+	}
+	zap.S().Info("Location table created successfully! Location: ", location)
+	return response.Success_Response(c, locationModel, "Location Model Created Successfully", fiber.StatusOK)
+}
+
+func EditAmenities(c fiber.Ctx) error{
+	reqBody := new(dto.AmenitiesUpdateRequest)
+	body := c.Body()
+	if err := json.Unmarshal(body, reqBody);
+	err != nil{
+		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
+	}
+
+
+
+	// Middleware aracılığıyla aktarılan propertyID'yi alın
+	// propertyID, ok := c.Locals("propertyID").(uuid.UUID)
+	// if !ok {
+	// 	return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
+	// }
+
+
+
+	AmenitiesUpdateRequestModel := func (dto.AmenitiesUpdateRequest) (*models.Amenities, error) {
+		amenities := new(models.Amenities)
+		property_id, err := uuid.Parse(reqBody.PropertyID)
+		if err != nil {
+			return nil, err
+		}
+		amenities = &models.Amenities{
+			PropertyID: property_id,
+			AmenitiesID: uuid.New(),
+			Wifi: reqBody.Wifi,
+			Pool: reqBody.Pool,
+			Security: reqBody.Security,
+			LaundryRoom: reqBody.LaundryRoom,
+			EquippedKitchen: reqBody.EquippedKitchen,
+			AirConditioning: reqBody.AirConditioning,
+			Parking: reqBody.Parking,
+			GarageAtached: reqBody.GarageAtached,
+			Fireplace: reqBody.Fireplace,
+			WindowCovering: reqBody.WindowCovering,
+			Backyard: reqBody.Backyard,
+			FitnessGym: reqBody.FitnessGym,
+			Elevator: reqBody.Elevator,
+			OthersName: reqBody.OthersName,
+			OthersChecked: reqBody.OthersChecked,
+		}
+		return amenities, nil
+	}
+	amenitiesModel, err := AmenitiesUpdateRequestModel(*reqBody)
+	if err != nil {
+		return response.Error_Response(c, "error while trying to convert amenities create request model", err, nil, fiber.StatusBadRequest)
+	}
+	Update := func (ctx context.Context, q *PropertyRepository, amenitiesModel *models.Amenities) (*models.Amenities, error) {
+		query := `
+			UPDATE amenities
+			SET
+				wifi = $3, 
+				pool = $4, 
+				security = $5, 
+				laundry_room = $6, 
+				equipped_kitchen = $7, 
+				air_conditioning = $8, 
+				parking =$9, 
+				garage_atached = $10, 
+				fireplace = $11, 
+				window_covering = $12, 
+				backyard = $13, 
+				fitness_gym = $14, 
+				elevator = $15, 
+				others_name = $16, 
+				others_checked = $17
+			WHERE 
+				amenities_id = $1,
+				AND property_id = $2
+			RETURNING amenities_id, property_id, wifi, pool, security, laundry_room, equipped_kitchen, air_conditioning, parking, garage_atached, fireplace, window_covering, backyard, fitness_gym, elevator, others_name, others_checked`
+		queryRow := q.dbPool.QueryRow(ctx, query, amenitiesModel.AmenitiesID, amenitiesModel.PropertyID, amenitiesModel.Wifi, amenitiesModel.Pool, amenitiesModel.Security, amenitiesModel.LaundryRoom, amenitiesModel.EquippedKitchen, amenitiesModel.AirConditioning, amenitiesModel.Parking, amenitiesModel.GarageAtached, amenitiesModel.Fireplace, amenitiesModel.WindowCovering, amenitiesModel.Backyard, amenitiesModel.FitnessGym, amenitiesModel.Elevator, amenitiesModel.OthersName, amenitiesModel.OthersChecked)
+		err := queryRow.Scan(&amenitiesModel.AmenitiesID, &amenitiesModel.PropertyID, &amenitiesModel.Wifi, &amenitiesModel.Pool, &amenitiesModel.Security, &amenitiesModel.LaundryRoom, &amenitiesModel.EquippedKitchen, &amenitiesModel.AirConditioning, &amenitiesModel.Parking, &amenitiesModel.GarageAtached, &amenitiesModel.Fireplace, &amenitiesModel.WindowCovering, &amenitiesModel.Backyard, &amenitiesModel.FitnessGym, &amenitiesModel.Elevator, &amenitiesModel.OthersName, &amenitiesModel.OthersChecked)
+		if err != nil {
+			return nil, err
+		}
+		return amenitiesModel, nil
+	}
+	UpdateAmenities := func (ctx context.Context, amenities *models.Amenities) (*models.Amenities, error) {
+		repo := &PropertyRepository{dbPool: database.DBPool}
+		return Update(ctx, repo, amenities)
+	}
+	amenities, err := UpdateAmenities(c.Context(), amenitiesModel)
+	if err != nil{
+		return response.Error_Response(c, "error while trying to create Amenities table", err, nil, fiber.StatusBadRequest)
+	}
+	zap.S().Info("Amenities table created successfully! Amenities: ", amenities)
+	return response.Success_Response(c, amenitiesModel, "Ameniteies Model Created successfully", fiber.StatusOK)
+}
+
+func EditAccordionWidget(c fiber.Ctx) error{
+	reqBody := new(dto.AccordionWidgetUpdateRequest)
+	body := c.Body()
+	if err := json.Unmarshal(body, reqBody);
+	err != nil{
+		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
+	}
+	// Middleware aracılığıyla aktarılan propertyID'yi alın
+	// propertyID, ok := c.Locals("propertyID").(uuid.UUID)
+	// if !ok {
+	// 	return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
+	// }
+	AccordionWidgetUpdateRequestModel := func (dto.AccordionWidgetUpdateRequest) (*models.AccordionWidget, error) {
+		accordionWidget := new(models.AccordionWidget)
+		property_id, err := uuid.Parse(reqBody.PropertyID)
+		if err != nil {
+			return nil, err
+		}
+		accordionWidget = &models.AccordionWidget{
+			PropertyID: property_id,
+			AccordionWidgetID: uuid.New(),
+			AccordionExist: reqBody.AccordionExist,
+			AccordionTitle: reqBody.AccordionTitle,
+			AccordionDetails: reqBody.AccordionDetails,
+		}
+		return accordionWidget, nil
+	}
+	accordionWidgetModel, err := AccordionWidgetUpdateRequestModel(*reqBody)
+	if err != nil{
+		return response.Error_Response(c, "error while trying to convert AccordionWidget create request model", err, nil, fiber.StatusBadRequest)
+	}
+	Update := func (ctx context.Context, q *PropertyRepository, accordionWidgetModel *models.AccordionWidget) (*models.AccordionWidget, error) {
+		query := `
+			UPDATE accordion_widget
+			SET
+				accordion_exist = $1, 
+				accordion_title = $2, 
+				accordion_details = $3
+			WHERE
+				accordion_widget_id = $4
+				property_id = $5
+				RETURNING accordion_widget_id, property_id, accordion_exist, accordion_title, accordion_details`
+		queryRow := q.dbPool.QueryRow(ctx, query, accordionWidgetModel.AccordionWidgetID, accordionWidgetModel.PropertyID, accordionWidgetModel.AccordionExist, accordionWidgetModel.AccordionTitle, accordionWidgetModel.AccordionDetails)
+		err := queryRow.Scan(&accordionWidgetModel.AccordionWidgetID, &accordionWidgetModel.PropertyID, &accordionWidgetModel.AccordionExist, &accordionWidgetModel.AccordionTitle, &accordionWidgetModel.AccordionDetails)
+		if err != nil {
+			return nil, err
+		}
+		return accordionWidgetModel, nil
+	}
+	UpdateAccordionWidget := func (ctx context.Context, accordionWidget *models.AccordionWidget) (*models.AccordionWidget, error) {
+		repo := &PropertyRepository{
+			dbPool: database.DBPool,
+		}
+		return Update(ctx, repo, accordionWidget)
+	}
+	accordionWidget, err := UpdateAccordionWidget(c.Context(), accordionWidgetModel)
+	if err != nil{
+		return response.Error_Response(c, "error while trying to create Amenities table", err, nil, fiber.StatusBadRequest)
+	}
+	zap.S().Info("AccordionWidget table created successfully! AccordionWidget: ", accordionWidget)
+	return response.Success_Response(c, accordionWidget, "AccordionWidget Model Created successfully", fiber.StatusOK)
+}
+
+func EditPropertyMedia(c fiber.Ctx) error{
+	reqBody := new(dto.PropertyMediaUpdateRequest)
+	body := c.Body()
+	if err := json.Unmarshal(body, reqBody);
+	err != nil{
+		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
+	}
+	// Middleware aracılığıyla aktarılan propertyID'yi alın
+	// propertyID, ok := c.Locals("propertyID").(uuid.UUID)
+	// if !ok {
+	// 	return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
+	// }
+	PropertyMediaUpdateRequestModel := func (dto.PropertyMediaUpdateRequest) (*models.PropertyMedia, error) {
+		propertyMedia := new(models.PropertyMedia)
+		property_id, err := uuid.Parse(reqBody.PropertyID)
+		if err != nil {
+			return nil, err
+		}
+		image_id, err := uuid.Parse(reqBody.ImageID)
+		if err != nil {
+			return nil, err
+		}
+		propertyMedia = &models.PropertyMedia{
+			PropertyID: property_id,
+			PropertyMediaID: uuid.New(),
+			ImageID: image_id,
+			Type: models.GalleryType(reqBody.Type),
+		}
+		return propertyMedia, nil
+	}
+	propertyMediaModel, err := PropertyMediaUpdateRequestModel(*reqBody)
+	if err != nil{
+		return response.Error_Response(c, "error while trying to convert propertyMedia create request model", err, nil, fiber.StatusBadRequest)
+	}
+	Update := func (ctx context.Context, q *PropertyRepository, propertyMediaModel *models.PropertyMedia) (*models.PropertyMedia, error) {
+		query := `
+		UPDATE property_media
+		SET
+			image_id = $1,
+			type = $2
+		WHERE
+			property_media_id = $3
+			AND property_id = $4
+		RETURNING property_media_id, property_id, image_id, type`
+		queryRow := q.dbPool.QueryRow(ctx, query,  propertyMediaModel.PropertyMediaID, propertyMediaModel.PropertyID, propertyMediaModel.ImageID, propertyMediaModel.Type)
+		err := queryRow.Scan(&propertyMediaModel.PropertyMediaID, &propertyMediaModel.PropertyID, &propertyMediaModel.ImageID, &propertyMediaModel.Type)
+		if err != nil{
+			return nil, err
+		}
+		return propertyMediaModel, nil		
+	}
+	UpdatePropertyMedia := func (ctx context.Context, propertyMedia *models.PropertyMedia) (*models.PropertyMedia, error) {
+		repo := &PropertyRepository{dbPool: database.DBPool}
+		return Update(ctx, repo, propertyMedia)
+	}
+	propertyMedia, err := UpdatePropertyMedia(c.Context(), propertyMediaModel)
+	if err != nil{
+		return response.Error_Response(c, "error while trying to create PropertyMedia table", err, nil, fiber.StatusBadRequest)
+	}
+	zap.S().Info("PropertyMedia table created successfully! PropertyMedia: ", propertyMedia)
+	return response.Success_Response(c, propertyMediaModel, "PropertyModel Created Successfully", fiber.StatusOK)
+}
+
+func EditImage(c fiber.Ctx) error {
+
+	//Formdan property_id'yi al
+	propertyIDStr := c.FormValue("property_id")
+	propertyID, err := uuid.Parse(propertyIDStr)
+	if err != nil{
+		return response.Error_Response(c, "Invalid property ID", err, nil, fiber.StatusBadRequest)
+	}
+
+	// Formdan gelen tüm dosyaları al
+	form, err := c.MultipartForm()
+	if err != nil{
+		return response.Error_Response(c, "Error retrieving form files", err, nil, fiber.StatusBadRequest)
+	}
+
+	files := form.File["image"] //"image" input'unun adıyla eşleşmeli
+
+	if len(files) == 0 {
+		return response.Error_Response(c, "No images uploaded", nil, nil, fiber.StatusBadRequest)
+	}
+
+
+	var filePaths []string
+	var imageNames []string
+	imageID := uuid.New() // Tek bir ImageID oluştur
+
+	//Tüm dosyaları işle
+	for _, file := range files {
+		fileExt := filepath.Ext(file.Filename)                          // Dosya uzantısını al (.jpg, .png vs.)
+		fileBaseName := strings.TrimSuffix(file.Filename, fileExt)      // Dosya adını uzantısız al
+		fileName := fmt.Sprintf("%s-%s%s", fileBaseName, uuid.New(), fileExt) // Orijinal ad + yeni ID + uzantı
+		savePath := fmt.Sprintf("uploads/%s", fileName)                 // Kaydedilecek yolu hazırla
+	
+		// Dosyayı kaydet
+		if err := c.SaveFile(file, savePath); err != nil {
+			return response.Error_Response(c, "Error saving file", err, nil, fiber.StatusInternalServerError)
+		}
+	
+		filePaths = append(filePaths, savePath)
+		imageNames = append(imageNames, file.Filename) // Orijinal dosya adını sakla
+	}
+	
+
+	//Image modelini oluştur
+	image := &models.Image{
+		PropertyID: propertyID,
+		ImageID: imageID,
+		ImageName: imageNames, //Tüm Dosya adlarını sakla
+		FilePath: filePaths,  //Tüm dosya yollarını sakla
+	}
+
+	validate := validator.New()
+	if err := validate.Struct(image); err != nil {
+		return response.Error_Response(c, "Validation error", err, nil, fiber.StatusBadRequest)
+	}
+
+	//Veritabanına Kaydet
+	query := `
+		UPDATE images
+		SET
+			name = $1, 
+			file_path = $2
+		WHERE
+			property_id = $3 
+			AND image_id = $4, 
+		RETURNING property_id, image_id, name, file_path`
+	row := database.DBPool.QueryRow(c.Context(), query, image.PropertyID, image.ImageID, pq.Array(image.ImageName), pq.Array(image.FilePath))
+	if err := row.Scan(&image.PropertyID, &image.ImageID, &image.ImageName, &image.FilePath); err != nil{
+		return response.Error_Response(c, "Error Update into database", err, nil, fiber.StatusInternalServerError)
+	}
+
+	//Başarılı yanıt döndür
+	zap.S().Info("Images updated successfully!", image)
+	return response.Success_Response(c, image, "Images updated successfully", fiber.StatusOK)
+}
+
+func EditBasicInfo(c fiber.Ctx) error{
+	reqBody := new(dto.BasicInfoUpdateRequest)
+	body := c.Body()
+	if err := json.Unmarshal(body, reqBody);
+	err != nil{
+		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
+	}
+
+	// Middleware aracılığıyla aktarılan propertyID'yi alın
+	propertyID, ok := c.Locals("propertyID").(uuid.UUID)
+	if !ok {
+		return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
+	}
+	 
+	BasicInfoUpdateRequestModel := func (dto.BasicInfoUpdateRequest) (*models.BasicInfo, error) {
+		basicInfo := new(models.BasicInfo)
+		
+		basicInfo = &models.BasicInfo{
+			BasicInfoID: uuid.New(),
+			PropertyID: propertyID,
+			MainTitle: reqBody.MainTitle,
+			Type: models.PropertyType(reqBody.Type),
+			Category: models.PropertyCategory(reqBody.Category),
+			Price: reqBody.Price,
+			Keywords: reqBody.Keywords,
+		}
+		return basicInfo, nil
+	}
+	basicInfoModel, err := BasicInfoUpdateRequestModel(*reqBody)
+	if err != nil{
+		return response.Error_Response(c, "error while trying to convert basic_info create request model", err, nil, fiber.StatusBadRequest)
+	}
+	Update := func (ctx context.Context, q *PropertyRepository, basicInfoModel *models.BasicInfo) (*models.BasicInfo, error) {
+		query := `
+			UPDATE basic_infos
+			SET
+				main_title = $1, 
+				property_type = $2, 
+				category = $3, 
+				price = $4, 
+				keywords $5
+			WHERE
+				basic_info_id = $6 
+				AND property_id = $7 
+			RETURNING basic_info_id, property_id, main_title, property_type, category, price, keywords`
+		queryRow := q.dbPool.QueryRow(ctx, query, basicInfoModel.BasicInfoID, basicInfoModel.PropertyID,basicInfoModel.MainTitle,  basicInfoModel.Type, basicInfoModel.Category, basicInfoModel.Price, basicInfoModel.Keywords)
+		err := queryRow.Scan(&basicInfoModel.BasicInfoID, &basicInfoModel.PropertyID,&basicInfoModel.MainTitle,  &basicInfoModel.Type, &basicInfoModel.Category, &basicInfoModel.Price, &basicInfoModel.Keywords)
+		if err != nil{
+			return nil, err
+		}
+		return basicInfoModel, nil	
+	}
+	UpdateBasicInfo := func (ctx context.Context, basicInfo *models.BasicInfo ) (*models.BasicInfo, error) {
+		repo := &PropertyRepository{dbPool: database.DBPool}
+		return Update(ctx, repo, basicInfo)
+	}
+	basicInfo, err := UpdateBasicInfo(c.Context(), basicInfoModel)
+	if err != nil{
+		return response.Error_Response(c, "error while trying to create BasicInfo table", err, nil, fiber.StatusBadRequest)
+	}
+	zap.S().Info("basic_info table updated successfully! basic_info: ", basicInfo)
+	return response.Success_Response(c, basicInfoModel, "BasicInfo Updated Successfully", fiber.StatusOK)
+}
+
+func EditNearby(c fiber.Ctx) error{
+	reqBody := new(dto.NearbyUpdateRequest)
+	body := c.Body()
+	if err := json.Unmarshal(body, reqBody);
+	err != nil{
+		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
+	}
+
+
+	// Middleware aracılığıyla aktarılan propertyID'yi alın
+	// propertyID, ok := c.Locals("propertyID").(uuid.UUID)
+	// if !ok {
+	// 	return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
+	// }
+
+	distance, err := strconv.Atoi(reqBody.Distance)
+	if err != nil{
+		return err
+	}
+	
+
+	NearbyUpdateRequestModel := func (dto.NearbyUpdateRequest) (*models.Nearby, error){
+		nearby := new(models.Nearby)
+		property_id, err := uuid.Parse(reqBody.PropertyID)
+		if err != nil {
+			return nil, err
+		}
+		nearby = &models.Nearby{
+			PropertyID: property_id,
+			NearbyID: uuid.New(),
+			Places: models.PropertyNearby(reqBody.Places),
+			Distance: distance,
+		}
+		return nearby, nil
+	}
+	nearbyModel, err := NearbyUpdateRequestModel(*reqBody)
+	if err != nil{
+		return response.Error_Response(c, "error while trying to convert propertyMedia create request model", err, nil, fiber.StatusBadRequest)
+	}
+	Update := func (ctx context.Context, q *PropertyRepository, nearbyModel *models.Nearby) (*models.Nearby, error) {
+		query := `
+		UPDATE nearby
+		SET
+			places = $1, 
+			distance = $2
+		WHERE
+			nearby_id = $3
+			AND property_id =$4 
+		RETURNING nearby_id, property_id, places, distance`
+		queryRow := q.dbPool.QueryRow(ctx, query, nearbyModel.NearbyID, nearbyModel.PropertyID, nearbyModel.Places, nearbyModel.Distance)
+		err := queryRow.Scan(&nearbyModel.NearbyID, &nearbyModel.PropertyID, &nearbyModel.Places, &nearbyModel.Distance)
+		if err != nil{
+			return nil, err
+		}
+		return nearbyModel, nil
+	}
+	UpdateNearby := func (ctx context.Context, nearby *models.Nearby) (*models.Nearby, error) {
+		repo := &PropertyRepository{dbPool: database.DBPool}
+		return Update(ctx, repo, nearby)
+	}
+	nearby, err := UpdateNearby(c.Context(), nearbyModel)
+	if err != nil{
+		return response.Error_Response(c, "error while trying to create Nearby table", err, nil, fiber.StatusBadRequest)
+	}
+	zap.S().Info("Nearby table updated successfully! Nearby: ", nearby)
+	return response.Success_Response(c, nearbyModel, "NearbyModel Updated Successfully", fiber.StatusOK)
+}
+
+func EditPlansBrochures(c fiber.Ctx) error{
+	// Dosyayı al
+	file, err := c.FormFile("file_path") // "file_path" anahtarıyla dosyayı al
+	if err != nil {
+		return response.Error_Response(c, "Error retrieving the file", err, nil, fiber.StatusBadRequest)
+	}
+
+	// Property ID'yi al
+	propertyIDStr := c.FormValue("property_id") // "property_id" anahtarıyla Property ID'yi al
+	propertyID, err := uuid.Parse(propertyIDStr)
+	if err != nil {
+		return response.Error_Response(c, "Invalid property ID", err, nil, fiber.StatusBadRequest)
+	}
+
+	// Dosya Adını ve Yolunu Belirle
+	plansBrochuresID := uuid.New()
+	fileExt := filepath.Ext(file.Filename)
+	fileName := fmt.Sprintf("%s%s", plansBrochuresID, fileExt)
+	savePath := fmt.Sprintf("uploads/%s", fileName)
+
+	// Dosyayı Kaydet
+	if err := c.SaveFile(file, savePath); err != nil {
+		return response.Error_Response(c, "Error saving file", err, nil, fiber.StatusInternalServerError)
+	}
+
+	// PlansBrochures modelini oluştur
+	plansBrochures := &models.PlansBrochures{
+		PropertyID:     propertyID,
+		PlansBrochuresID: plansBrochuresID,
+		FileType:       file.Filename, // Dosya adını FileType olarak kullan
+		FilePath:       savePath,      // Kayıt yolunu FilePath olarak kullan
+	}
+
+	// Veritabanına kaydet
+	query := `
+		UPDATE plans_brochures
+		SET
+			file_type = $1, 
+			file_path = $2 
+		WHERE
+			plans_brochures_id = $3 
+			AND property_id = $4 
+		RETURNING plans_brochures_id, property_id, file_type, file_path`
+	row := database.DBPool.QueryRow(c.Context(), query, plansBrochures.PlansBrochuresID, plansBrochures.PropertyID, plansBrochures.FileType, plansBrochures.FilePath)
+
+	if err := row.Scan(&plansBrochures.PlansBrochuresID, &plansBrochures.PropertyID, &plansBrochures.FileType, &plansBrochures.FilePath); err != nil {
+		return response.Error_Response(c, "Error updating into database", err, nil, fiber.StatusInternalServerError)
+	}
+
+	// Başarılı yanıt döndür
+	zap.S().Info("Plans and brochures updated successfully!", plansBrochures)
+	return response.Success_Response(c, plansBrochures, "Plans and brochures updated successfully", fiber.StatusOK)
+}
+

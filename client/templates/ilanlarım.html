@@ -37,8 +37,155 @@
                     <div class="boxed-container">
                         <div class="row">
                             
-                                {{ .Properties }}
-                           
+
+                                <!-- user-dasboard-menu_wrap -->	
+                                    <div class="col-lg-3">
+                                        <div class="boxed-content btf_init">
+                                            <div class="user-dasboard-menu_wrap">
+                                                <div class="user-dasboard-menu-header">
+                                                    <div class="user-dasboard-menu_header-avatar">
+                                                        <img src="images/avatar/4.jpg" alt=""> 
+                                                        <span>Welcome :  <strong> Alisa</strong></span>
+                                                        <a href="dashboard-editprofile.html" class="usmha_edit tolt" data-microtip-position="left"  data-tooltip="Edit Profile"><i class="fa-light fa-user-pen"></i></a>
+                                                        <div class="db-menu_modile_btn"><strong>Menu</strong><i class="fa-regular fa-bars"></i></div>
+                                                    </div>
+                                                </div>
+                                                <div class="user-dasboard-menu faq-nav ">
+                                                    <ul>
+                                                        <li><a href="dashboard.html"> Dashboard</a></li>
+                                                        <li><a href="dashboard-listing.html"  class="act-scrlink"> Your Advertisements </a></li>
+                                                        <li><a href="dashboard-requests.html"> Your  Requests <span>6</span> </a></li>
+                                                        <li><a href="add-listing.html"> Add New Propperty </a></li>
+                                                        <li><a href="dashboard-editprofile.html">  Edit profile</a></li>
+                                                    </ul>
+                                                    <a href="index.html" class="hum_log-out_btn"><i class="fa-light fa-power-off"></i> Log Out  </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- user-dasboard-menu_wrap end-->
+                                    <!-- pricing-column -->	
+                                    <div class="col-lg-9">
+                                        <div class="dashboard-title">
+                                            <div class="dashboard-title-item"><span>  Your Advertisements </span></div>
+                                            <!--Tariff Plan menu-->
+                                            <div class="tfp-det-container">
+                                                <div class="db-date"><i class="fa-regular fa-calendar"></i><strong></strong></div>
+                                                <div class="tfp-btn"><span>Your Tariff Plan : </span> <strong>Extended</strong></div>
+                                                <div class="tfp-det">
+                                                    <p>You Are on <a href="#">Extended</a> . Use link bellow to view details or upgrade. </p>
+                                                    <a href="#" class="tfp-det-btn color-bg">View Details <i class="fa-solid fa-caret-right"></i></a>
+                                                </div>
+                                            </div>
+                                            <!--Tariff Plan menu end-->						
+                                        </div>
+                                        <div class="db-container">
+                                            <div class="dasboard-opt-header">
+                                                <div class="dashboard-search-listing">
+                                                    <input type="text" onclick="this.select()" placeholder="Search" value="">
+                                                    <button type="submit"><i class="far fa-search"></i></button>
+                                                </div>
+                                                <div class="db-price-opt-container">
+                                                    <a href="add-listing.html" class="dashboard-addnew_btn">Add New <i class="fal fa-plus"></i></a>	
+                                                    <!-- price-opt-->
+                                                    <div class="db-price-opt">
+                                                        <span class="price-opt-title">Sort   by:</span>
+                                                        <div class="cs-intputwrap" style="margin-bottom: 0">
+                                                            <i class="fa-light fa-arrow-down-small-big"></i>
+                                                            <select data-placeholder="Popularity" class="chosen-select no-search-select" style="display: none;">
+                                                                <option>Lastes</option>
+                                                                <option>Oldes</option>
+                                                                <option>Name: A-Z</option>
+                                                                <option>Name: Z-A</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <!-- price-opt end-->
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <!-- dashboard-listings-item-->
+                                                 {{if .Properties}}
+                                                <div class="col-lg-6">
+                                                    {{range .Properties}}
+                                                    <div class="dashboard-listings-item">
+                                                        <div class="dashboard-listings-item_img">
+                                                            <div class="bg-wrap">   
+                                                                {{if .PropertyMedia}}
+                                                                    {{if len .PropertyMedia}}
+                                                                        {{$firstPropertyMedia := index .PropertyMedia 0}}
+                                                                        {{if $firstPropertyMedia.Image}}
+                                                                            {{if len $firstPropertyMedia.Image}}
+                                                                                {{$firstImage := index $firstPropertyMedia.Image 0}}
+                                                                                {{if len $firstImage.FilePath}}
+                                                                                    <div class="bg" data-bg="/{{index $firstImage.FilePath 0}}"></div>
+                                                                                {{else}}
+                                                                                    <div class="bg" data-bg="/images/default-image.jpg"></div>
+                                                                                {{end}}
+                                                                            {{else}}
+                                                                                <div class="bg" data-bg="/images/default-image.jpg"></div>
+                                                                            {{end}}
+                                                                        {{else}}
+                                                                            <div class="bg" data-bg="/images/default-image.jpg"></div>
+                                                                        {{end}}
+                                                                    {{else}}
+                                                                        <div class="bg" data-bg="/images/default-image.jpg"></div>
+                                                                    {{end}}
+                                                                {{else}}
+                                                                    <div class="bg" data-bg="/images/default-image.jpg"></div>
+                                                                {{end}}
+
+                                                            </div>
+                                                            <div class="overlay"></div>
+                                                            <a href="/ilan/{{.PropertyID }}" target="_blank">View</a>
+                                                        </div>
+
+                                                        <div class="dashboard-listings-item_content">
+                                                            <h4><a href="/ilan/{{.PropertyID}}">{{.BasicInfo.MainTitle}}</a></h4>
+
+                                                            <div class="geodir-category-location">
+                                                                <a href="#"><span>{{.Location.Address}}</span></a>
+                                                            </div>
+
+                                                            <div class="dashboard-listings-item_opt">
+                                                                <span class="viewed-counter"><i class="fas fa-eye"></i> Viewed - </span>
+                                                                <ul>
+                                                                    <li><a href="/kullanici-panel/ilani-duzenle/{{.PropertyID}}" class="tolt" data-microtip-position="left" data-tooltip="Düzenle"><i class="fa-regular fa-file-pen"></i></a></li>
+                                                                    <li><a href="#" class="tolt" data-microtip-position="left" data-tooltip="Pasife Al"><i class="fa-regular fa-signal-slash"></i></a></li>
+                                                                    <li><a href="#" class="tolt" data-microtip-position="left" data-tooltip="İlanı Kaldır"><i class="fa-regular fa-trash-can"></i></a></li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    {{end}}
+                                                </div>
+                                                {{else}}
+
+                                                <div class="col-12 text-center">
+                                                    <div class="empty-message p-5">
+                                                        <h3>Çok Yakında Hizmetinizde</h3>
+                                                        <p>Yeni ürünlerimiz için takipte kalın.</p>
+                                                    </div>
+                                                </div>
+                                                {{end}}
+
+                                                <!-- dashboard-listings-item end-->										
+                                            </div>
+                                        </div>
+                                        <div class="pagination-wrap">
+                                            <div class="pagination float-pagination">
+                                                <a href="#" class="prevposts-link"><i class="fa fa-caret-left"></i></a>
+                                                <a href="#">1</a>
+                                                <a href="#" class="current-page">2</a>
+                                                <a href="#">3</a>
+                                                <a href="#">4</a>
+                                                <a href="#" class="nextposts-link"><i class="fa fa-caret-right"></i></a>
+                                            </div>
+                                            <div class="load-more_btn"><i class="fa-solid fa-arrows-spin"></i>Load More</div>
+                                        </div>
+                                    </div>
+                                    <!-- pricing-column end-->	
                         </div>
 
                         <div class="limit-box"></div>

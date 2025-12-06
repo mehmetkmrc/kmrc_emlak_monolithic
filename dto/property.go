@@ -213,4 +213,85 @@ type (
 		PropertyID string `json:"property_id"`
 		PropertyTitle string `json:"title"`
 	}	
+
+	MainPropertyUpdateRequest struct{
+		PropertyID string `json:"property_id"`
+		TariffPlan string `json:"tariff_plan"`
+		PropertyTitle string `json:"title"`
+	}
+
+	PropertyDetailsUpdateRequest struct {
+		PropertyID string `json:"property_id"`
+		Area            string `json:"area"`
+		Bedrooms        string     `json:"bedrooms"`
+		Bathrooms       string     `json:"bathrooms"`
+		Parking         string     `json:"parking"`
+		Accomodation    string  `json:"accomodation"`
+		Website         string  `json:"website"`
+		PropertyMessage string  `json:"property_message"`
+	}
+
+	VideoWidgetUpdateRequest struct {
+		PropertyID string `json:"property_id"`
+		VideoExist bool   `json:"video_exist"`
+		VideoTitle string `json:"video_title"`
+		YouTubeUrl string `json:"youtube_url"`
+		VimeoUrl   string `json:"vimeo_url"`
+	}
+
+	LocationUpdateRequest struct {
+		PropertyID string `json:"property_id"`
+		Phone     string     `json:"phone"`
+		Email     string  `json:"email"`
+		City      CityLocation  `json:"city"`
+		Address   string  `json:"address"`
+		Longitude string `json:"longitude"`
+		Latitude  string `json:"latitude"`
+	}
+
+	AmenitiesUpdateRequest struct {
+		PropertyID 		string `json:"property_id"`
+		Wifi            bool   `json:"wifi"`
+		Pool            bool   `json:"pool"`
+		Security        bool   `json:"security"`
+		LaundryRoom     bool   `json:"laundry_room"`
+		EquippedKitchen bool   `json:"equipped_kitchen"`
+		AirConditioning bool   `json:"air_conditioning"`
+		Parking         bool   `json:"parking"`
+		GarageAtached   bool   `json:"garage_atached"`
+		Fireplace       bool   `json:"fireplace"`
+		WindowCovering  bool   `json:"window_covering"`
+		Backyard        bool   `json:"backyard"`
+		FitnessGym      bool   `json:"fitness_gym"`
+		Elevator        bool   `json:"elevator"`
+		OthersName      string `json:"others_name"`
+		OthersChecked   bool   `json:"others_checked"`
+	}
+
+	AccordionWidgetUpdateRequest struct {
+		PropertyID string `json:"property_id"`
+		AccordionExist   bool   `json:"accordion_exist"`
+		AccordionTitle   string `json:"accordion_title"`
+		AccordionDetails string `json:"accordion_details"`
+	}
+
+	PropertyMediaUpdateRequest struct {
+		PropertyID string `json:"property_id"`
+		ImageID string `json:"image_id"`
+		Type string `json:"type"`
+	}
+
+	BasicInfoUpdateRequest struct {
+		MainTitle string `json:"main_title"`
+		Type     PropertyType  `json:"property_type"`
+		Category PropertyCategory  `json:"category"`
+		Price    float32 `json:"price"`
+		Keywords string  `json:"keywords"`
+	}
+
+	NearbyUpdateRequest struct {
+		PropertyID string `json:"property_id"`
+		Places   PropertyNearby `json:"places"`
+		Distance string    `json:"distance"`
+	}
 )

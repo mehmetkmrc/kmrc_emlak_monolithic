@@ -101,7 +101,8 @@ func main() {
 	route0.Get("/yeni-ilan-ekle", web.AddPropertyWeb, auth.IsAuthorized, auth.GetUserDetail,  auth.RateLimiter(120, time.Minute))
 	route0.Get("/profili-duzenle", web.EditProfile, auth.IsAuthorized, auth.GetUserDetail,  auth.RateLimiter(120, time.Minute))
 	route0.Get("/ilanlarim", web.ListingMyProperties, auth.IsAuthorized, auth.GetUserDetail,  auth.RateLimiter(120, time.Minute))
-	
+	route0.Get("/ilani-duzenle/:property_id", web.EditPropertyWeb, auth.IsAuthorized, auth.GetUserDetail,  auth.RateLimiter(120, time.Minute))
+
 	app.Post("/logout", auth.IsAuthorized, auth.Logout)
 	//app.Get("/login", web.LoginPage, auth.RateLimiter(5, time.Minute))
 
@@ -122,6 +123,19 @@ func main() {
 	propertier.Post("/add-nearby", property.AddNearby)
 	propertier.Post("/add-accordion-widget", property.AddAccordionWidget)
 	propertier.Post("/add-plans-brochures", property.AddPlansBrochures)
+
+	upropertier := app.Group("/update-property")
+	//propertier.Post("/add-property", property.AddProperty)
+	upropertier.Post("/edit-property-details", property.EditPropertyDetails)
+	upropertier.Post("/edit-video-widget", property.EditVideoWidget)
+	upropertier.Post("/edit-location", property.EditLocation)
+	upropertier.Post("/edit-amenities", property.EditAmenities)
+	upropertier.Post("/edit-property-media", property.EditPropertyMedia)
+	upropertier.Post("/edit-image", property.EditImage)
+	upropertier.Post("/edit-basic-info", property.EditBasicInfo, auth.IsAuthorized,middleware.PropertyMiddleware, property.AddProperty,   auth.GetUserDetail)
+	upropertier.Post("/edit-nearby", property.EditNearby)
+	upropertier.Post("/edit-accordion-widget", property.EditAccordionWidget)
+	upropertier.Post("/edit-plans-brochures", property.EditPlansBrochures)
 
 
 	userp := app.Group("/user")
