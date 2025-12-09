@@ -133,9 +133,10 @@ func main() {
 	upropertier.Put("/edit-property-media", property.EditPropertyMedia)
 	upropertier.Put("/edit-image", property.EditImage)
 	upropertier.Put("/edit-basic-info", property.EditBasicInfo, auth.IsAuthorized,middleware.PropertyMiddleware, auth.GetUserDetail)
-	upropertier.Put("/edit-nearby", property.EditNearby)
+	upropertier.Post("/edit-nearby", property.EditNearby)
 	upropertier.Put("/edit-accordion-widget", property.EditAccordionWidget)
 	upropertier.Put("/edit-plans-brochures", property.EditPlansBrochures)
+	upropertier.Delete("nearby/:nearbyID", property.DeleteNearby)
 
 
 	userp := app.Group("/user")

@@ -82,6 +82,30 @@ function removeNearby(btn) {
     btn.parentElement.remove();
 }
 
+async function removeNearbyForEditPage(btn) {
+    const item = btn.parentElement;
+    const nearbyID = item.dataset.id;
+
+    try {
+        const res = await fetch(`http://127.0.0.1:8081/update-property/nearby/${nearbyID}`, {
+            method: 'DELETE'
+        });
+
+        if (!res.ok) {
+            const txt = await res.text();
+            showModal("error", "Hata", txt);
+            return;
+        }
+
+        item.remove();
+
+    } catch (err) {
+        console.error(err);
+        showModal("error", "Hata", err.message);
+    }
+}
+
+
 // =======================
 // 📸 IMAGE UPLOAD INIT
 // =======================

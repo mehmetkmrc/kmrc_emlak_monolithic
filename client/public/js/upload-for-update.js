@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", function () {
             };
 
             const nearbyResponse = await fetch("http://127.0.0.1:8081/update-property/edit-nearby", {
-                method: "PUT",
+                method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(nearbyData),
             });

@@ -592,9 +592,9 @@
                                                 </div>
                                                 <div id="nearby-list" style="margin-top:10px;">
                                                     {{ range .Property.Nearby }}
-                                                    <div class="nearby-item">
+                                                    <div class="nearby-item" data-id="{{ .NearbyID }}">
                                                         {{ .Places }} - {{ .Distance }} m
-                                                        <button type="button" onclick="removeNearby(this)">Sil</button>
+                                                        <button type="button" onclick="removeNearbyForEditPage(this)">Sil</button>
                                                     </div>
                                                 {{ else }}
                                                     <div class="nearby-item">

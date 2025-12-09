@@ -1492,15 +1492,8 @@ func EditNearby(c fiber.Ctx) error{
 		return response.Error_Response(c, "error while trying to convert propertyMedia create request model", err, nil, fiber.StatusBadRequest)
 	}
 	Update := func (ctx context.Context, q *PropertyRepository, nearbyModel *models.Nearby) (*models.Nearby, error) {
-		query := `
-		UPDATE nearby
-		SET
-			places = $1, 
-			distance = $2
-		WHERE
-			property_id =$3 
-		RETURNING nearby_id, property_id, places, distance`
-		queryRow := q.dbPool.QueryRow(ctx, query, nearbyModel.Places, nearbyModel.Distance, nearbyModel.PropertyID)
+		query := `INSERT INTO nearby(nearby_id, property_id, places, distance) VALUES($1, $2, $3, $4) RETURNING nearby_id, property_id, places, distance`
+		queryRow := q.dbPool.QueryRow(ctx, query, nearbyModel.NearbyID, nearbyModel.PropertyID, nearbyModel.Places, nearbyModel.Distance)
 		err := queryRow.Scan(&nearbyModel.NearbyID, &nearbyModel.PropertyID, &nearbyModel.Places, &nearbyModel.Distance)
 		if err != nil{
 			return nil, err
@@ -1573,3 +1566,22 @@ func EditPlansBrochures(c fiber.Ctx) error{
 	return response.Success_Response(c, plansBrochures, "Plans and brochures updated successfully", fiber.StatusOK)
 }
 
+func DeleteNearby(c fiber.Ctx) error {
+    id := c.Params("nearbyID")
+    parsedID, err := uuid.Parse(id)
+    if err != nil {
+        return c.Status(400).JSON("Invalid ID")
+    }
+
+    _, err = database.DBPool.Exec(context.Background(),
+        "DELETE FROM nearby WHERE nearby_id = $1", parsedID)
+
+    if err != nil {
+        return c.Status(500).JSON(err.Error())
+    }
+
+    return c.JSON(fiber.Map{
+        "status": 200,
+        "message": "Deleted",
+    })
+}
