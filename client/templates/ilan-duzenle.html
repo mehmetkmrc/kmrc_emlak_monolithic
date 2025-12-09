@@ -1,4 +1,5 @@
 <!--loader-->
+
 <div class="loader-wrap">
     <div class="loader-inner">
         <svg>
@@ -12,6 +13,13 @@
         </svg>
     </div>
 </div>
+<input type="hidden" id="propIDHidden" value="{{ .Property.PropertyID }}">
+<!--
+
+-->
+
+
+
 <!--loader end-->
 <!--  main   -->
 <div id="main">
@@ -606,11 +614,26 @@
                 <div class="cs-intputwrap">
                     <i class="fa-light fa-building"></i>
                     <select class="chosen-select on-radius no-search-select" name="type">
+
                         <option>Galeri Tipi Seçin</option>
-                        <option value="Grid tipi">Izgara Tipi Galeri</option>
-                        <option value="Carousel">Atlıkarınca    </option>
-                        <option value="Slider">Kaydırıcı</option>
+
+                        <option value="Grid tipi"
+                            {{ if and .Property.PropertyMedia (eq (index .Property.PropertyMedia 0).Type "Grid tipi")}}selected{{ end }}>
+                            Grid Tipi Galeri
+                        </option>
+
+                        <option value="Carousel"
+                            {{ if and .Property.PropertyMedia (eq (index .Property.PropertyMedia 0).Type "Carousel")}}selected{{ end }}>
+                            Atlıkarınca
+                        </option>
+
+                        <option value="Slider"
+                            {{ if and .Property.PropertyMedia (eq (index .Property.PropertyMedia 0).Type "Slider")}}selected{{ end }}>
+                            Kaydırıcı
+                        </option>
+
                     </select>
+
                 </div>
                
 
@@ -621,52 +644,51 @@
   <input type="file" multiple class="upload__inputfile" data-max_length="20">
                         </label>
                     </div>
+                    <br>
                     <div class="upload_img-wrap" 
-     style="
-        display:flex;
-        flex-wrap:wrap;
-        gap:10px;
-     ">
+     style="display:flex;flex-wrap:wrap;gap:10px;">
 
 {{ if .Property.PropertyMedia }}
     {{ range .Property.PropertyMedia }}
         {{ range .Image }}
             {{ range .FilePath }}
 
-                <div class="upload_img-box"
-                     style="
+                <div style="
+                        position:relative;
                         width:120px;
                         height:120px;
-                        position:relative;
-                        border:1px solid #ddd;
-                        overflow:hidden;
                         border-radius:8px;
-                        background:#f5f5f5;
+                        overflow:hidden;
+                        border:1px solid #ddd;
                      ">
 
-                    <img src="/{{ . }}" alt="Property Image"
+                    <!-- ✅ SİL BUTONU -->
+                    <span onclick="removeImage(this)"
+                          style="
+                            position:absolute;
+                            top:4px;
+                            right:6px;
+                            color:white;
+                            background:rgba(0,0,0,0.7);
+                            border-radius:50%;
+                            width:22px;
+                            height:22px;
+                            line-height:22px;
+                            text-align:center;
+                            cursor:pointer;
+                            font-size:14px;
+                            z-index:3;
+                          ">✖</span>
+
+                    <!-- ✅ RESİM -->
+                    <img src="/{{ . }}"
+                         onclick="openImageModal('/{{ . }}')"
                          style="
                             width:100%;
                             height:100%;
                             object-fit:cover;
+                            cursor:pointer;
                          ">
-
-                    <button onclick="removeImage(this)"
-                            style="
-                                position:absolute;
-                                top:4px;
-                                right:4px;
-                                background:rgba(0,0,0,0.6);
-                                color:white;
-                                border:none;
-                                border-radius:50%;
-                                width:22px;
-                                height:22px;
-                                cursor:pointer;
-                                font-size:14px;
-                            ">
-                        ✖
-                    </button>
 
                 </div>
 
@@ -678,6 +700,8 @@
 {{ end }}
 
 </div>
+
+
 
 
                 </div>
@@ -711,7 +735,7 @@
                                                                 <!-- listsearch-input-item -->
                                                                 <div class="cs-intputwrap">
                                                                     <i class="fa-light fa-chart-area"></i>
-                                                                    <input type="text"   placeholder="Metrekare(m²):"  name="area">
+                                                                    <input type="text"   value="{{ .Property.PropertyDetails.Area }}"  name="area">
                                                                 </div>
                                                                 <!-- listsearch-input-item -->												
                                                             </div>
@@ -719,7 +743,7 @@
                                                                 <!-- listsearch-input-item -->
                                                                 <div class="cs-intputwrap">
                                                                     <i class="fa-light fa-bed"></i>
-                                                                    <input type="text"   placeholder="Yatak Odası:"  name="bedrooms">
+                                                                    <input type="text"   value="{{ .Property.PropertyDetails.Bedrooms }}"  name="bedrooms">
                                                                 </div>
                                                                 <!-- listsearch-input-item -->												
                                                             </div>
@@ -727,7 +751,7 @@
                                                                 <!-- listsearch-input-item -->
                                                                 <div class="cs-intputwrap">
                                                                     <i class="fa-light fa-bath"></i>
-                                                                    <input type="text"   placeholder="Banyo:"  name="bathrooms">
+                                                                    <input type="text"   value="{{ .Property.PropertyDetails.Bathrooms }}"  name="bathrooms">
                                                                 </div>
                                                                 <!-- listsearch-input-item -->												
                                                             </div>
@@ -735,7 +759,7 @@
                                                                 <!-- listsearch-input-item -->
                                                                 <div class="cs-intputwrap">
                                                                     <i class="fa-light fa-car"></i>
-                                                                    <input type="text"   placeholder="Park Alanı:"  name="parking">
+                                                                    <input type="text"   value="{{ .Property.PropertyDetails.Parking }}"  name="parking">
                                                                 </div>
                                                                 <!-- listsearch-input-item -->												
                                                             </div>
@@ -743,7 +767,7 @@
                                                                 <!-- listsearch-input-item -->
                                                                 <div class="cs-intputwrap">
                                                                     <i class="fa-light fa-users"></i>
-                                                                    <input type="text"   placeholder="Konaklama:"  name="accomodation">
+                                                                    <input type="text"   value="{{ .Property.PropertyDetails.Accomodation }}"  name="accomodation">
                                                                 </div>
                                                                 <!-- listsearch-input-item -->												
                                                             </div>
@@ -751,7 +775,7 @@
                                                                 <!-- listsearch-input-item -->
                                                                 <div class="cs-intputwrap">
                                                                     <i class="fa-light fa-globe-pointer"></i>
-                                                                    <input type="text"   placeholder="Web sitesi:"  name="website">
+                                                                    <input type="text"   value="{{ .Property.PropertyDetails.Website}}"  name="website">
                                                                 </div>
                                                                 <!-- listsearch-input-item -->												
                                                             </div>
@@ -759,75 +783,108 @@
                                                     </div>
                                                     <div class="col-lg-6">
                                                         <div class="cs-intputwrap">				
-                                                            <textarea name="property_message" id="comments" cols="40" rows="3" placeholder="Emlak Detayları:"></textarea>							
+                                                            <textarea name="property_message" id="comments" cols="40" rows="3" >{{ .Property.PropertyDetails.PropertyMessage }}</textarea>							
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-6">
                                                         <div class="dashboard-widget-title-single">Olanaklar:</div>
-                                                        <ul class="  filter-tags no-list-style ds-tg">
+                                                        <ul class="filter-tags no-list-style ds-tg">
+
                                                             <li>
-                                                                <input id="amenities-checkbox" type="checkbox" name="wifi" {{if .Wifi}}checked{{end}}>
-                                                                <label for="amenities-checkbox"> Wi Fi</label>
-                                                            </li>
-                                                            <li>
-                                                                <input id="amenities-checkbox" type="checkbox" name="pool" {{if .Pool}}checked{{end}}>
-                                                                <label for="amenities-checkbox">Havuz</label>
-                                                            </li>
-                                                            <li>
-                                                                <input id="amenities-checkbox" type="checkbox" name="security" {{if .Security}}checked{{end}}>
-                                                                <label for="amenities-checkbox"> Güvenlik</label>
-                                                            </li>
-                                                            <li>
-                                                                <input id="amenities-checkbox" type="checkbox" name="laundry_room" {{if .LaundryRoom}}checked{{end}} >
-                                                                <label for="amenities-checkbox"> Çamaşır Odası</label>
-                                                            </li>
-                                                            <li>
-                                                                <input id="amenities-checkbox" type="checkbox" name="equipped_kitchen" {{if .EquippedKitchen}}checked{{end}} >
-                                                                <label for="amenities-checkbox"> Donanımlı Mutfak</label>
-                                                            </li>
-                                                            <li>
-                                                                <input id="amenities-checkbox" type="checkbox" name="air_conditioning" {{if .AirConditioning}}checked{{end}}>
-                                                                <label for="amenities-checkbox">Klima</label>
-                                                            </li>
-                                                            <li>
-                                                                <input id="amenities-checkbox" type="checkbox" name="parking_" {{if .Parking}}checked{{end}}>
-                                                                <label for="amenities-checkbox">Park</label>
-                                                            </li>
-                                                            <li>
-                                                                <input id="amenities-checkbox" type="checkbox" name="garage_atached" {{if .GarageAtached}}checked{{end}} >
-                                                                <label for="amenities-checkbox">Garaj</label>
-                                                            </li>
-                                                            <li>
-                                                                <input id="amenities-checkbox" type="checkbox" name="fireplace" {{if .Fireplace}}checked{{end}}>
-                                                                <label for="amenities-checkbox"> Şömine</label>
-                                                            </li>
-                                                            <li>
-                                                                <input id="amenities-checkbox" type="checkbox" name="window_covering" {{if .WindowCovering}}checked{{end}}>
-                                                                <label for="amenities-checkbox"> Pencere Kaplaması</label>
-                                                            </li>
-                                                            <li>
-                                                                <input id="amenities-checkbox" type="checkbox" name="backyard" {{if .Backyard}}checked{{end}}>
-                                                                <label for="amenities-checkbox">Arka Bahçe</label>
-                                                            </li>
-                                                            <li>
-                                                                <input id="amenities-checkbox" type="checkbox" name="fitness_gym" {{if .FitnessGym}}checked{{end}}>
-                                                                <label for="amenities-checkbox">Fitness Salonu</label>
-                                                            </li>
-                                                            <li>
-                                                                <input id="amenities-checkbox" type="checkbox" name="elevator" {{if .Elevator}}checked{{end}}>
-                                                                <label for="amenities-checkbox">Asansör</label>
-                                                            </li>
-                                                            <li id="other-amenities-container" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
-                                                                <div class="other-amenity" style="display: flex; align-items: center; gap: 10px;">
-                                                                    <input type="text" placeholder="Diğer Özellikleri buraya yazın..." style="flex:1; padding:8px 12px; border-radius:5px; border:1px solid #ccc;">
-                                                                    <input type="checkbox" class="other-amenity-checkbox" style="width:20px; height:20px;">
-                                                                    <label style="margin:0; font-weight:500;">Var</label>
-                                                                </div>
+                                                                <input id="wifi" type="checkbox" name="wifi" value="1"
+                                                                    {{if (index .Property.Amenities 0).Wifi}} checked{{end}}>
+                                                                <label for="wifi">Wi-Fi</label>
                                                             </li>
 
+                                                            <li>
+                                                                <input id="pool" type="checkbox" name="pool" value="1"
+                                                                    {{if (index .Property.Amenities 0).Pool}} checked{{end}}>
+                                                                <label for="pool">Havuz</label>
+                                                            </li>
+
+                                                            <li>
+                                                                <input id="security" type="checkbox" name="security" value="1"
+                                                                    {{if (index .Property.Amenities 0).Security}} checked{{end}}>
+                                                                <label for="security">Güvenlik</label>
+                                                            </li>
+
+                                                            <li>
+                                                                <input id="laundry_room" type="checkbox" name="laundry_room" value="1"
+                                                                    {{if (index .Property.Amenities 0).LaundryRoom}} checked{{end}}>
+                                                                <label for="laundry_room">Çamaşır Odası</label>
+                                                            </li>
+
+                                                            <li>
+                                                                <input id="equipped_kitchen" type="checkbox" name="equipped_kitchen" value="1"
+                                                                    {{if (index .Property.Amenities 0).EquippedKitchen}} checked{{end}}>
+                                                                <label for="equipped_kitchen">Donanımlı Mutfak</label>
+                                                            </li>
+
+                                                            <li>
+                                                                <input id="air_conditioning" type="checkbox" name="air_conditioning" value="1"
+                                                                    {{if (index .Property.Amenities 0).AirConditioning}} checked{{end}}>
+                                                                <label for="air_conditioning">Klima</label>
+                                                            </li>
+
+                                                            <li>
+                                                                <input id="parking_" type="checkbox" name="parking_" value="1"
+                                                                    {{if (index .Property.Amenities 0).Parking}} checked{{end}}>
+                                                                <label for="parking">Park Alanı</label>
+                                                            </li>
+
+                                                            <li>
+                                                                <input id="garage" type="checkbox" name="garage_atached" value="1"
+                                                                    {{if (index .Property.Amenities 0).GarageAtached}} checked{{end}}>
+                                                                <label for="garage">Garaj</label>
+                                                            </li>
+
+                                                            <li>
+                                                                <input id="fireplace" type="checkbox" name="fireplace" value="1"
+                                                                    {{if (index .Property.Amenities 0).Fireplace}} checked{{end}}>
+                                                                <label for="fireplace">Şömine</label>
+                                                            </li>
+
+                                                            <li>
+                                                                <input id="window_covering" type="checkbox" name="window_covering" value="1"
+                                                                    {{if (index .Property.Amenities 0).WindowCovering}} checked{{end}}>
+                                                                <label for="window_covering">Pencere Kaplaması</label>
+                                                            </li>
+
+                                                            <li>
+                                                                <input id="backyard" type="checkbox" name="backyard" value="1"
+                                                                    {{if (index .Property.Amenities 0).Backyard}} checked{{end}}>
+                                                                <label for="backyard">Arka Bahçe</label>
+                                                            </li>
+
+                                                            <li>
+                                                                <input id="fitness_gym" type="checkbox" name="fitness_gym" value="1"
+                                                                    {{if (index .Property.Amenities 0).FitnessGym}} checked{{end}}>
+                                                                <label for="fitness_gym">Fitness Salonu</label>
+                                                            </li>
+
+                                                            <li>
+                                                                <input id="elevator" type="checkbox" name="elevator" value="1"
+                                                                    {{if (index .Property.Amenities 0).Elevator}} checked{{end}}>
+                                                                <label for="elevator">Asansör</label>
+                                                            </li>
+
+                                                            <!-- ✅ DİĞER ÖZELLİK -->
+                                                            <li style="display:flex; gap:10px; margin-top:10px;">
+                                                                
+                                                                <input type="text" name="others_name"
+                                                                    value="{{ (index .Property.Amenities 0).OthersName }}"
+                                                                    placeholder="Diğer özellikleri yazın..."
+                                                                    style="flex:1; padding:8px 12px; border-radius:5px; border:1px solid #ccc;">
+
+                                                                <input type="checkbox" name="others_checked" value="1"
+                                                                    {{if (index .Property.Amenities 0).OthersChecked}} checked{{end}}>
+
+                                                                <label>Var</label>
+                                                            </li>
 
                                                         </ul>
                                                     </div>
+
                                                     <div class="col-lg-6">
                                                         <div class="dashboard-widget-title-single">Plan ve Broşürleri Ekle:</div>
                                                         <!-- listsearch-input-item -->
@@ -849,7 +906,13 @@
                                                             Akordeon Widget'ı
                                                             <div class="onoffswitch-wrap_db">
                                                                 <div class="onoffswitch">
-                                                                    <input type="checkbox" name="accordion_exist" class="onoffswitch-checkbox" id="myonoffswitch5" {{if .AccordionExist}}checked{{end}}>
+                                                                    <input type="checkbox" name="accordion_exist"
+       class="onoffswitch-checkbox"
+       id="myonoffswitch5"
+       {{if and .Property.AccordionWidget (gt (len .Property.AccordionWidget) 0)}}
+           {{if (index .Property.AccordionWidget 0).AccordionExist}}checked{{end}}
+       {{end}}>
+
                                                                     <label class="onoffswitch-label" for="myonoffswitch5">
                                                                     <span class="onoffswitch-inner"></span>
                                                                     <span class="onoffswitch-switch"></span>
@@ -864,11 +927,15 @@
                                                                     <!-- listsearch-input-item -->
                                                                     <div class="cs-intputwrap">
                                                                         <i class="fa-light fa-globe-pointer"></i>
-                                                                        <input type="text"   placeholder="Accardion title:"  name="accordion_title">
+                                                                        <input type="text" value="{{if and .Property.AccordionWidget (gt (len .Property.AccordionWidget) 0)}}{{(index .Property.AccordionWidget 0).AccordionTitle}}{{end}}" name="accordion_title">
                                                                     </div>
                                                                     <!-- listsearch-input-item -->	 						
                                                                     <div class="cs-intputwrap">				
-                                                                        <textarea name="accordion_details"   cols="40" rows="3" placeholder="Accardion Details:"></textarea>							
+                                                                        <textarea name="accordion_details"   cols="40" rows="3">
+                                                                            {{if and .Property.AccordionWidget (gt (len .Property.AccordionWidget) 0)}}
+                                                                                {{(index .Property.AccordionWidget 0).AccordionDetails}}
+                                                                            {{end}}
+                                                                        </textarea>							
                                                                     </div>
                                                                     <span class="remove-rp tolt" data-microtip-position="left" data-tooltip="Remove Item"><i class="fa-light fa-trash"></i></span>
                                                                 </div>
@@ -893,19 +960,19 @@
                                                         <!-- listsearch-input-item -->
                                                         <div class="cs-intputwrap">
                                                             <i class="fa-light fa-input-text"></i>
-                                                            <input type="text"   placeholder="Video Başlığı" name="video_title">
+                                                            <input type="text" name="video_title" value="{{if and .Property.VideoWidget (gt (len .Property.VideoWidget) 0)}}{{(index .Property.VideoWidget 0).VideoTitle}}{{end}}">
                                                         </div>
                                                         <!-- listsearch-input-item -->								
                                                         <!-- listsearch-input-item -->
                                                         <div class="cs-intputwrap">
                                                             <i class="fa-brands fa-youtube"></i>
-                                                            <input type="text"   placeholder="Youtube urlsi" name="youtube_url">
+                                                            <input type="text"   value="{{if and .Property.VideoWidget (gt (len .Property.VideoWidget) 0)}}{{(index .Property.VideoWidget 0).YouTubeUrl}}{{end}}" name="youtube_url">
                                                         </div>
                                                         <!-- listsearch-input-item -->
                                                         <!-- listsearch-input-item -->
                                                         <div class="cs-intputwrap">
                                                             <i class="fa-brands fa-vimeo-v"></i>
-                                                            <input type="text"   placeholder="Vimeo urlsi" name="vimeo_url">
+                                                            <input type="text"   value="{{if and .Property.VideoWidget (gt (len .Property.VideoWidget) 0)}}{{(index .Property.VideoWidget 0).VimeoUrl}}{{end}}" name="vimeo_url">
                                                         </div>
                                                         <!-- listsearch-input-item -->
                                                     </div>
@@ -967,6 +1034,9 @@
                                         <!--dasboard-content-item end-->
                                     </div>
                                 </div>
+
+
+                                
                             
 
                                 
@@ -1055,3 +1125,4 @@
 </div>
 <!-- Main end -->
 
+<script src="/js/upload-for-update.js"></script>

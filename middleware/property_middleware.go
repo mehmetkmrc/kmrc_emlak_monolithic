@@ -22,10 +22,7 @@ func PropertyMiddleware(c fiber.Ctx) error {
 		return response.Error_Response(c, "invalid user ID format", err, nil, fiber.StatusBadRequest)
 	}
 
-	propertyID := uuid.New()
-
-	// **Context'e PropertyID ve UserID'yi kaydet**
-	c.Locals("propertyID", propertyID)
+	
 	c.Locals("userID", userID)
 
 	return c.Next()

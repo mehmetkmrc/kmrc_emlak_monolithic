@@ -1,5 +1,4 @@
-let globalNearbyArray = []; // Nearby verilerini tutacak
-let globalImgArray = []; // Resim upload için zaten kullanıyordun
+
 
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("documentLoader");

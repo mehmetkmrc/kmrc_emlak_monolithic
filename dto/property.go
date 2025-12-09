@@ -122,6 +122,7 @@ const (
 type (
 
 	BasicInfoCreateRequest struct {
+		BasicInfoID string `json:"basic_info_id"`
 		MainTitle string `json:"main_title"`
 		Type     PropertyType  `json:"property_type"`
 		Category PropertyCategory  `json:"category"`
@@ -214,6 +215,9 @@ type (
 		PropertyTitle string `json:"title"`
 	}	
 
+
+
+
 	MainPropertyUpdateRequest struct{
 		PropertyID string `json:"property_id"`
 		TariffPlan string `json:"tariff_plan"`
@@ -282,6 +286,7 @@ type (
 	}
 
 	BasicInfoUpdateRequest struct {
+		PropertyID string `json:"property_id"`
 		MainTitle string `json:"main_title"`
 		Type     PropertyType  `json:"property_type"`
 		Category PropertyCategory  `json:"category"`

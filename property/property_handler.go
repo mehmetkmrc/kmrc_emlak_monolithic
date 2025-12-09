@@ -890,18 +890,17 @@ func EditPropertyDetails(c fiber.Ctx) error {
 		query := `
 					UPDATE property_details
 					SET
-						area = $3,
-						bedrooms = $4,
-						bathrooms = $5,
-						parking = $6,
-						accomodation = $7,
-						website = $8,
-						property_message = $9 
+						area = $1,
+						bedrooms = $2,
+						bathrooms = $3,
+						parking = $4,
+						accomodation = $5,
+						website = $6,
+						property_message = $7 
 					WHERE
-						property_id = $10
-						AND user_id = $11
+						property_id = $8
 					RETURNING property_details_id, property_id, area, bedrooms, bathrooms, parking, accomodation, website, property_message`
-		queryRow := q.dbPool.QueryRow(ctx, query, propertyDetailModel.PropertyDetailsID ,propertyDetailModel.PropertyID, propertyDetailModel.Area, propertyDetailModel.Bedrooms, propertyDetailModel.Bathrooms, propertyDetailModel.Parking, propertyDetailModel.Accomodation, propertyDetailModel.Website, propertyDetailModel.PropertyMessage)
+		queryRow := q.dbPool.QueryRow(ctx, query, propertyDetailModel.Area, propertyDetailModel.Bedrooms, propertyDetailModel.Bathrooms, propertyDetailModel.Parking, propertyDetailModel.Accomodation, propertyDetailModel.Website, propertyDetailModel.PropertyMessage, propertyDetailModel.PropertyID)
 		err := queryRow.Scan(&propertyDetailModel.PropertyDetailsID, &propertyDetailModel.PropertyID, &propertyDetailModel.Area, &propertyDetailModel.Bedrooms, &propertyDetailModel.Bathrooms, &propertyDetailModel.Parking, &propertyDetailModel.Accomodation, &propertyDetailModel.Website, &propertyDetailModel.PropertyMessage )
 		if err != nil{
 			return nil, err
@@ -941,7 +940,6 @@ func EditVideoWidget(c fiber.Ctx) error {
 		}
 		videoWidget = &models.VideoWidget{
 			PropertyID: property_id,
-			VideoWidgetID: uuid.New(),
 			VideoExist: reqBody.VideoExist,
 			VideoTitle: reqBody.VideoTitle,
 			YouTubeUrl: reqBody.YouTubeUrl,
@@ -963,10 +961,9 @@ func EditVideoWidget(c fiber.Ctx) error {
 				vimeo_url = $4
 			WHERE 
 				property_id = $5
-				AND video_widget_id = $6
-			RETURNING  property_id, video_widget_id, video_exist, video_title, youtube_url, vimeo_url`
-		queryRow := q.dbPool.QueryRow(ctx, query, videoWidgetModel.PropertyID, videoWidgetModel.VideoWidgetID, videoWidgetModel.VideoExist, videoWidgetModel.VideoTitle, videoWidgetModel.YouTubeUrl, videoWidgetModel.VimeoUrl)
-		err := queryRow.Scan(&videoWidgetModel.PropertyID, &videoWidgetModel.VideoWidgetID, &videoWidgetModel.VideoExist, &videoWidgetModel.VideoTitle, &videoWidgetModel.YouTubeUrl, &videoWidgetModel.VimeoUrl)
+			RETURNING video_widget_id,  property_id, video_exist, video_title, youtube_url, vimeo_url`
+		queryRow := q.dbPool.QueryRow(ctx, query, videoWidgetModel.VideoExist, videoWidgetModel.VideoTitle, videoWidgetModel.YouTubeUrl, videoWidgetModel.VimeoUrl, videoWidgetModel.PropertyID)
+		err := queryRow.Scan(&videoWidgetModel.VideoWidgetID, &videoWidgetModel.PropertyID, &videoWidgetModel.VideoExist, &videoWidgetModel.VideoTitle, &videoWidgetModel.YouTubeUrl, &videoWidgetModel.VimeoUrl)
 		if err != nil{
 			return nil, err
 		}
@@ -1029,13 +1026,12 @@ func EditLocation(c fiber.Ctx) error{
 
 	LocationUpdateRequestModel := func (dto.LocationUpdateRequest) (*models.Location, error) {
 		location := new(models.Location)
-		property_id, err := uuid.Parse(reqBody.PropertyID)
+		parsedID, err := uuid.Parse(reqBody.PropertyID)
 		if err != nil {
 			return nil, err
 		}
 		location = &models.Location{
-			PropertyID: property_id,
-			LocationID: uuid.New(),
+			PropertyID: parsedID,
 			Phone: phoneInt,
 			Email: reqBody.Email,
 			City: models.CityLocation(reqBody.City),
@@ -1060,15 +1056,16 @@ func EditLocation(c fiber.Ctx) error{
 				longitude = $5,
 				latitude = $6
 			WHERE
-				location_id = $7
-				AND location_id = $8
-			RETURNING location_id, property_id, phone, email, city, address, longitude, latitude`
-		queryRow := q.dbPool.QueryRow(ctx, query,  locationModel.LocationID, locationModel.PropertyID, locationModel.Phone, locationModel.Email, locationModel.City, locationModel.Address, locationModel.Longitude, locationModel.Latitude)
-		err := queryRow.Scan(&locationModel.LocationID, &locationModel.PropertyID, &locationModel.Phone, &locationModel.Email, &locationModel.City, &locationModel.Address, &locationModel.Longitude, &locationModel.Latitude)
-		if err != nil{
-			return nil, err
-		}
-		return locationModel, nil
+				property_id = $7
+			RETURNING location_id, property_id, phone, email, city, address, longitude, latitude
+		`
+
+			queryRow := q.dbPool.QueryRow(ctx, query, locationModel.Phone, locationModel.Email, locationModel.City, locationModel.Address, locationModel.Longitude, locationModel.Latitude, locationModel.PropertyID)
+			err := queryRow.Scan(&locationModel.LocationID, &locationModel.PropertyID, &locationModel.Phone, &locationModel.Email, &locationModel.City, &locationModel.Address, &locationModel.Longitude, &locationModel.Latitude)
+			if err != nil{
+				return nil, err
+			}
+			return locationModel, nil
 	}
 	UpdateLocation := func (ctx context.Context, location *models.Location) (*models.Location, error) {
 		repo := &PropertyRepository{dbPool: database.DBPool}
@@ -1136,26 +1133,25 @@ func EditAmenities(c fiber.Ctx) error{
 		query := `
 			UPDATE amenities
 			SET
-				wifi = $3, 
-				pool = $4, 
-				security = $5, 
-				laundry_room = $6, 
-				equipped_kitchen = $7, 
-				air_conditioning = $8, 
-				parking =$9, 
-				garage_atached = $10, 
-				fireplace = $11, 
-				window_covering = $12, 
-				backyard = $13, 
-				fitness_gym = $14, 
-				elevator = $15, 
-				others_name = $16, 
-				others_checked = $17
+				wifi = $1, 
+				pool = $2, 
+				security = $3, 
+				laundry_room = $4, 
+				equipped_kitchen = $5, 
+				air_conditioning = $6, 
+				parking =$7, 
+				garage_atached = $8, 
+				fireplace = $9, 
+				window_covering = $10, 
+				backyard = $11, 
+				fitness_gym = $12, 
+				elevator = $13, 
+				others_name = $14, 
+				others_checked = $15
 			WHERE 
-				amenities_id = $1,
-				AND property_id = $2
+				property_id = $16
 			RETURNING amenities_id, property_id, wifi, pool, security, laundry_room, equipped_kitchen, air_conditioning, parking, garage_atached, fireplace, window_covering, backyard, fitness_gym, elevator, others_name, others_checked`
-		queryRow := q.dbPool.QueryRow(ctx, query, amenitiesModel.AmenitiesID, amenitiesModel.PropertyID, amenitiesModel.Wifi, amenitiesModel.Pool, amenitiesModel.Security, amenitiesModel.LaundryRoom, amenitiesModel.EquippedKitchen, amenitiesModel.AirConditioning, amenitiesModel.Parking, amenitiesModel.GarageAtached, amenitiesModel.Fireplace, amenitiesModel.WindowCovering, amenitiesModel.Backyard, amenitiesModel.FitnessGym, amenitiesModel.Elevator, amenitiesModel.OthersName, amenitiesModel.OthersChecked)
+		queryRow := q.dbPool.QueryRow(ctx, query, amenitiesModel.Wifi, amenitiesModel.Pool, amenitiesModel.Security, amenitiesModel.LaundryRoom, amenitiesModel.EquippedKitchen, amenitiesModel.AirConditioning, amenitiesModel.Parking, amenitiesModel.GarageAtached, amenitiesModel.Fireplace, amenitiesModel.WindowCovering, amenitiesModel.Backyard, amenitiesModel.FitnessGym, amenitiesModel.Elevator, amenitiesModel.OthersName, amenitiesModel.OthersChecked, amenitiesModel.PropertyID)
 		err := queryRow.Scan(&amenitiesModel.AmenitiesID, &amenitiesModel.PropertyID, &amenitiesModel.Wifi, &amenitiesModel.Pool, &amenitiesModel.Security, &amenitiesModel.LaundryRoom, &amenitiesModel.EquippedKitchen, &amenitiesModel.AirConditioning, &amenitiesModel.Parking, &amenitiesModel.GarageAtached, &amenitiesModel.Fireplace, &amenitiesModel.WindowCovering, &amenitiesModel.Backyard, &amenitiesModel.FitnessGym, &amenitiesModel.Elevator, &amenitiesModel.OthersName, &amenitiesModel.OthersChecked)
 		if err != nil {
 			return nil, err
@@ -1213,10 +1209,9 @@ func EditAccordionWidget(c fiber.Ctx) error{
 				accordion_title = $2, 
 				accordion_details = $3
 			WHERE
-				accordion_widget_id = $4
-				property_id = $5
-				RETURNING accordion_widget_id, property_id, accordion_exist, accordion_title, accordion_details`
-		queryRow := q.dbPool.QueryRow(ctx, query, accordionWidgetModel.AccordionWidgetID, accordionWidgetModel.PropertyID, accordionWidgetModel.AccordionExist, accordionWidgetModel.AccordionTitle, accordionWidgetModel.AccordionDetails)
+				property_id = $4
+			RETURNING accordion_widget_id, property_id, accordion_exist, accordion_title, accordion_details`
+		queryRow := q.dbPool.QueryRow(ctx, query, accordionWidgetModel.AccordionExist, accordionWidgetModel.AccordionTitle, accordionWidgetModel.AccordionDetails, accordionWidgetModel.PropertyID)
 		err := queryRow.Scan(&accordionWidgetModel.AccordionWidgetID, &accordionWidgetModel.PropertyID, &accordionWidgetModel.AccordionExist, &accordionWidgetModel.AccordionTitle, &accordionWidgetModel.AccordionDetails)
 		if err != nil {
 			return nil, err
@@ -1278,10 +1273,9 @@ func EditPropertyMedia(c fiber.Ctx) error{
 			image_id = $1,
 			type = $2
 		WHERE
-			property_media_id = $3
-			AND property_id = $4
+			property_id = $3
 		RETURNING property_media_id, property_id, image_id, type`
-		queryRow := q.dbPool.QueryRow(ctx, query,  propertyMediaModel.PropertyMediaID, propertyMediaModel.PropertyID, propertyMediaModel.ImageID, propertyMediaModel.Type)
+		queryRow := q.dbPool.QueryRow(ctx, query, propertyMediaModel.PropertyID, propertyMediaModel.ImageID, propertyMediaModel.Type)
 		err := queryRow.Scan(&propertyMediaModel.PropertyMediaID, &propertyMediaModel.PropertyID, &propertyMediaModel.ImageID, &propertyMediaModel.Type)
 		if err != nil{
 			return nil, err
@@ -1357,19 +1351,12 @@ func EditImage(c fiber.Ctx) error {
 	}
 
 	//Veritabanına Kaydet
-	query := `
-		UPDATE images
-		SET
-			name = $1, 
-			file_path = $2
-		WHERE
-			property_id = $3 
-			AND image_id = $4, 
-		RETURNING property_id, image_id, name, file_path`
+	query := `INSERT INTO images(property_id, image_id, name, file_path) VALUES($1, $2, $3, $4) RETURNING property_id, image_id, name, file_path`
 	row := database.DBPool.QueryRow(c.Context(), query, image.PropertyID, image.ImageID, pq.Array(image.ImageName), pq.Array(image.FilePath))
 	if err := row.Scan(&image.PropertyID, &image.ImageID, &image.ImageName, &image.FilePath); err != nil{
-		return response.Error_Response(c, "Error Update into database", err, nil, fiber.StatusInternalServerError)
+		return response.Error_Response(c, "Error inserting into database", err, nil, fiber.StatusInternalServerError)
 	}
+
 
 	//Başarılı yanıt döndür
 	zap.S().Info("Images updated successfully!", image)
@@ -1385,57 +1372,82 @@ func EditBasicInfo(c fiber.Ctx) error{
 	}
 
 	// Middleware aracılığıyla aktarılan propertyID'yi alın
-	propertyID, ok := c.Locals("propertyID").(uuid.UUID)
-	if !ok {
-		return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
-	}
+	parsedID, err := uuid.Parse(reqBody.PropertyID)
+if err != nil {
+    return response.Error_Response(c, "invalid property_id", err, nil, fiber.StatusBadRequest)
+}
+
 	 
 	BasicInfoUpdateRequestModel := func (dto.BasicInfoUpdateRequest) (*models.BasicInfo, error) {
 		basicInfo := new(models.BasicInfo)
 		
 		basicInfo = &models.BasicInfo{
-			BasicInfoID: uuid.New(),
-			PropertyID: propertyID,
+			PropertyID: parsedID,
 			MainTitle: reqBody.MainTitle,
 			Type: models.PropertyType(reqBody.Type),
 			Category: models.PropertyCategory(reqBody.Category),
 			Price: reqBody.Price,
 			Keywords: reqBody.Keywords,
 		}
+
 		return basicInfo, nil
 	}
 	basicInfoModel, err := BasicInfoUpdateRequestModel(*reqBody)
 	if err != nil{
 		return response.Error_Response(c, "error while trying to convert basic_info create request model", err, nil, fiber.StatusBadRequest)
 	}
+	
 	Update := func (ctx context.Context, q *PropertyRepository, basicInfoModel *models.BasicInfo) (*models.BasicInfo, error) {
 		query := `
 			UPDATE basic_infos
 			SET
-				main_title = $1, 
-				property_type = $2, 
-				category = $3, 
-				price = $4, 
-				keywords $5
+				main_title = $1,
+				property_type = $2,
+				category = $3,
+				price = $4,
+				keywords = $5
 			WHERE
-				basic_info_id = $6 
-				AND property_id = $7 
-			RETURNING basic_info_id, property_id, main_title, property_type, category, price, keywords`
-		queryRow := q.dbPool.QueryRow(ctx, query, basicInfoModel.BasicInfoID, basicInfoModel.PropertyID,basicInfoModel.MainTitle,  basicInfoModel.Type, basicInfoModel.Category, basicInfoModel.Price, basicInfoModel.Keywords)
-		err := queryRow.Scan(&basicInfoModel.BasicInfoID, &basicInfoModel.PropertyID,&basicInfoModel.MainTitle,  &basicInfoModel.Type, &basicInfoModel.Category, &basicInfoModel.Price, &basicInfoModel.Keywords)
-		if err != nil{
+				property_id = $6
+			RETURNING basic_info_id, property_id, main_title, property_type, category, price, keywords
+		`
+
+		row := q.dbPool.QueryRow(ctx, query,
+			basicInfoModel.MainTitle,   // $1
+			basicInfoModel.Type,        // $2
+			basicInfoModel.Category,    // $3
+			basicInfoModel.Price,       // $4
+			basicInfoModel.Keywords,    // $5
+			basicInfoModel.PropertyID,  // $6
+		)
+
+
+		err := row.Scan(
+			&basicInfoModel.BasicInfoID,
+			&basicInfoModel.PropertyID,
+			&basicInfoModel.MainTitle,
+			&basicInfoModel.Type,
+			&basicInfoModel.Category,
+			&basicInfoModel.Price,
+			&basicInfoModel.Keywords,
+		)
+
+		if err != nil {
 			return nil, err
 		}
-		return basicInfoModel, nil	
+
+		return basicInfoModel, nil
 	}
+
 	UpdateBasicInfo := func (ctx context.Context, basicInfo *models.BasicInfo ) (*models.BasicInfo, error) {
 		repo := &PropertyRepository{dbPool: database.DBPool}
 		return Update(ctx, repo, basicInfo)
 	}
 	basicInfo, err := UpdateBasicInfo(c.Context(), basicInfoModel)
 	if err != nil{
-		return response.Error_Response(c, "error while trying to create BasicInfo table", err, nil, fiber.StatusBadRequest)
+		zap.S().Info("UUID STRING:", fmt.Sprintf("%s", basicInfoModel.PropertyID))
+		return response.Error_Response(c, "error while trying to update BasicInfo table", err, nil, fiber.StatusBadRequest)
 	}
+	
 	zap.S().Info("basic_info table updated successfully! basic_info: ", basicInfo)
 	return response.Success_Response(c, basicInfoModel, "BasicInfo Updated Successfully", fiber.StatusOK)
 }
@@ -1463,12 +1475,12 @@ func EditNearby(c fiber.Ctx) error{
 
 	NearbyUpdateRequestModel := func (dto.NearbyUpdateRequest) (*models.Nearby, error){
 		nearby := new(models.Nearby)
-		property_id, err := uuid.Parse(reqBody.PropertyID)
+		parsedID, err := uuid.Parse(reqBody.PropertyID)
 		if err != nil {
 			return nil, err
 		}
 		nearby = &models.Nearby{
-			PropertyID: property_id,
+			PropertyID: parsedID,
 			NearbyID: uuid.New(),
 			Places: models.PropertyNearby(reqBody.Places),
 			Distance: distance,
@@ -1486,10 +1498,9 @@ func EditNearby(c fiber.Ctx) error{
 			places = $1, 
 			distance = $2
 		WHERE
-			nearby_id = $3
-			AND property_id =$4 
+			property_id =$3 
 		RETURNING nearby_id, property_id, places, distance`
-		queryRow := q.dbPool.QueryRow(ctx, query, nearbyModel.NearbyID, nearbyModel.PropertyID, nearbyModel.Places, nearbyModel.Distance)
+		queryRow := q.dbPool.QueryRow(ctx, query, nearbyModel.Places, nearbyModel.Distance, nearbyModel.PropertyID)
 		err := queryRow.Scan(&nearbyModel.NearbyID, &nearbyModel.PropertyID, &nearbyModel.Places, &nearbyModel.Distance)
 		if err != nil{
 			return nil, err

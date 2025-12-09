@@ -808,20 +808,23 @@ func EditPropertyWeb(c fiber.Ctx) error{
 	GetPropertyByID := func(ctx context.Context, propertyID uuid.UUID) (*models.Property, error) {
 		row := database.DBPool.QueryRow(ctx, `
 			SELECT
-				p.property_id as property_id,
+				p.property_id as p_property_id,
 				bi.basic_info_id as basic_info_id,
 				bi.property_type as property_type,
 				bi.category as category,
 				bi.main_title as main_title,
 				bi.price as price,
 				bi.keywords as keywords,
-				loc.property_id as property_id,
+
+				loc.property_id as loc_property_id,
+				loc.location_id as location_id,
 				loc.phone as phone,
 				loc.email as email,
 				loc.city as city,
 				loc.address as adress,
 				loc.latitude as latitude,
 				loc.longitude as longitude,
+
 				a.amenities_id as amenities_id,
 				a.wifi as wifi,
 				a.pool as pool,
@@ -838,27 +841,42 @@ func EditPropertyWeb(c fiber.Ctx) error{
 				a.elevator as elevator,
 				a.others_name as others_name,
 				a.others_checked as others_checked,
+
 				n.nearby_id as nearby_id,
 				n.places as places, 
 				n.distance as distance,
-				pd.property_id as property_id,
+
+				pd.property_id as pd_property_id,
+				pd.property_details_id as pd_property_detail_id,
 				pd.property_message as property_message,
 				pd.bedrooms as bedrooms,
 				pd.bathrooms as bathrooms,
+				pd.website as website,
 				pd.area as area,
-				pd.parking as parking_details
-			FROM
-				property p
-			LEFT JOIN
-				basic_infos bi ON p.property_id = bi.property_id
-			LEFT JOIN
-				location loc ON p.property_id = loc.property_id
-			LEFT JOIN 
-				amenities a ON p.property_id = a.property_id
-			LEFT JOIN
-				nearby n ON p.property_id = n.property_id
-			LEFT JOIN
-				property_details pd ON p.property_id = pd.property_id
+				pd.accomodation as accomodation,
+				pd.parking as parking_details,
+
+				aw.accordion_widget_id as aw_id,
+				aw.property_id as aw_property_id,
+				aw.accordion_exist as accordion_exist,
+				aw.accordion_title as accordion_title,
+				aw.accordion_details as accordion_details,
+
+				vw.video_widget_id as vw_id,
+				vw.property_id as vw_propertyid,
+				vw.video_exist as video_exist,
+				vw.video_title as video_title,
+				vw.youtube_url as youtube_url,
+				vw.vimeo_url as vimeo_url
+
+			FROM property p
+			LEFT JOIN basic_infos bi ON p.property_id = bi.property_id
+			LEFT JOIN location loc ON p.property_id = loc.property_id
+			LEFT JOIN amenities a ON p.property_id = a.property_id
+			LEFT JOIN nearby n ON p.property_id = n.property_id
+			LEFT JOIN property_details pd ON p.property_id = pd.property_id
+			LEFT JOIN accordion_widget aw ON p.property_id = aw.property_id
+			LEFT JOIN video_widget vw ON p.property_id = vw.property_id
 			WHERE p.property_id = $1
 		`, propertyID)
 
@@ -868,21 +886,26 @@ func EditPropertyWeb(c fiber.Ctx) error{
 		var amenities models.Amenities
 		var nearby models.Nearby
 		var propertyDetails models.PropertyDetails
+		var accordionWidget models.AccordionWidget
+		var videoWidget models.VideoWidget
 		err := row.Scan(
-			&property.PropertyID,
+			&property.PropertyID,      // p_property_id
 			&basicInfos.BasicInfoID,
 			&basicInfos.Type,
 			&basicInfos.Category,
 			&basicInfos.MainTitle,
 			&basicInfos.Price,
 			&basicInfos.Keywords,
-			&location.PropertyID,
+
+			&location.PropertyID,      // loc_property_id
+			&location.LocationID,
 			&location.Phone,
 			&location.Email,
 			&location.City,
 			&location.Address,
 			&location.Latitude,
 			&location.Longitude,
+
 			&amenities.AmenitiesID,
 			&amenities.Wifi,
 			&amenities.Pool,
@@ -899,16 +922,35 @@ func EditPropertyWeb(c fiber.Ctx) error{
 			&amenities.Elevator,
 			&amenities.OthersName,
 			&amenities.OthersChecked,
+
 			&nearby.NearbyID,
 			&nearby.Places,
 			&nearby.Distance,
-			&propertyDetails.PropertyID,
+
+			&propertyDetails.PropertyID, // pd_property_id
+			&propertyDetails.PropertyDetailsID,
 			&propertyDetails.PropertyMessage,
 			&propertyDetails.Bedrooms,
 			&propertyDetails.Bathrooms,
+			&propertyDetails.Website,
 			&propertyDetails.Area,
+			&propertyDetails.Accomodation,
 			&propertyDetails.Parking,
+
+			&accordionWidget.AccordionWidgetID, // aw_id
+			&accordionWidget.PropertyID,        // aw_property_id
+			&accordionWidget.AccordionExist,
+			&accordionWidget.AccordionTitle,
+			&accordionWidget.AccordionDetails,
+
+			&videoWidget.VideoWidgetID,
+			&videoWidget.PropertyID,
+			&videoWidget.VideoExist,
+			&videoWidget.VideoTitle,
+			&videoWidget.YouTubeUrl,
+			&videoWidget.VimeoUrl,
 		)
+
 		if err != nil {
 			fmt.Println("Sorgu hatası: ", err)
 			return nil, err
@@ -919,6 +961,8 @@ func EditPropertyWeb(c fiber.Ctx) error{
 		property.Amenities = []*models.Amenities{&amenities}
 		property.Nearby = []*models.Nearby{&nearby}
 		property.PropertyDetails = &propertyDetails
+		property.AccordionWidget = []*models.AccordionWidget{&accordionWidget}
+		property.VideoWidget = []*models.VideoWidget{&videoWidget}
 		GetNearbyByPropertyID := func(ctx context.Context, propertyID uuid.UUID) ([]*models.Nearby, error) {
 			rows, err := database.DBPool.Query(ctx, `
 				SELECT nearby_id, property_id, places, distance
@@ -941,6 +985,21 @@ func EditPropertyWeb(c fiber.Ctx) error{
 			}
 
 			return nearbyList, nil
+		}
+
+		GetPropertyMedia := func(ctx context.Context, propertyID uuid.UUID) (*models.PropertyMedia, error) {
+			row := database.DBPool.QueryRow(ctx, `
+				SELECT property_media_id, property_id, type
+				FROM property_media
+				WHERE property_id = $1
+			`, propertyID)
+
+			var pm models.PropertyMedia
+			err := row.Scan(&pm.PropertyMediaID, &pm.PropertyID, &pm.Type)
+			if err != nil {
+				return nil, err
+			}
+			return &pm, nil
 		}
 
 		//Resimleri getiren fonksiyon
@@ -989,6 +1048,17 @@ func EditPropertyWeb(c fiber.Ctx) error{
 			}
 			property.PropertyMedia = []*models.PropertyMedia{propertyMedia} // Slice içinde sakla
 		}
+		propertyMediaData, err := GetPropertyMedia(ctx, property.PropertyID)
+		if err != nil {
+			propertyMediaData = &models.PropertyMedia{
+				PropertyID: property.PropertyID,
+				Type: models.GridGallery, // ✅ default
+			}
+		}
+
+		propertyMediaData.Image = images
+		property.PropertyMedia = []*models.PropertyMedia{propertyMediaData}
+
 
 		nearbyList, err := GetNearbyByPropertyID(ctx, property.PropertyID)
 		if err != nil {
