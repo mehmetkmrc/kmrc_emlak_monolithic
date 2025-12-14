@@ -129,14 +129,12 @@ func main() {
 	upropertier.Put("/edit-video-widget", property.EditVideoWidget)
 	upropertier.Put("/edit-location", property.EditLocation)
 	upropertier.Put("/edit-amenities", property.EditAmenities)
-	//upropertier.Put("/edit-property-media", property.EditPropertyMedia)
-	//upropertier.Put("/edit-image", property.EditImage)
 	upropertier.Put("/edit-basic-info", property.EditBasicInfo, auth.IsAuthorized,middleware.PropertyMiddleware, auth.GetUserDetail)
 	upropertier.Post("/edit-nearby", property.EditNearby)
 	upropertier.Put("/edit-accordion-widget", property.EditAccordionWidget)
 	upropertier.Put("/edit-plans-brochures", property.EditPlansBrochures)
 	upropertier.Delete("nearby/:nearbyID", property.DeleteNearby)
-
+	upropertier.Delete("image/:mediaID", property.DeleteImage)
 
 	userp := app.Group("/user")
 	userp.Put("/update-user-base-info", user.UpdateUser, auth.IsAuthorized,middleware.UserMiddleware, auth.GetUserDetail)

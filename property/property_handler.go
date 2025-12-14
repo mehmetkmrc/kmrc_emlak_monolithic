@@ -7,7 +7,8 @@ import (
 	"kmrc_emlak_mono/auth"
 	"kmrc_emlak_mono/database"
 	"kmrc_emlak_mono/dto"
-	
+	"log"
+	"os"
 
 	"path/filepath"
 
@@ -19,6 +20,7 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
+
 	//"github.com/lib/pq"
 	"go.uber.org/zap"
 
@@ -1431,4 +1433,66 @@ func DeleteNearby(c fiber.Ctx) error {
         "status": 200,
         "message": "Deleted",
     })
+}
+
+func DeleteImage(c fiber.Ctx) error {
+
+	propertyMediaIDStr := c.Params("property_media_id")
+	propertyMediaID, err := uuid.Parse(propertyMediaIDStr)
+	if err != nil {
+		return response.Error_Response(c, "Invalid property_media_id", err, nil, fiber.StatusBadRequest)
+	}
+
+	ctx := c.Context()
+
+	tx, err := database.DBPool.Begin(ctx)
+	if err != nil {
+		return response.Error_Response(c, "Transaction error", err, nil, fiber.StatusInternalServerError)
+	}
+	defer tx.Rollback(ctx)
+
+	var imageID uuid.UUID
+	var imagePath string
+
+	// 1️⃣ İlgili image bilgisi
+	err = tx.QueryRow(ctx, `
+		SELECT i.image_id, i.url
+		FROM property_media pm
+		JOIN images i ON pm.image_id = i.image_id
+		WHERE pm.property_media_id = $1
+	`, propertyMediaID).Scan(&imageID, &imagePath)
+
+	if err != nil {
+		return response.Error_Response(c, "Image not found", err, nil, fiber.StatusNotFound)
+	}
+
+	// 2️⃣ property_media sil
+	_, err = tx.Exec(ctx, `
+		DELETE FROM property_media
+		WHERE property_media_id = $1
+	`, propertyMediaID)
+	if err != nil {
+		return response.Error_Response(c, "property_media delete error", err, nil, fiber.StatusInternalServerError)
+	}
+
+	// 3️⃣ images sil
+	_, err = tx.Exec(ctx, `
+		DELETE FROM images
+		WHERE image_id = $1
+	`, imageID)
+	if err != nil {
+		return response.Error_Response(c, "image delete error", err, nil, fiber.StatusInternalServerError)
+	}
+
+	// 4️⃣ Diskten dosyayı sil
+	if err := os.Remove(imagePath); err != nil {
+		// dosya yoksa panic yapma
+		log.Println("file delete warning:", err)
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return response.Error_Response(c, "Commit error", err, nil, fiber.StatusInternalServerError)
+	}
+
+	return response.Success_Response(c, nil, "Image deleted successfully", fiber.StatusOK)
 }
