@@ -283,30 +283,12 @@
                                                 <div class="geodir-category-listing">
                                                     <div class="geodir-category-img">
                                                         <a href="/ilan/{{.PropertyID }}" class="geodir-category-img_item">
-                                                            {{if .PropertyMedia}}
-                                                                {{if len .PropertyMedia}}
-                                                                    {{$firstPropertyMedia := index .PropertyMedia 0}} <!-- İlk PropertyMedia'yı al -->
-                                                                    {{if $firstPropertyMedia.Image}} <!-- İlk PropertyMedia'nın Image'ı var mı? -->
-                                                                      {{if len $firstPropertyMedia.Image}}
-                                                                        {{$firstImage := index $firstPropertyMedia.Image 0}}
-                                                                        {{if len $firstImage.FilePath}} <!-- İlk Image'ın FilePath'i var mı? -->
-                                                                            <div class="bg" data-bg="{{index $firstImage.FilePath 0}}"></div>
-                                                                        {{else}}
-                                                                            <div class="bg" data-bg="images/all/1.jpg"></div>  <!-- Varsayılan Resim -->
-                                                                        {{end}}
-                                                                      {{else}}
-                                                                        <div class="bg" data-bg="/images/default-image.jpg"></div>  <!-- Varsayılan Resim -->
-                                                                      {{end}}
-                                                                    {{else}}
-                                                                        <div class="bg" data-bg="/images/default-image.jpg"></div>  <!-- Varsayılan Resim -->
-                                                                    {{end}}
-                                                                {{else}}
-                                                                    <div class="bg" data-bg="/images/default-image.jpg"></div>  <!-- Varsayılan Resim -->
-                                                                {{end}}
-                                                            {{else}}
-                                                                <div class="bg" data-bg="/images/default-image.jpg"></div>  <!-- Varsayılan Resim -->
-                                                            {{end}}
-                                                            <div class="overlay"></div>
+                                                            {{if and .PropertyMedia .PropertyMedia.Image .PropertyMedia.Image.Url}}
+                                                            <div class="bg" data-bg="/{{.PropertyMedia.Image.Url}}"></div>
+                                                        {{else}}
+                                                            <div class="bg" data-bg="/images/default-image.jpg"></div>
+                                                        {{end}}
+                                                        <div class="overlay"></div>
                                                         </a>
                                                         <div class="geodir-category-location">
                                                             <a href="#4" class="map-item tolt single-map-item" data-newlatitude="40.72956781" data-newlongitude="-73.99726866"   data-microtip-position="top" data-tooltip="On the map"><i class="fas fa-map-marker-alt"></i>  {{.Location.Address}}</a>

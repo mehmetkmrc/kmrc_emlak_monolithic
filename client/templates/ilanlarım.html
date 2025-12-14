@@ -112,25 +112,11 @@
                                                         <div class="dashboard-listings-item_img">
                                                             <div class="bg-wrap">   
                                                                 {{if .PropertyMedia}}
-                                                                    {{if len .PropertyMedia}}
-                                                                        {{$firstPropertyMedia := index .PropertyMedia 0}}
-                                                                        {{if $firstPropertyMedia.Image}}
-                                                                            {{if len $firstPropertyMedia.Image}}
-                                                                                {{$firstImage := index $firstPropertyMedia.Image 0}}
-                                                                                {{if len $firstImage.FilePath}}
-                                                                                    <div class="bg" data-bg="/{{index $firstImage.FilePath 0}}"></div>
-                                                                                {{else}}
-                                                                                    <div class="bg" data-bg="/images/default-image.jpg"></div>
-                                                                                {{end}}
-                                                                            {{else}}
-                                                                                <div class="bg" data-bg="/images/default-image.jpg"></div>
-                                                                            {{end}}
-                                                                        {{else}}
-                                                                            <div class="bg" data-bg="/images/default-image.jpg"></div>
-                                                                        {{end}}
-                                                                    {{else}}
-                                                                        <div class="bg" data-bg="/images/default-image.jpg"></div>
-                                                                    {{end}}
+                                                                    {{if and .PropertyMedia .PropertyMedia.Image .PropertyMedia.Image.Url}}
+                                                                    <div class="bg" data-bg="/{{.PropertyMedia.Image.Url}}"></div>
+                                                                {{else}}
+                                                                    <div class="bg" data-bg="/images/default-image.jpg"></div>
+                                                                {{end}}
                                                                 {{else}}
                                                                     <div class="bg" data-bg="/images/default-image.jpg"></div>
                                                                 {{end}}

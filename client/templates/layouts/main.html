@@ -85,74 +85,76 @@
 
     <script>
         let globalNearbyArray = []; // Nearby verilerini tutacak
-        let globalImgArray = []; // Resim upload için zaten kullanıyordun
-let scale = 1;
-let lastScale = 1;
-let startDistance = 0;
+        
+      
 
-function openImageModal(src) {
-    scale = 1;
-    lastScale = 1;
+        let scale = 1;
+        let lastScale = 1;
+        let startDistance = 0;
 
-    const modal = document.getElementById("imageModal");
-    const img = document.getElementById("modalImage");
+        function openImageModal(src) {
+            scale = 1;
+            lastScale = 1;
 
-    img.style.transform = "scale(1)";
-    img.src = src;
-    modal.style.display = "flex";
-}
+            const modal = document.getElementById("imageModal");
+            const img = document.getElementById("modalImage");
 
-function closeImageModal() {
-    document.getElementById("imageModal").style.display = "none";
-}
+            img.style.transform = "scale(1)";
+            img.src = src;
+            modal.style.display = "flex";
+        }
 
-
-// ✅ PC SCROLL ZOOM
-document.getElementById("imageModal").addEventListener("wheel", function(e) {
-    e.preventDefault();
-
-    if (e.deltaY < 0) scale += 0.1;
-    else scale -= 0.1;
-
-    scale = Math.min(Math.max(1, scale), 5);
-    document.getElementById("modalImage").style.transform = `scale(${scale})`;
-});
+        function closeImageModal() {
+            document.getElementById("imageModal").style.display = "none";
+        }
 
 
-// ✅ MOBİL PINCH ZOOM
-document.getElementById("imageModal").addEventListener("touchstart", function(e) {
-    if (e.touches.length === 2) {
-        startDistance = getDistance(e.touches[0], e.touches[1]);
-        lastScale = scale;
-    }
-});
+        // ✅ PC SCROLL ZOOM
+        document.getElementById("imageModal").addEventListener("wheel", function(e) {
+            e.preventDefault();
 
-document.getElementById("imageModal").addEventListener("touchmove", function(e) {
-    if (e.touches.length === 2) {
-        e.preventDefault();
-        const newDistance = getDistance(e.touches[0], e.touches[1]);
-        scale = lastScale * (newDistance / startDistance);
-        scale = Math.min(Math.max(1, scale), 5);
-        document.getElementById("modalImage").style.transform = `scale(${scale})`;
-    }
-});
+            if (e.deltaY < 0) scale += 0.1;
+            else scale -= 0.1;
 
-function getDistance(t1, t2) {
-    return Math.hypot(t2.pageX - t1.pageX, t2.pageY - t1.pageY);
-}
+            scale = Math.min(Math.max(1, scale), 5);
+            document.getElementById("modalImage").style.transform = `scale(${scale})`;
+        });
 
 
-// ✅ ESC İLE KAPAT
-document.addEventListener("keydown", function(e) {
-    if(e.key === "Escape") closeImageModal();
-});
-</script>
-<script>
-function removeImage(el) {
-    if(confirm("Bu resmi silmek istiyor musunuz?")) {
-        el.parentElement.remove();
-    }
-}
+        // ✅ MOBİL PINCH ZOOM
+        document.getElementById("imageModal").addEventListener("touchstart", function(e) {
+            if (e.touches.length === 2) {
+                startDistance = getDistance(e.touches[0], e.touches[1]);
+                lastScale = scale;
+            }
+        });
+
+        document.getElementById("imageModal").addEventListener("touchmove", function(e) {
+            if (e.touches.length === 2) {
+                e.preventDefault();
+                const newDistance = getDistance(e.touches[0], e.touches[1]);
+                scale = lastScale * (newDistance / startDistance);
+                scale = Math.min(Math.max(1, scale), 5);
+                document.getElementById("modalImage").style.transform = `scale(${scale})`;
+            }
+        });
+
+        function getDistance(t1, t2) {
+            return Math.hypot(t2.pageX - t1.pageX, t2.pageY - t1.pageY);
+        }
+
+
+        // ✅ ESC İLE KAPAT
+        document.addEventListener("keydown", function(e) {
+            if(e.key === "Escape") closeImageModal();
+        });
+        </script>
+        <script>
+        function removeImage(el) {
+            if(confirm("Bu resmi silmek istiyor musunuz?")) {
+                el.parentElement.remove();
+            }
+        }
 </script>    
 
 

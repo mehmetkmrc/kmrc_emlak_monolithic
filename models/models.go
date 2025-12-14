@@ -58,7 +58,9 @@ type Property struct {
 	Location *Location `json:"location"`
 	Amenities []*Amenities `json:"amenities"`
 	AccordionWidget []*AccordionWidget `json:"accordion_widget"`
-	PropertyMedia []*PropertyMedia `json:"property_media"`
+	PropertyMedia *PropertyMedia `json:"property_media"`
+
+	PropertyMediaList []*PropertyMedia `json:"property_media_list"`
 	BasicInfo *BasicInfo `json:"basic_info"`
 	Nearby 	[]*Nearby `json:"nearby"`
 	PlansBrochures []*PlansBrochures `json:"plans_brochures"`
@@ -216,19 +218,23 @@ const (
 
 )
 type PropertyMedia struct {
-	PropertyID uuid.UUID `json:"property_id"`
-	PropertyMediaID uuid.UUID `json:"property_media_id"`
-	ImageID uuid.UUID `json:"image_id"`
-	Type GalleryType `json:"type"`
-	Image []*Image  `json:"image"`
+    PropertyMediaID uuid.UUID `json:"property_media_id"`
+    PropertyID      uuid.UUID `json:"property_id"`
+    ImageID         uuid.UUID `json:"image_id"`
+    Type            string    `json:"type"`
+	Image 			*Image 		`json:"image"`
 }
 
-type Image struct{
-	PropertyID 		uuid.UUID 	`json:"property_id"`
-	ImageID  	  	uuid.UUID 	`json:"image_id"`
-	ImageName     	[]string    `json:"name"`
-	FilePath  	  	[]string    `json:"file_path"`
+
+type Image struct {
+    ImageID     uuid.UUID `json:"image_id"`
+    PropertyID  uuid.UUID `json:"property_id"`
+    Url         string    `json:"url"`
+    OriginalName string   `json:"original_name"`
+    MediaType   string    `json:"media_type"`
+    CreatedAt   time.Time `json:"created_at"`
 }
+
 
 type PropertyDetails struct {
 	PropertyID uuid.UUID `json:"property_id"`

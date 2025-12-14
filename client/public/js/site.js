@@ -7,6 +7,11 @@ document.addEventListener("DOMContentLoaded", function () {
     initImageUpload();
 
 });
+  let imageState = {
+            gallery: [],
+            plan: [],
+            brochure: []
+    };
 
 // =======================
 // 🌍 MAP INIT
@@ -117,40 +122,39 @@ function initImageUpload() {
 }
 
 function handleUpload(inputFile) {
+
+    const key = inputFile.dataset.type;
+    if (!key) return console.error("data-type eksik", inputFile);
+
     const uploadWrap = inputFile.closest('.upload__box').querySelector('.upload__img-wrap');
+    if (!uploadWrap) return console.error("upload__img-wrap bulunamadı");
+
     const files = Array.from(inputFile.files);
 
     files.forEach(file => {
-        if (!file.type.startsWith('image/')) {
-            alert('Lütfen sadece resim yükleyin!');
-            return;
-        }
 
-        globalImgArray.push(file);
+        if (!file.type.startsWith('image/')) return;
+
+        imageState[key].push(file);
 
         const reader = new FileReader();
-        reader.onload = (e) => {
-            const imgBox = document.createElement('div');
-            imgBox.classList.add('upload__img-box');
+        reader.onload = e => {
+
+            const box = document.createElement('div');
+            box.className = 'upload__img-box';
 
             const img = document.createElement('img');
             img.src = e.target.result;
 
-            img.onclick = () => {
-                const win = window.open();
-                win.document.write(`<img src="${e.target.result}" style="width:100%">`);
+            const btn = document.createElement('button');
+            btn.textContent = "×";
+            btn.onclick = () => {
+                imageState[key] = imageState[key].filter(f => f !== file);
+                box.remove();
             };
 
-            const removeBtn = document.createElement('button');
-            removeBtn.textContent = "×";
-            removeBtn.onclick = () => {
-                globalImgArray = globalImgArray.filter(f => f !== file);
-                imgBox.remove();
-            };
-
-            imgBox.appendChild(img);
-            imgBox.appendChild(removeBtn);
-            uploadWrap.appendChild(imgBox);
+            box.append(img, btn);
+            uploadWrap.appendChild(box);
         };
 
         reader.readAsDataURL(file);

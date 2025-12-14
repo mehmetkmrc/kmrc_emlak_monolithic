@@ -648,10 +648,10 @@
                     <div class="upload_img-wrap" 
      style="display:flex;flex-wrap:wrap;gap:10px;">
 
-{{ if .Property.PropertyMedia }}
-    {{ range .Property.PropertyMedia }}
-        {{ range .Image }}
-            {{ range .FilePath }}
+{{ if .Property.PropertyMediaList}}
+    {{ range .Property.PropertyMediaList }}
+        {{ if and .Image (eq .Type "gallery") }}
+            
 
                 <div style="
                         position:relative;
@@ -664,6 +664,7 @@
 
                     <!-- ✅ SİL BUTONU -->
                     <span onclick="removeImage(this)"
+                            data-media-id="{{ .PropertyMediaID }}"
                           style="
                             position:absolute;
                             top:4px;
@@ -681,8 +682,8 @@
                           ">✖</span>
 
                     <!-- ✅ RESİM -->
-                    <img src="/{{ . }}"
-                         onclick="openImageModal('/{{ . }}')"
+                     <img src="/{{ .Image.Url }}"
+                         onclick="openImageModal('/{{ .Image.Url }}')"
                          style="
                             width:100%;
                             height:100%;
@@ -692,7 +693,7 @@
 
                 </div>
 
-            {{ end }}
+            
         {{ end }}
     {{ end }}
 {{ else }}
@@ -708,17 +709,71 @@
             </div>
 
             <div class="col-lg-4">
-                <div class="sin-uidb">Izgara Galeri için Arka Plan Görseli</div>
-                <div class="upload__box">
-                    <div class="upload__btn-box">
-                        <label class="upload__btn">
-                            <p style="color: aliceblue;">📁 Resimleri Seç veya Sürükle</p>
-  <input type="file" multiple class="upload__inputfile" data-max_length="20">
-                        </label>
-                    </div>
-                    <div class="upload__img-wrap"></div>
-                </div>
-            </div>
+    <div class="sin-uidb">Izgara Galeri için Arka Plan Görseli</div>
+
+    <div class="upload__box">
+        <div class="upload__btn-box">
+            <label class="upload__btn">
+                <p style="color: aliceblue;">📁 Resimleri Seç veya Sürükle</p>
+                <input type="file" multiple class="upload__inputfile" data-max_length="20">
+            </label>
+        </div>
+
+        <div class="upload__img-wrap" style="display:flex;flex-wrap:wrap;gap:10px;">
+
+            {{ if .Property.PropertyMediaList }}
+                {{ range .Property.PropertyMediaList }}
+                    {{ if and .Image (eq .Type "plan") }}
+
+                        <div style="
+                            position:relative;
+                            width:120px;
+                            height:120px;
+                            border-radius:8px;
+                            overflow:hidden;
+                            border:1px solid #ddd;
+                        ">
+
+                            <!-- ❌ SİL -->
+                            <span onclick="removeImage(this)"
+                                  data-media-id="{{ .PropertyMediaID }}"
+                                  style="
+                                    position:absolute;
+                                    top:4px;
+                                    right:6px;
+                                    color:white;
+                                    background:rgba(0,0,0,0.7);
+                                    border-radius:50%;
+                                    width:22px;
+                                    height:22px;
+                                    line-height:22px;
+                                    text-align:center;
+                                    cursor:pointer;
+                                    font-size:14px;
+                                    z-index:3;
+                                  ">✖</span>
+
+                            
+                            <img src="/{{ .Image.Url }}"
+                                 onclick="openImageModal('/{{ .Image.Url }}')"
+                                 style="
+                                    width:100%;
+                                    height:100%;
+                                    object-fit:cover;
+                                    cursor:pointer;
+                                 ">
+                        </div>
+
+                    {{ end }}
+                {{ end }}
+            {{ else }}
+                <p>Plan bulunamadı.</p>
+            {{ end }}
+
+        </div>
+    </div>
+</div>
+
         </div>
     </div>
 </div>

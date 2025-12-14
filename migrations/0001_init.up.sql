@@ -28,13 +28,17 @@ CREATE TABLE public.property (
 );
 
 -- IMAGES TABLE
-CREATE TABLE public.images (
-    image_id uuid PRIMARY KEY,
-    name text[],
-    file_path text[],
-    property_id uuid,
+CREATE TABLE images (
+    image_id UUID PRIMARY KEY,
+    property_id UUID NOT NULL,
+    url TEXT NOT NULL,
+    original_name TEXT,
+    media_type TEXT CHECK(media_type IN ('gallery','plan','brochure')),
+    created_at TIMESTAMP DEFAULT now(),
+
     CONSTRAINT fk_images_property
-        FOREIGN KEY (property_id) REFERENCES public.property(property_id)
+        FOREIGN KEY (property_id)
+        REFERENCES property(property_id)
         ON DELETE CASCADE
 );
 
@@ -119,24 +123,33 @@ CREATE TABLE public.nearby (
 );
 
 -- PLANS & BROCHURES
-CREATE TABLE public.plans_brochures (
-    plans_brochures_id uuid PRIMARY KEY,
-    property_id uuid NOT NULL,
-    file_type text,
-    file_path text,
+CREATE TABLE plans_brochures (
+    plans_brochures_id UUID PRIMARY KEY,
+    property_id UUID NOT NULL,
+    url TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT now(),
+
     CONSTRAINT fk_plans_property
-        FOREIGN KEY (property_id) REFERENCES public.property(property_id)
+        FOREIGN KEY (property_id)
+        REFERENCES property(property_id)
         ON DELETE CASCADE
 );
 
 -- PROPERTY MEDIA
-CREATE TABLE public.property_media (
-    property_media_id uuid PRIMARY KEY,
-    property_id uuid NOT NULL,
-    image_id uuid,
-    type text,
+CREATE TABLE property_media (
+    property_media_id UUID PRIMARY KEY,
+    property_id UUID NOT NULL,
+    image_id UUID NOT NULL,
+    type TEXT CHECK(type IN ('gallery','plan','brochure')),
+
     CONSTRAINT fk_property_media_property
-        FOREIGN KEY (property_id) REFERENCES public.property(property_id)
+        FOREIGN KEY (property_id)
+        REFERENCES property(property_id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_property_media_image
+        FOREIGN KEY (image_id)
+        REFERENCES images(image_id)
         ON DELETE CASCADE
 );
 

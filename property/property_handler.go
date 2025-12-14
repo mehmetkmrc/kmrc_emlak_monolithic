@@ -7,7 +7,7 @@ import (
 	"kmrc_emlak_mono/auth"
 	"kmrc_emlak_mono/database"
 	"kmrc_emlak_mono/dto"
-	"strings"
+	
 
 	"path/filepath"
 
@@ -19,7 +19,7 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
-	"github.com/lib/pq"
+	//"github.com/lib/pq"
 	"go.uber.org/zap"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -459,128 +459,102 @@ func AddAccordionWidget(c fiber.Ctx) error{
 	return response.Success_Response(c, accordionWidget, "AccordionWidget Model Created successfully", fiber.StatusOK)
 }
 
-func AddPropertyMedia(c fiber.Ctx) error{
-	reqBody := new(dto.PropertyMediaCreateRequest)
-	body := c.Body()
-	if err := json.Unmarshal(body, reqBody);
-	err != nil{
-		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
-	}
-	// Middleware aracılığıyla aktarılan propertyID'yi alın
-	// propertyID, ok := c.Locals("propertyID").(uuid.UUID)
-	// if !ok {
-	// 	return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
-	// }
-	PropertyMediaCreateRequestModel := func (dto.PropertyMediaCreateRequest) (*models.PropertyMedia, error) {
-		propertyMedia := new(models.PropertyMedia)
-		property_id, err := uuid.Parse(reqBody.PropertyID)
-		if err != nil {
-			return nil, err
-		}
-		image_id, err := uuid.Parse(reqBody.ImageID)
-		if err != nil {
-			return nil, err
-		}
-		propertyMedia = &models.PropertyMedia{
-			PropertyID: property_id,
-			PropertyMediaID: uuid.New(),
-			ImageID: image_id,
-			Type: models.GalleryType(reqBody.Type),
-		}
-		return propertyMedia, nil
-	}
-	propertyMediaModel, err := PropertyMediaCreateRequestModel(*reqBody)
-	if err != nil{
-		return response.Error_Response(c, "error while trying to convert propertyMedia create request model", err, nil, fiber.StatusBadRequest)
-	}
-	Insert := func (ctx context.Context, q *PropertyRepository, propertyMediaModel *models.PropertyMedia) (*models.PropertyMedia, error) {
-		query := `INSERT INTO property_media(property_media_id, property_id, image_id, type) VALUES($1, $2, $3, $4) RETURNING property_media_id, property_id, image_id, type`
-		queryRow := q.dbPool.QueryRow(ctx, query,  propertyMediaModel.PropertyMediaID, propertyMediaModel.PropertyID, propertyMediaModel.ImageID, propertyMediaModel.Type)
-		err := queryRow.Scan(&propertyMediaModel.PropertyMediaID, &propertyMediaModel.PropertyID, &propertyMediaModel.ImageID, &propertyMediaModel.Type)
-		if err != nil{
-			return nil, err
-		}
-		return propertyMediaModel, nil		
-	}
-	AddPropertyMedia := func (ctx context.Context, propertyMedia *models.PropertyMedia) (*models.PropertyMedia, error) {
-		repo := &PropertyRepository{dbPool: database.DBPool}
-		return Insert(ctx, repo, propertyMedia)
-	}
-	propertyMedia, err := AddPropertyMedia(c.Context(), propertyMediaModel)
-	if err != nil{
-		return response.Error_Response(c, "error while trying to create PropertyMedia table", err, nil, fiber.StatusBadRequest)
-	}
-	zap.S().Info("PropertyMedia table created successfully! PropertyMedia: ", propertyMedia)
-	return response.Success_Response(c, propertyMediaModel, "PropertyModel Created Successfully", fiber.StatusOK)
-}
 
-func AddImage(c fiber.Ctx) error {
 
-	//Formdan property_id'yi al
+
+func InsertImage(c fiber.Ctx) error {
+
+	// property_id
 	propertyIDStr := c.FormValue("property_id")
 	propertyID, err := uuid.Parse(propertyIDStr)
-	if err != nil{
+	if err != nil {
 		return response.Error_Response(c, "Invalid property ID", err, nil, fiber.StatusBadRequest)
 	}
 
-	// Formdan gelen tüm dosyaları al
-	form, err := c.MultipartForm()
-	if err != nil{
-		return response.Error_Response(c, "Error retrieving form files", err, nil, fiber.StatusBadRequest)
+	// type (gallery / cover / plan)
+	mediaType := c.FormValue("type")
+	if mediaType == "" {
+		return response.Error_Response(c, "media type is required", nil, nil, fiber.StatusBadRequest)
 	}
 
-	files := form.File["image"] //"image" input'unun adıyla eşleşmeli
+	form, err := c.MultipartForm()
+	if err != nil {
+		return response.Error_Response(c, "Error retrieving form", err, nil, fiber.StatusBadRequest)
+	}
 
+	files := form.File["image"]
 	if len(files) == 0 {
 		return response.Error_Response(c, "No images uploaded", nil, nil, fiber.StatusBadRequest)
 	}
 
+	tx, err := database.DBPool.Begin(c.Context())
+	if err != nil {
+		return response.Error_Response(c, "Transaction error", err, nil, fiber.StatusInternalServerError)
+	}
+	defer tx.Rollback(c.Context())
 
-	var filePaths []string
-	var imageNames []string
-	imageID := uuid.New() // Tek bir ImageID oluştur
+	var createdImages []models.Image
 
-	//Tüm dosyaları işle
 	for _, file := range files {
-		fileExt := filepath.Ext(file.Filename)                          // Dosya uzantısını al (.jpg, .png vs.)
-		fileBaseName := strings.TrimSuffix(file.Filename, fileExt)      // Dosya adını uzantısız al
-		fileName := fmt.Sprintf("%s-%s%s", fileBaseName, uuid.New(), fileExt) // Orijinal ad + yeni ID + uzantı
-		savePath := fmt.Sprintf("uploads/%s", fileName)                 // Kaydedilecek yolu hazırla
-	
-		// Dosyayı kaydet
+
+		imageID := uuid.New()
+
+		ext := filepath.Ext(file.Filename)
+		fileName := fmt.Sprintf("%s%s", imageID, ext)
+		savePath := fmt.Sprintf("uploads/%s", fileName)
+
 		if err := c.SaveFile(file, savePath); err != nil {
-			return response.Error_Response(c, "Error saving file", err, nil, fiber.StatusInternalServerError)
+			return response.Error_Response(c, "File save error", err, nil, fiber.StatusInternalServerError)
 		}
-	
-		filePaths = append(filePaths, savePath)
-		imageNames = append(imageNames, file.Filename) // Orijinal dosya adını sakla
-	}
-	
 
-	//Image modelini oluştur
-	image := &models.Image{
-		PropertyID: propertyID,
-		ImageID: imageID,
-		ImageName: imageNames, //Tüm Dosya adlarını sakla
-		FilePath: filePaths,  //Tüm dosya yollarını sakla
+		// 1️⃣ images insert
+		_, err = tx.Exec(c.Context(), `
+			INSERT INTO images
+			(image_id, property_id, url, original_name, media_type)
+			VALUES ($1,$2,$3,$4,$5)
+		`,
+			imageID,
+			propertyID,
+			savePath,
+			file.Filename,
+			mediaType,
+		)
+		if err != nil {
+			return response.Error_Response(c, "Image insert error", err, nil, fiber.StatusInternalServerError)
+		}
+
+		// 2️⃣ property_media insert
+		_, err = tx.Exec(c.Context(), `
+			INSERT INTO property_media
+			(property_media_id, property_id, image_id, type)
+			VALUES ($1,$2,$3,$4)
+		`,
+			uuid.New(),
+			propertyID,
+			imageID,
+			mediaType,
+		)
+		if err != nil {
+			return response.Error_Response(c, "Property media insert error", err, nil, fiber.StatusInternalServerError)
+		}
+
+		createdImages = append(createdImages, models.Image{
+			ImageID:      imageID,
+			PropertyID:   propertyID,
+			Url:          savePath,
+			OriginalName: file.Filename,
+			MediaType:    mediaType,
+		})
 	}
 
-	validate := validator.New()
-	if err := validate.Struct(image); err != nil {
-		return response.Error_Response(c, "Validation error", err, nil, fiber.StatusBadRequest)
+	if err := tx.Commit(c.Context()); err != nil {
+		return response.Error_Response(c, "Commit error", err, nil, fiber.StatusInternalServerError)
 	}
 
-	//Veritabanına Kaydet
-	query := `INSERT INTO images(property_id, image_id, name, file_path) VALUES($1, $2, $3, $4) RETURNING property_id, image_id, name, file_path`
-	row := database.DBPool.QueryRow(c.Context(), query, image.PropertyID, image.ImageID, pq.Array(image.ImageName), pq.Array(image.FilePath))
-	if err := row.Scan(&image.PropertyID, &image.ImageID, &image.ImageName, &image.FilePath); err != nil{
-		return response.Error_Response(c, "Error inserting into database", err, nil, fiber.StatusInternalServerError)
-	}
-
-	//Başarılı yanıt döndür
-	zap.S().Info("Images saved successfully!", image)
-	return response.Success_Response(c, image, "Images uploaded successfully", fiber.StatusOK)
+	return response.Success_Response(c, createdImages, "Images uploaded successfully", fiber.StatusOK)
 }
+
+
 
 func AddBasicInfo(c fiber.Ctx) error{
 	reqBody := new(dto.BasicInfoCreateRequest)
@@ -1232,136 +1206,9 @@ func EditAccordionWidget(c fiber.Ctx) error{
 	return response.Success_Response(c, accordionWidget, "AccordionWidget Model Created successfully", fiber.StatusOK)
 }
 
-func EditPropertyMedia(c fiber.Ctx) error{
-	reqBody := new(dto.PropertyMediaUpdateRequest)
-	body := c.Body()
-	if err := json.Unmarshal(body, reqBody);
-	err != nil{
-		return response.Error_Response(c, "error while trying to parse body", err, nil, fiber.StatusBadRequest)
-	}
-	// Middleware aracılığıyla aktarılan propertyID'yi alın
-	// propertyID, ok := c.Locals("propertyID").(uuid.UUID)
-	// if !ok {
-	// 	return response.Error_Response(c, "propertyID not found in context", nil, nil, fiber.StatusBadRequest)
-	// }
-	PropertyMediaUpdateRequestModel := func (dto.PropertyMediaUpdateRequest) (*models.PropertyMedia, error) {
-		propertyMedia := new(models.PropertyMedia)
-		property_id, err := uuid.Parse(reqBody.PropertyID)
-		if err != nil {
-			return nil, err
-		}
-		image_id, err := uuid.Parse(reqBody.ImageID)
-		if err != nil {
-			return nil, err
-		}
-		propertyMedia = &models.PropertyMedia{
-			PropertyID: property_id,
-			PropertyMediaID: uuid.New(),
-			ImageID: image_id,
-			Type: models.GalleryType(reqBody.Type),
-		}
-		return propertyMedia, nil
-	}
-	propertyMediaModel, err := PropertyMediaUpdateRequestModel(*reqBody)
-	if err != nil{
-		return response.Error_Response(c, "error while trying to convert propertyMedia create request model", err, nil, fiber.StatusBadRequest)
-	}
-	Update := func (ctx context.Context, q *PropertyRepository, propertyMediaModel *models.PropertyMedia) (*models.PropertyMedia, error) {
-		query := `
-		UPDATE property_media
-		SET
-			image_id = $1,
-			type = $2
-		WHERE
-			property_id = $3
-		RETURNING property_media_id, property_id, image_id, type`
-		queryRow := q.dbPool.QueryRow(ctx, query, propertyMediaModel.PropertyID, propertyMediaModel.ImageID, propertyMediaModel.Type)
-		err := queryRow.Scan(&propertyMediaModel.PropertyMediaID, &propertyMediaModel.PropertyID, &propertyMediaModel.ImageID, &propertyMediaModel.Type)
-		if err != nil{
-			return nil, err
-		}
-		return propertyMediaModel, nil		
-	}
-	UpdatePropertyMedia := func (ctx context.Context, propertyMedia *models.PropertyMedia) (*models.PropertyMedia, error) {
-		repo := &PropertyRepository{dbPool: database.DBPool}
-		return Update(ctx, repo, propertyMedia)
-	}
-	propertyMedia, err := UpdatePropertyMedia(c.Context(), propertyMediaModel)
-	if err != nil{
-		return response.Error_Response(c, "error while trying to create PropertyMedia table", err, nil, fiber.StatusBadRequest)
-	}
-	zap.S().Info("PropertyMedia table created successfully! PropertyMedia: ", propertyMedia)
-	return response.Success_Response(c, propertyMediaModel, "PropertyModel Created Successfully", fiber.StatusOK)
-}
-
-func EditImage(c fiber.Ctx) error {
-
-	//Formdan property_id'yi al
-	propertyIDStr := c.FormValue("property_id")
-	propertyID, err := uuid.Parse(propertyIDStr)
-	if err != nil{
-		return response.Error_Response(c, "Invalid property ID", err, nil, fiber.StatusBadRequest)
-	}
-
-	// Formdan gelen tüm dosyaları al
-	form, err := c.MultipartForm()
-	if err != nil{
-		return response.Error_Response(c, "Error retrieving form files", err, nil, fiber.StatusBadRequest)
-	}
-
-	files := form.File["image"] //"image" input'unun adıyla eşleşmeli
-
-	if len(files) == 0 {
-		return response.Error_Response(c, "No images uploaded", nil, nil, fiber.StatusBadRequest)
-	}
 
 
-	var filePaths []string
-	var imageNames []string
-	imageID := uuid.New() // Tek bir ImageID oluştur
 
-	//Tüm dosyaları işle
-	for _, file := range files {
-		fileExt := filepath.Ext(file.Filename)                          // Dosya uzantısını al (.jpg, .png vs.)
-		fileBaseName := strings.TrimSuffix(file.Filename, fileExt)      // Dosya adını uzantısız al
-		fileName := fmt.Sprintf("%s-%s%s", fileBaseName, uuid.New(), fileExt) // Orijinal ad + yeni ID + uzantı
-		savePath := fmt.Sprintf("uploads/%s", fileName)                 // Kaydedilecek yolu hazırla
-	
-		// Dosyayı kaydet
-		if err := c.SaveFile(file, savePath); err != nil {
-			return response.Error_Response(c, "Error saving file", err, nil, fiber.StatusInternalServerError)
-		}
-	
-		filePaths = append(filePaths, savePath)
-		imageNames = append(imageNames, file.Filename) // Orijinal dosya adını sakla
-	}
-	
-
-	//Image modelini oluştur
-	image := &models.Image{
-		PropertyID: propertyID,
-		ImageID: imageID,
-		ImageName: imageNames, //Tüm Dosya adlarını sakla
-		FilePath: filePaths,  //Tüm dosya yollarını sakla
-	}
-
-	validate := validator.New()
-	if err := validate.Struct(image); err != nil {
-		return response.Error_Response(c, "Validation error", err, nil, fiber.StatusBadRequest)
-	}
-
-	//Veritabanına Kaydet
-	query := `INSERT INTO images(property_id, image_id, name, file_path) VALUES($1, $2, $3, $4) RETURNING property_id, image_id, name, file_path`
-	row := database.DBPool.QueryRow(c.Context(), query, image.PropertyID, image.ImageID, pq.Array(image.ImageName), pq.Array(image.FilePath))
-	if err := row.Scan(&image.PropertyID, &image.ImageID, &image.ImageName, &image.FilePath); err != nil{
-		return response.Error_Response(c, "Error inserting into database", err, nil, fiber.StatusInternalServerError)
-	}
-
-
-	//Başarılı yanıt döndür
-	zap.S().Info("Images updated successfully!", image)
-	return response.Success_Response(c, image, "Images updated successfully", fiber.StatusOK)
-}
 
 func EditBasicInfo(c fiber.Ctx) error{
 	reqBody := new(dto.BasicInfoUpdateRequest)

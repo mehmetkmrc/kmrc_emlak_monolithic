@@ -122,40 +122,40 @@ document.addEventListener("DOMContentLoaded", function () {
             // **3. Adım: Nearby oluştur**
             if (globalNearbyArray.length > 0) {
 
-    try {
-        for (let i = 0; i < globalNearbyArray.length; i++) {
+            try {
+                for (let i = 0; i < globalNearbyArray.length; i++) {
 
-            const nearbyData = {
-                property_id: propertyID.property_id,
-                places: globalNearbyArray[i].places,
-                distance: globalNearbyArray[i].distance,
-            };
+                    const nearbyData = {
+                        property_id: propertyID.property_id,
+                        places: globalNearbyArray[i].places,
+                        distance: globalNearbyArray[i].distance,
+                    };
 
-            const nearbyResponse = await fetch("http://127.0.0.1:8081/property/add-nearby", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(nearbyData),
-            });
+                    const nearbyResponse = await fetch("http://127.0.0.1:8081/property/add-nearby", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(nearbyData),
+                    });
 
-            if (!nearbyResponse.ok) {
-                const errorText = await nearbyResponse.text();
-                showModal("error", "Hata!", `Nearby oluşturulurken hata: ${errorText}`);
-                return;
-            }
+                    if (!nearbyResponse.ok) {
+                        const errorText = await nearbyResponse.text();
+                        showModal("error", "Hata!", `Nearby oluşturulurken hata: ${errorText}`);
+                        return;
+                    }
 
-            const nearbyResult = await nearbyResponse.json();
+                    const nearbyResult = await nearbyResponse.json();
 
-            if (nearbyResult.status !== 200) {
-                showModal("error", "Hata!", "Nearby oluşturulamadı: " + nearbyResult.message);
-                return;
-            }
+                    if (nearbyResult.status !== 200) {
+                        showModal("error", "Hata!", "Nearby oluşturulamadı: " + nearbyResult.message);
+                        return;
+                    }
+                }
+
+                } catch (error) {
+                    console.error("Nearby API hatası:", error);
+                    showModal("error", "Hata!", `Nearby oluşturulurken hata: ${error.message}`);
+                }
         }
-
-    } catch (error) {
-        console.error("Nearby API hatası:", error);
-        showModal("error", "Hata!", `Nearby oluşturulurken hata: ${error.message}`);
-    }
-}
 
 
 
@@ -163,7 +163,35 @@ document.addEventListener("DOMContentLoaded", function () {
            
            // **4. Property Media oluştur**
            const galleryType = document.querySelector('select[name="type"]').value;
-           await handlePropertyMedia(propertyID, galleryType);
+           await uploadImages(propertyID, imageState.gallery, "gallery");
+           await uploadImages(propertyID, imageState.plan, "plan");
+
+
+           async function uploadImages(propertyID, files, type) {
+                if (!files.length) return true;
+
+                const fd = new FormData();
+                fd.append("property_id", propertyID.property_id);
+                fd.append("type", type);
+
+                files.forEach(file => fd.append("image", file));
+
+                const res = await fetch("http://127.0.0.1:8081/property/add-image", {
+                    method: "POST",
+                    body: fd
+                });
+
+                if (!res.ok) {
+                    const txt = await res.text();
+                    showModal("error", "Hata!", txt);
+                    return false;
+                }
+
+                const result = await res.json();
+                return result.status === 200;
+            }
+
+
 
 
             // **6. Property Details oluştur
@@ -210,69 +238,69 @@ document.addEventListener("DOMContentLoaded", function () {
 
             let otherAmenitiesArray = [];
 
-function setupOtherAmenities() {
-    const container = document.getElementById("other-amenities-container");
+            function setupOtherAmenities() {
+                const container = document.getElementById("other-amenities-container");
 
-    function addNewOtherAmenity() {
-        const div = document.createElement("div");
-        div.classList.add("other-amenity");
-        div.style.display = "flex";
-        div.style.alignItems = "center";
-        div.style.gap = "10px";
+                function addNewOtherAmenity() {
+                    const div = document.createElement("div");
+                    div.classList.add("other-amenity");
+                    div.style.display = "flex";
+                    div.style.alignItems = "center";
+                    div.style.gap = "10px";
 
-        const input = document.createElement("input");
-        input.type = "text";
-        input.placeholder = "Diğer Özellikleri buraya yazın...";
-        input.style.flex = "1";
-        input.style.padding = "8px 12px";
-        input.style.borderRadius = "5px";
-        input.style.border = "1px solid #ccc";
+                    const input = document.createElement("input");
+                    input.type = "text";
+                    input.placeholder = "Diğer Özellikleri buraya yazın...";
+                    input.style.flex = "1";
+                    input.style.padding = "8px 12px";
+                    input.style.borderRadius = "5px";
+                    input.style.border = "1px solid #ccc";
 
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.classList.add("other-amenity-checkbox");
-        checkbox.style.width = "20px";
-        checkbox.style.height = "20px";
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.classList.add("other-amenity-checkbox");
+                    checkbox.style.width = "20px";
+                    checkbox.style.height = "20px";
 
-        const label = document.createElement("label");
-        label.style.margin = "0";
-        label.style.fontWeight = "500";
-        label.textContent = "Var";
+                    const label = document.createElement("label");
+                    label.style.margin = "0";
+                    label.style.fontWeight = "500";
+                    label.textContent = "Var";
 
-        div.appendChild(input);
-        div.appendChild(checkbox);
-        div.appendChild(label);
+                    div.appendChild(input);
+                    div.appendChild(checkbox);
+                    div.appendChild(label);
 
-        container.appendChild(div);
+                    container.appendChild(div);
 
-        // Checkbox event
-        checkbox.addEventListener("change", function () {
-            if (this.checked && input.value.trim() !== "") {
-                otherAmenitiesArray.push(input.value.trim());
-                this.disabled = true;
-                input.disabled = true;
+                    // Checkbox event
+                    checkbox.addEventListener("change", function () {
+                        if (this.checked && input.value.trim() !== "") {
+                            otherAmenitiesArray.push(input.value.trim());
+                            this.disabled = true;
+                            input.disabled = true;
 
-                addNewOtherAmenity();
+                            addNewOtherAmenity();
+                        }
+                    });
+                }
+
+                // İlk input event’i
+                const firstCheckbox = container.querySelector(".other-amenity-checkbox");
+                const firstInput = container.querySelector("input[type='text']");
+
+                firstCheckbox.addEventListener("change", function () {
+                    if (this.checked && firstInput.value.trim() !== "") {
+                        otherAmenitiesArray.push(firstInput.value.trim());
+                        this.disabled = true;
+                        firstInput.disabled = true;
+
+                        addNewOtherAmenity();
+                    }
+                });
             }
-        });
-    }
 
-    // İlk input event’i
-    const firstCheckbox = container.querySelector(".other-amenity-checkbox");
-    const firstInput = container.querySelector("input[type='text']");
-
-    firstCheckbox.addEventListener("change", function () {
-        if (this.checked && firstInput.value.trim() !== "") {
-            otherAmenitiesArray.push(firstInput.value.trim());
-            this.disabled = true;
-            firstInput.disabled = true;
-
-            addNewOtherAmenity();
-        }
-    });
-}
-
-document.addEventListener("DOMContentLoaded", setupOtherAmenities);
+            document.addEventListener("DOMContentLoaded", setupOtherAmenities);
 
 
             // **7. Amenities oluştur
@@ -439,95 +467,6 @@ document.addEventListener("DOMContentLoaded", setupOtherAmenities);
 
 
 // **Resimleri yükleme ve Property Media oluşturma fonksiyonu**
-// Yeni handlePropertyMedia fonksiyonu
-async function handlePropertyMedia(propertyID, galleryType) {
-    console.log("handlePropertyMedia başladı");
-    
-    // Global değişkenden resimleri al
-    const files = globalImgArray || [];
-    
-    console.log("Toplam yüklenecek resim sayısı:", files.length);
-    
-    if (files.length === 0) {
-        console.warn("Yüklenecek resim bulunamadı!");
-        // İsteğe bağlı: burada uyarı gösterebilirsiniz veya devam edebilirsiniz
-        return true; // Resim olmasa da devam et
-    }
-    
-    try {
-        // FormData oluştur
-        const formData = new FormData();
-        formData.append("property_id", propertyID.property_id);
-        
-        // Tüm dosyaları ekle
-        for (let i = 0; i < files.length; i++) {
-            formData.append("image", files[i]);
-            console.log(`Eklenen dosya ${i+1}:`, files[i].name);
-        }
-
-        // Sunucuya gönder
-        console.log("Sunucuya resimler gönderiliyor...");
-        const addImageResponse = await fetch("http://127.0.0.1:8081/property/add-image", {
-            method: "POST",
-            body: formData
-        });
-
-        if (!addImageResponse.ok) {
-            const errorText = await addImageResponse.text();
-            console.error("Resim yükleme API hatası:", errorText);
-            showModal("error", "Hata!", `Resimler yüklenirken bir hata oluştu! Hata: ${errorText}`);
-            return false;
-        }
-
-        const addImageResult = await addImageResponse.json();
-        console.log("Resim yükleme API yanıtı:", addImageResult);
-
-        if (addImageResult.status !== 200) {
-            showModal("error", "Hata!", "Resimler yüklenemedi: " + addImageResult.message);
-            return false;
-        }
-
-        // Property media oluştur
-        const propertyMediaData = {
-            property_id: propertyID.property_id,
-            image_id: addImageResult.data.image_id,
-            type: galleryType
-        };
-        
-        console.log("Property Media oluşturuluyor:", propertyMediaData);
-        const addPropertyMediaResponse = await fetch("http://127.0.0.1:8081/property/add-property-media", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(propertyMediaData)
-        });
-
-        if (!addPropertyMediaResponse.ok) {
-            const errorText = await addPropertyMediaResponse.text();
-            console.error("Property Media API hatası:", errorText);
-            showModal("error", "Hata!", `Property Media oluşturulurken bir hata oluştu! Hata: ${errorText}`);
-            return false;
-        }
-
-        const addPropertyMediaResult = await addPropertyMediaResponse.json();
-        console.log("Property Media API yanıtı:", addPropertyMediaResult);
-
-        if (addPropertyMediaResult.status !== 200) {
-            showModal("error", "Hata!", "Property Media oluşturulamadı: " + addPropertyMediaResult.message);
-            return false;
-        }
-        
-        console.log("Resim yükleme işlemi başarılı!");
-        return true;
-    } catch (error) {
-        console.error("Resim yükleme hatası:", error);
-        showModal("error", "Hata!", "Bağlantı hatası: " + error.message);
-        return false;
-    }
-}
-
-
 
 // **PLans and brochures
 async function handlePlansAndBrochures(propertyID, fileInput1) { // **propertyID EKLENDİ**

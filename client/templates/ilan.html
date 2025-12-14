@@ -32,19 +32,17 @@
             <!--single-carousle-container-->
             <!--single-carousle-container-->
             <div class="fw-carousel-container">
-                <div class="fw-carousel-wrap">
-                    <!-- fw-carousel -->
-                    <div class="fw-carousel lightgallery">
-                        <div class="swiper-container swiper-container-horizontal" style="cursor: grab;">
-                            <div class="swiper-wrapper">
-                                {{ if .Property.PropertyMedia }}
-                                    {{ range $mediaIndex, $propertyMedia := .Property.PropertyMedia }}
-                                        {{ range $imageIndex, $image := $propertyMedia.Image }}
-                                            {{ range $filePathIndex, $filePath := $image.FilePath }}
-                                                <!-- swiper-slide -->
-                                                <div class="swiper-slide hov_zoom" style="margin-right: 10px;">
-                                                    <img src="/{{ $filePath }}" alt="{{ index $image.ImageName $filePathIndex }}">
-                                                    <a href="/{{ $filePath }}" class="box-media-zoom popup-image">
+            <div class="fw-carousel-wrap">
+                <div class="fw-carousel lightgallery">
+                    <div class="swiper-container swiper-container-horizontal" style="cursor: grab;">
+                        <div class="swiper-wrapper">
+
+                            {{ if .Property.PropertyMediaList }}
+                                {{ range .Property.PropertyMediaList }}
+                                    {{ if .Image }}
+                                        <div class="swiper-slide hov_zoom" style="margin-right: 10px;">
+                                            <img src="/{{ .Image.Url }}" alt="{{ .Image.OriginalName }}">
+                                             <a href="/{{ .Image.Url }}" class="box-media-zoom popup-image">
                                                         <i class="fal fa-search"></i>
                                                     </a>
                                                     <div class="show-info">
@@ -54,39 +52,40 @@
                                                             <p>{{ $.Property.BasicInfo.MainTitle }}</p>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <!-- swiper-slide end -->
-                                            {{ end }}
-                                        {{ end }}
+                                        </div>
                                     {{ end }}
-                                {{ else }}
-                                    <p>Resim bulunamadı.</p>
                                 {{ end }}
-                            </div>
-                            <span class="swiper-notification" aria-live="assertive" aria-atomic="true"></span>
-                        </div>
-                    </div>
-                    <!-- fw-carousel end -->
-                </div>
-                <!-- fw-carousel-wrap end -->
-                <div class="fw-carousel-button-prev slider-button" tabindex="0" role="button" aria-label="Previous slide">
-                    <i class="fa-solid fa-caret-left"></i>
-                </div>
-                <div class="fw-carousel-button-next slider-button" tabindex="0" role="button" aria-label="Next slide">
-                    <i class="fa-solid fa-caret-right"></i>
-                </div>
-                <div class="fwc-controls_wrap">
-                    <div class="solid-pagination_btns fwc-pagination swiper-pagination-clickable swiper-pagination-bullets">
-                        {{ range $mediaIndex, $propertyMedia := .Property.PropertyMedia }}
-                            {{ range $imageIndex, $image := $propertyMedia.Image }}
-                                {{ range $filePathIndex, $filePath := $image.FilePath }}
-                                    <span class="swiper-pagination-bullet" tabindex="0" role="button" aria-label="Go to slide {{ add $filePathIndex 1 }}"></span>
-                                {{ end }}
+                            {{ else }}
+                                <p>Resim bulunamadı.</p>
                             {{ end }}
-                        {{ end }}
+
+                        </div>
+
+
                     </div>
                 </div>
             </div>
+
+    <div class="fw-carousel-button-prev slider-button">
+        <i class="fa-solid fa-caret-left"></i>
+    </div>
+    <div class="fw-carousel-button-next slider-button">
+        <i class="fa-solid fa-caret-right"></i>
+    </div>
+
+    <!-- Pagination -->
+    <div class="fwc-controls_wrap">
+        <div class="solid-pagination_btns swiper-pagination-clickable swiper-pagination-bullets">
+            {{ if .Property.PropertyMedia }}
+                {{ range $i, $_ := .Property.PropertyMedia }}
+                    <span class="swiper-pagination-bullet"
+                          aria-label="Go to slide {{ add $i 1 }}"></span>
+                {{ end }}
+            {{ end }}
+        </div>
+    </div>
+</div>
+
             
             <!--single-carousle-container-->
             <div class="container">
