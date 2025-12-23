@@ -139,7 +139,7 @@ func main() {
 	userp := app.Group("/user")
 	userp.Put("/update-user-base-info", user.UpdateUser, auth.IsAuthorized,middleware.UserMiddleware, auth.GetUserDetail)
 	userp.Put("/social-links", user.UpsertSocialLinks, auth.IsAuthorized,middleware.UserMiddleware, auth.GetUserDetail)
-	
+	userp.Post("/profile-photo", user.UpdateProfilePhoto, auth.IsAuthorized,middleware.UserMiddleware, auth.GetUserDetail)
 	
 	//Burası da user edit sayfası olaak
 	

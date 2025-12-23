@@ -59,3 +59,52 @@ document.getElementById("saveSocialsBtn").addEventListener("click", async functi
     }
     showModal('success','Başarılı','Sosyal linkler kaydedildi');
 });
+
+//
+document.addEventListener("DOMContentLoaded", () => {
+    const input = document.querySelector(".upload__inputfile");
+
+    input.addEventListener("change", async function () {
+
+        const file = this.files[0];
+        if (!file) return;
+
+        // anında preview (UX)
+        const preview = document.querySelector(".edit-profile-photo_cur img");
+        preview.src = URL.createObjectURL(file);
+
+        const success = await uploadProfilePhoto(file);
+
+        if (success) {
+            console.log("Profile image uploaded successfully");
+        }
+    });
+});
+
+
+
+
+async function uploadProfilePhoto(file) {
+
+    const fd = new FormData();
+    fd.append("image", file);
+
+    const res = await fetch("http://127.0.0.1:8081/user/profile-photo", {
+        method: "POST",
+        body: fd
+    });
+
+    if (!res.ok) {
+        const txt = await res.text();
+        alert(txt);
+        return false;
+    }
+
+    const data = await res.json();
+
+    // anında preview
+    document.querySelector(".edit-profile-photo_cur img").src =
+        "/" + data.data.photo_url;
+
+    return true;
+}

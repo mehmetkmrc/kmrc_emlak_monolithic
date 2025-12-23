@@ -16,6 +16,7 @@ type User struct {
 	Surname   string    `json:"last_name"`
 	Email     string    `json:"email"`
 	Phone 	  string 	`json:"phone"`
+	PhotoUrl  *string 	`json:"photo_url"`
 	AboutText string	`json:"about_text"`
 	Password  string    `json:"password"`
 	CreatedAt time.Time `json:"created_at"`

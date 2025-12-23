@@ -139,7 +139,7 @@
                 <div class="header-user-menu">
                     <div class="header-user-name">
                         <span>Merhaba , <strong> {{.User.Name}}</strong></span>
-                        <img src="/images/avatar/4.jpg" alt=""> 
+                        <img src="{{ if .User.PhotoUrl }}{{ .User.PhotoUrl }}{{ else }}images/avatar/4.jpg{{ end }}">
                     </div>
                     <div class="header-user-menu_wrap">
                         <ul>
@@ -184,7 +184,7 @@
                                     <div class="user-dasboard-menu_wrap">
                                         <div class="user-dasboard-menu-header">
                                             <div class="user-dasboard-menu_header-avatar">
-                                                <img src="/images/avatar/4.jpg" alt=""> 
+                                                <img src="{{ if .User.PhotoUrl }}{{ .User.PhotoUrl }}{{ else }}images/avatar/4.jpg{{ end }}">
                                                 <span>Hoşgeldiniz  <strong> {{.User.Name}}</strong></span>
                                                 <a href="dashboard-editprofile.html" class="usmha_edit tolt" data-microtip-position="left"  data-tooltip="Edit Profile"><i class="fa-light fa-user-pen"></i></a>
                                                 <div class="db-menu_modile_btn"><strong>Menu</strong><i class="fa-regular fa-bars"></i></div>

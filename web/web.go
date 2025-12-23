@@ -554,6 +554,7 @@ func EditProfile(c fiber.Ctx) error {
             last_name,
             email,
             phone,
+			photo_url,
             about_text
         FROM users
         WHERE user_id = $1
@@ -568,6 +569,7 @@ func EditProfile(c fiber.Ctx) error {
         &profile.Surname,
         &profile.Email,
         &profile.Phone,
+		&profile.PhotoUrl,
         &profile.AboutText,
     )
 

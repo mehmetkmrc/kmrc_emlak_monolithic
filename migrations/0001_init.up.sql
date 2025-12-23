@@ -33,7 +33,7 @@ CREATE TABLE images (
     property_id UUID NOT NULL,
     url TEXT NOT NULL,
     original_name TEXT,
-    media_type TEXT CHECK(media_type IN ('gallery','plan','brochure')),
+    media_type TEXT CHECK(media_type IN ('gallery','plan','brochure','profile')),
     created_at TIMESTAMP DEFAULT now(),
 
     CONSTRAINT fk_images_property

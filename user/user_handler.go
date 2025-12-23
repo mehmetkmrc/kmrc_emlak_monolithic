@@ -1,11 +1,16 @@
 package user
 
 import (
+	"database/sql"
 	"encoding/json"
+	"fmt"
 	"kmrc_emlak_mono/database"
 	"kmrc_emlak_mono/dto"
 	"kmrc_emlak_mono/models"
 	"kmrc_emlak_mono/response"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/go-playground/validator"
 	"github.com/gofiber/fiber/v3"
@@ -123,6 +128,101 @@ func UpdateUser(c fiber.Ctx) error {
 		fiber.StatusOK,
 	)
 }
+
+func UpdateProfilePhoto(c fiber.Ctx) error {
+
+	// 1️⃣ Login user
+	user := c.Locals("UserDetail")
+	if user == nil {
+		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
+	}
+
+	userData := user.(*dto.GetUserResponse)
+	userID := userData.UserID
+
+	// 2️⃣ File
+	file, err := c.FormFile("image")
+	if err != nil {
+		return response.Error_Response(
+			c,
+			"image file is required",
+			err,
+			nil,
+			fiber.StatusBadRequest,
+		)
+	}
+
+	// 3️⃣ Validation (mime)
+	if !strings.HasPrefix(file.Header.Get("Content-Type"), "image/") {
+		return response.Error_Response(
+			c,
+			"only image files allowed",
+			nil,
+			nil,
+			fiber.StatusBadRequest,
+		)
+	}
+
+	// 4️⃣ Upload path
+	ext := filepath.Ext(file.Filename)
+	fileName := fmt.Sprintf("profile_%s%s", userID, ext)
+
+	uploadDir := fmt.Sprintf("uploads/users/%s", userID)
+	os.MkdirAll(uploadDir, 0755)
+
+	savePath := filepath.Join(uploadDir, fileName)
+
+	// 5️⃣ Eski foto varsa sil
+	var oldPhoto sql.NullString
+	_ = database.DBPool.
+		QueryRow(c.Context(),
+			"SELECT photo_url FROM users WHERE user_id = $1",
+			userID,
+		).
+		Scan(&oldPhoto)
+
+	if oldPhoto.Valid {
+		_ = os.Remove(oldPhoto.String)
+	}
+
+	// 6️⃣ Save file
+	if err := c.SaveFile(file, savePath); err != nil {
+		return response.Error_Response(
+			c,
+			"file save error",
+			err,
+			nil,
+			fiber.StatusInternalServerError,
+		)
+	}
+
+	// 7️⃣ DB update
+	_, err = database.DBPool.Exec(
+		c.Context(),
+		`UPDATE users SET photo_url = $1, updated_at = NOW() WHERE user_id = $2`,
+		savePath,
+		userID,
+	)
+
+	if err != nil {
+		return response.Error_Response(
+			c,
+			"photo_url update error",
+			err,
+			nil,
+			fiber.StatusInternalServerError,
+		)
+	}
+
+	return response.Success_Response(
+		c,
+		fiber.Map{"photo_url": savePath},
+		"Profile photo updated",
+		fiber.StatusOK,
+	)
+}
+
+
 
 // Get social links by user_id
 // Get social links by user_id (UpdateUser formatında)

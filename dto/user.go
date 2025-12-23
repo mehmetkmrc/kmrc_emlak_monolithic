@@ -24,6 +24,7 @@ type (
 		Surname     string    `json:"last_name"`
 		Email       string    `json:"email"`
 		Phone 		string 	  `json:"phone"`
+		PhotoUrl	string 	  `json:"photo_url"`
 		CreatedAt   time.Time `json:"created_at"`
 	}
 

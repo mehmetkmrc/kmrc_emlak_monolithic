@@ -10,7 +10,8 @@ document.addEventListener("DOMContentLoaded", function () {
   let imageState = {
             gallery: [],
             plan: [],
-            brochure: []
+            brochure: [],
+            profile: []
     };
 
 // =======================

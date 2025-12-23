@@ -201,6 +201,8 @@ func GetUserDetail(c fiber.Ctx) error {
 			Name      	  string
 			Surname   	  string
 			Email     	  string
+			Phone		  string
+			PhotoUrl	  string
 			Password  	  string
 			CreatedAt 	  time.Time
 		}{}
@@ -209,6 +211,8 @@ func GetUserDetail(c fiber.Ctx) error {
 		   first_name, 
 		   last_name, 
 		   email, 
+		   phone,
+		   photo_url,
 		   password, 
 		   created_at 
 		FROM Users 
@@ -216,7 +220,7 @@ func GetUserDetail(c fiber.Ctx) error {
 			  AND password IS NOT NULL 
 			  AND email IS NOT NULL;
 		`
-		err := r.db.QueryRow(ctx, query, id).Scan(&userQuery.UserID, &userQuery.Name, &userQuery.Surname, &userQuery.Email, &userQuery.Password, &userQuery.CreatedAt)
+		err := r.db.QueryRow(ctx, query, id).Scan(&userQuery.UserID, &userQuery.Name, &userQuery.Surname, &userQuery.Email, &userQuery.Phone, &userQuery.PhotoUrl, &userQuery.Password, &userQuery.CreatedAt)
 		if err != nil {
 			return nil, err
 		}
@@ -226,6 +230,8 @@ func GetUserDetail(c fiber.Ctx) error {
 			Name:      userQuery.Name,
 			Surname:   userQuery.Surname,
 			Email:     userQuery.Email,
+			Phone: 	   userQuery.Phone,
+			PhotoUrl: &userQuery.PhotoUrl,
 			Password:  userQuery.Password,
 			CreatedAt: userQuery.CreatedAt,
 		}
@@ -253,6 +259,7 @@ func GetUserDetail(c fiber.Ctx) error {
 			Surname:   userData.Surname,
 			Email:     userData.Email,
 			Phone: 		userData.Phone,
+			PhotoUrl:  *userData.PhotoUrl,
 			CreatedAt: userData.CreatedAt,
 		}
 	}
