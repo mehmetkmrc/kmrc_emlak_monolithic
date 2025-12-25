@@ -531,9 +531,17 @@ func DashboardWeb(c fiber.Ctx) error {
 }
 
 func AddPropertyWeb(c fiber.Ctx) error{
+
+	user := c.Locals("UserDetail")
+	if user == nil {
+        return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
+    }
+
+    userInfo := user.(*dto.GetUserResponse)
 	path := "yeni-ilan-ekle"
 	return c.Render(path, fiber.Map{
 		"Title": "Mülk Ekle",
+		"User": userInfo,
 	}, "layouts/main")
 }
 
