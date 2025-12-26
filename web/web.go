@@ -2,6 +2,7 @@ package web
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 
 	"kmrc_emlak_mono/database"
@@ -11,7 +12,7 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
-	
+
 	"go.uber.org/zap"
 )
 
@@ -572,14 +573,31 @@ func EditProfile(c fiber.Ctx) error {
 
     row := database.DBPool.QueryRow(c.Context(), query, userID)
 
+	var phone sql.NullString
+	var photoUrl sql.NullString
+	var aboutText sql.NullString
+
     err := row.Scan(
         &profile.Name,
         &profile.Surname,
         &profile.Email,
-        &profile.Phone,
-		&profile.PhotoUrl,
-        &profile.AboutText,
+        &phone,
+		&photoUrl,
+		&aboutText,
     )
+
+	if phone.Valid {
+    profile.Phone = phone.String
+	}
+
+	if photoUrl.Valid {
+		profile.PhotoUrl = &photoUrl.String
+	}
+
+	if aboutText.Valid {
+		profile.AboutText = aboutText.String
+	}
+
 
     if err != nil {
         return c.Status(fiber.StatusInternalServerError).SendString("User data not found")
@@ -601,14 +619,36 @@ func EditProfile(c fiber.Ctx) error {
 
     socialRow := database.DBPool.QueryRow(c.Context(), socialQuery, userID)
 
-    err = socialRow.Scan(
-        &social.Facebook,
-        &social.Tiktok,
-        &social.Instagram,
-        &social.Twitter,
-        &social.Youtube,
-        &social.Linkedin,
-    )
+    var facebook, tiktok, instagram, twitter, youtube, linkedin sql.NullString
+
+	err = socialRow.Scan(
+		&facebook,
+		&tiktok,
+		&instagram,
+		&twitter,
+		&youtube,
+		&linkedin,
+	)
+
+	if facebook.Valid {
+		social.Facebook = facebook.String
+	}
+	if tiktok.Valid {
+		social.Tiktok = tiktok.String
+	}
+	if instagram.Valid {
+		social.Instagram = instagram.String
+	}
+	if twitter.Valid {
+		social.Twitter = twitter.String
+	}
+	if youtube.Valid {
+		social.Youtube = youtube.String
+	}
+	if linkedin.Valid {
+		social.Linkedin = linkedin.String
+	}
+
 
     if err != nil {
         // Kayıt yoksa sorun değil
@@ -751,6 +791,7 @@ func ListingMyProperties(c fiber.Ctx) error {
     return c.Render("ilanlarım", fiber.Map{
         "Title":      "İlanlarım",
         "Properties": properties,
+		"User": userData,
     }, "layouts/main")
 }
 

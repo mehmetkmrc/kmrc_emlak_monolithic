@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -13,6 +14,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+
 	"aidanwoods.dev/go-paseto"
 	"github.com/go-playground/validator"
 	"github.com/gofiber/fiber/v3"
@@ -201,8 +203,8 @@ func GetUserDetail(c fiber.Ctx) error {
 			Name      	  string
 			Surname   	  string
 			Email     	  string
-			Phone		  string
-			PhotoUrl	  string
+			Phone		  sql.NullString
+			PhotoUrl	  sql.NullString
 			Password  	  string
 			CreatedAt 	  time.Time
 		}{}
@@ -225,16 +227,26 @@ func GetUserDetail(c fiber.Ctx) error {
 			return nil, err
 		}
 	
-		userData 	:= &models.User{
+		userData := &models.User{
 			UserID:    userQuery.UserID,
 			Name:      userQuery.Name,
 			Surname:   userQuery.Surname,
 			Email:     userQuery.Email,
-			Phone: 	   userQuery.Phone,
-			PhotoUrl: &userQuery.PhotoUrl,
 			Password:  userQuery.Password,
 			CreatedAt: userQuery.CreatedAt,
 		}
+
+		
+
+		// NULL kontrolü
+		if userQuery.Phone.Valid {
+			userData.Phone = userQuery.Phone.String
+		}
+
+		if userQuery.PhotoUrl.Valid {
+			userData.PhotoUrl = &userQuery.PhotoUrl.String
+		}
+
 		return userData, nil
 	}
 
@@ -252,14 +264,20 @@ func GetUserDetail(c fiber.Ctx) error {
 		return response.Error_Response(c, "error while trying to get user detail", err, nil, fiber.StatusBadRequest)
 	}
 
+	
 	GetUserModelToDto := func (userData *models.User) *dto.GetUserResponse {
+
+		var photoUrl string
+		if userData.PhotoUrl != nil {
+			photoUrl = *userData.PhotoUrl
+		}
 		return &dto.GetUserResponse{
 			UserID:    userData.UserID,
 			Name:      userData.Name,
 			Surname:   userData.Surname,
 			Email:     userData.Email,
 			Phone: 		userData.Phone,
-			PhotoUrl:  *userData.PhotoUrl,
+			PhotoUrl:  photoUrl,
 			CreatedAt: userData.CreatedAt,
 		}
 	}
