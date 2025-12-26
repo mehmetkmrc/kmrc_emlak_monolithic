@@ -681,7 +681,6 @@ func ListingMyProperties(c fiber.Ctx) error {
 	GetPropertiesByJoin := func(ctx context.Context) ([]*models.Property, error) {
 		rows, err := database.DBPool.Query(ctx, `
 			SELECT
-				u.user_id as user_id,
 				p.user_id as user_id,
 				p.property_id as property_id,
 				bi.basic_info_id as basic_info_id,
@@ -706,7 +705,9 @@ func ListingMyProperties(c fiber.Ctx) error {
 				location loc ON p.property_id = loc.property_id
 			LEFT JOIN
 				property_details pd ON p.property_id = pd.property_id
-		`)
+			WHERE
+				p.user_id = $1
+		`, userID)
 		if err != nil {
 			fmt.Println("Sorgu hatası: ", err)
 			return nil, err
@@ -723,7 +724,7 @@ func ListingMyProperties(c fiber.Ctx) error {
 			var propertyDetails models.PropertyDetails
 
 			err := rows.Scan(
-				&userID, &property.UserID, &property.PropertyID, &basicInfos.PropertyID, &basicInfos.Type, &basicInfos.Category, &basicInfos.MainTitle, &basicInfos.Price, &location.PropertyID, &location.Address, &propertyDetails.PropertyID, &propertyDetails.PropertyMessage, &propertyDetails.Bedrooms, &propertyDetails.Bathrooms, &propertyDetails.Area,
+				&property.UserID, &property.PropertyID, &basicInfos.PropertyID, &basicInfos.Type, &basicInfos.Category, &basicInfos.MainTitle, &basicInfos.Price, &location.PropertyID, &location.Address, &propertyDetails.PropertyID, &propertyDetails.PropertyMessage, &propertyDetails.Bedrooms, &propertyDetails.Bathrooms, &propertyDetails.Area,
 			)
 			if err != nil {
 				fmt.Println("Satır tarama hatası: ", err)
@@ -796,7 +797,12 @@ func ListingMyProperties(c fiber.Ctx) error {
 }
 
 func EditPropertyWeb(c fiber.Ctx) error{
+	user := c.Locals("UserDetail")
+	if user == nil {
+        return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
+    }
 
+    userInfo := user.(*dto.GetUserResponse)
 	propertyIDStr := c.Params("property_id") // URL'den property ID'yi al
 	if propertyIDStr == "" {
 		return c.Status(fiber.StatusBadRequest).SendString("Geçersiz Property ID")
@@ -1058,6 +1064,7 @@ if err == nil {
 	path := "ilan-duzenle"
 	return c.Render(path, fiber.Map{
 		"Title":    property.BasicInfo.MainTitle, // Şablonunuza göre başlık
-		"Property": &property,                      // Tüm mülk bilgilerini şablona gönderiyoruz.
+		"Property": &property,
+		"User": userInfo,                      // Tüm mülk bilgilerini şablona gönderiyoruz.
 	}, "layouts/main")
 }
