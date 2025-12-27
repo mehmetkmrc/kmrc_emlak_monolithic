@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/google/uuid"
@@ -249,6 +250,8 @@ type PropertyDetails struct {
 	PropertyMessage string `json:"property_message"`
 }
 
+
+
 type Amenities struct{
 	PropertyID uuid.UUID `json:"property_id"`
 	AmenitiesID uuid.UUID `json:"amenities_id"`
@@ -265,8 +268,7 @@ type Amenities struct{
 	Backyard 		bool `json:"backyard"`
 	FitnessGym 		bool `json:"fitness_gym"`
 	Elevator		bool `json:"elevator"`
-	OthersName			string `json:"others_name"`
-	OthersChecked		bool `json:"others_checked"`
+	Others      	json.RawMessage `json:"others"`
 }
 
 type AccordionWidget struct{

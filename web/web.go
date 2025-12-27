@@ -235,8 +235,7 @@ func ListingSingle(c fiber.Ctx) error {
 			a.backyard,
 			a.fitness_gym,
 			a.elevator,
-			a.others_name,
-			a.others_checked,
+			a.others,
 
 			pd.property_message,
 			pd.bedrooms,
@@ -285,8 +284,7 @@ func ListingSingle(c fiber.Ctx) error {
 		&am.Backyard,
 		&am.FitnessGym,
 		&am.Elevator,
-		&am.OthersName,
-		&am.OthersChecked,
+		&am.Others,
 
 		&pd.PropertyMessage,
 		&pd.Bedrooms,
@@ -847,8 +845,7 @@ func EditPropertyWeb(c fiber.Ctx) error{
 				a.backyard as backyard,
 				a.fitness_gym as fitness_gym,
 				a.elevator as elevator,
-				a.others_name as others_name,
-				a.others_checked as others_checked,
+				a.others as others,
 
 				n.nearby_id as nearby_id,
 				n.places as places, 
@@ -928,8 +925,7 @@ func EditPropertyWeb(c fiber.Ctx) error{
 			&amenities.Backyard,
 			&amenities.FitnessGym,
 			&amenities.Elevator,
-			&amenities.OthersName,
-			&amenities.OthersChecked,
+			&amenities.Others,
 
 			&nearby.NearbyID,
 			&nearby.Places,
@@ -1033,38 +1029,48 @@ func EditPropertyWeb(c fiber.Ctx) error{
 	ORDER BY i.created_at
 `, propertyID)
 
-if err == nil {
-	defer mediaRows.Close()
+	if err == nil {
+		defer mediaRows.Close()
 
-	for mediaRows.Next() {
-	var pm models.PropertyMedia
-	var img models.Image
+		for mediaRows.Next() {
+		var pm models.PropertyMedia
+		var img models.Image
 
-	err := mediaRows.Scan(
-		&pm.PropertyMediaID,
-		&pm.PropertyID,
-		&pm.ImageID,
-		&pm.Type,
-		&img.ImageID,
-		&img.PropertyID,
-		&img.Url,
-		&img.OriginalName,
-		&img.MediaType,
-		&img.CreatedAt,
-	)
-	if err != nil {
-		continue
+		err := mediaRows.Scan(
+			&pm.PropertyMediaID,
+			&pm.PropertyID,
+			&pm.ImageID,
+			&pm.Type,
+			&img.ImageID,
+			&img.PropertyID,
+			&img.Url,
+			&img.OriginalName,
+			&img.MediaType,
+			&img.CreatedAt,
+		)
+		if err != nil {
+			continue
+		}
+
+		pm.Image = &img
+		property.PropertyMediaList = append(property.PropertyMediaList, &pm)
 	}
 
-	pm.Image = &img
-	property.PropertyMediaList = append(property.PropertyMediaList, &pm)
-}
+	}
 
-}
+	var othersJSON string
+	if len(property.Amenities) > 0 && property.Amenities[0].Others != nil {
+		othersJSON = string(property.Amenities[0].Others)
+	} else {
+		othersJSON = "[]"
+	}
+
+
 	path := "ilan-duzenle"
 	return c.Render(path, fiber.Map{
 		"Title":    property.BasicInfo.MainTitle, // Şablonunuza göre başlık
 		"Property": &property,
 		"User": userInfo,                      // Tüm mülk bilgilerini şablona gönderiyoruz.
+		"OthersJSON": othersJSON,
 	}, "layouts/main")
 }

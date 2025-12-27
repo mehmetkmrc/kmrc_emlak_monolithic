@@ -170,6 +170,12 @@ type (
 		PropertyMessage string  `json:"property_message"`
 	}
 
+
+	OtherAmenity struct {
+		Name    string `json:"name"`
+		Enabled bool   `json:"enabled"`
+	}
+
 	AmenitiesCreateRequest struct {
 		PropertyID 		string `json:"property_id"`
 		Wifi            bool   `json:"wifi"`
@@ -185,8 +191,7 @@ type (
 		Backyard        bool   `json:"backyard"`
 		FitnessGym      bool   `json:"fitness_gym"`
 		Elevator        bool   `json:"elevator"`
-		OthersName      string `json:"others_name"`
-		OthersChecked   bool   `json:"others_checked"`
+		Others            []OtherAmenity `json:"others"`
 	}
 
 	AccordionWidgetCreateRequest struct {
@@ -268,8 +273,7 @@ type (
 		Backyard        bool   `json:"backyard"`
 		FitnessGym      bool   `json:"fitness_gym"`
 		Elevator        bool   `json:"elevator"`
-		OthersName      string `json:"others_name"`
-		OthersChecked   bool   `json:"others_checked"`
+		Others          []OtherAmenity `json:"others"`
 	}
 
 	AccordionWidgetUpdateRequest struct {

@@ -354,6 +354,10 @@ func AddAmenities(c fiber.Ctx) error{
 	// }
 
 
+	othersJSON, err := json.Marshal(reqBody.Others)
+	if err != nil {
+		return response.Error_Response(c, "error while trying to convert amenities create request model", err, nil, fiber.StatusBadRequest)
+	}	
 
 	AmenitiesCreateRequestModel := func (dto.AmenitiesCreateRequest) (*models.Amenities, error) {
 		amenities := new(models.Amenities)
@@ -361,6 +365,7 @@ func AddAmenities(c fiber.Ctx) error{
 		if err != nil {
 			return nil, err
 		}
+
 		amenities = &models.Amenities{
 			PropertyID: property_id,
 			AmenitiesID: uuid.New(),
@@ -377,8 +382,7 @@ func AddAmenities(c fiber.Ctx) error{
 			Backyard: reqBody.Backyard,
 			FitnessGym: reqBody.FitnessGym,
 			Elevator: reqBody.Elevator,
-			OthersName: reqBody.OthersName,
-			OthersChecked: reqBody.OthersChecked,
+			Others: othersJSON,
 		}
 		return amenities, nil
 	}
@@ -386,10 +390,13 @@ func AddAmenities(c fiber.Ctx) error{
 	if err != nil {
 		return response.Error_Response(c, "error while trying to convert amenities create request model", err, nil, fiber.StatusBadRequest)
 	}
+
+	
+
 	Insert := func (ctx context.Context, q *PropertyRepository, amenitiesModel *models.Amenities) (*models.Amenities, error) {
-		query := `INSERT INTO amenities(amenities_id, property_id, wifi, pool, security, laundry_room, equipped_kitchen, air_conditioning, parking, garage_atached, fireplace, window_covering, backyard, fitness_gym, elevator, others_name, others_checked) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) RETURNING amenities_id, property_id, wifi, pool, security, laundry_room, equipped_kitchen, air_conditioning, parking, garage_atached, fireplace, window_covering, backyard, fitness_gym, elevator, others_name, others_checked`
-		queryRow := q.dbPool.QueryRow(ctx, query, amenitiesModel.AmenitiesID, amenitiesModel.PropertyID, amenitiesModel.Wifi, amenitiesModel.Pool, amenitiesModel.Security, amenitiesModel.LaundryRoom, amenitiesModel.EquippedKitchen, amenitiesModel.AirConditioning, amenitiesModel.Parking, amenitiesModel.GarageAtached, amenitiesModel.Fireplace, amenitiesModel.WindowCovering, amenitiesModel.Backyard, amenitiesModel.FitnessGym, amenitiesModel.Elevator, amenitiesModel.OthersName, amenitiesModel.OthersChecked)
-		err := queryRow.Scan(&amenitiesModel.AmenitiesID, &amenitiesModel.PropertyID, &amenitiesModel.Wifi, &amenitiesModel.Pool, &amenitiesModel.Security, &amenitiesModel.LaundryRoom, &amenitiesModel.EquippedKitchen, &amenitiesModel.AirConditioning, &amenitiesModel.Parking, &amenitiesModel.GarageAtached, &amenitiesModel.Fireplace, &amenitiesModel.WindowCovering, &amenitiesModel.Backyard, &amenitiesModel.FitnessGym, &amenitiesModel.Elevator, &amenitiesModel.OthersName, &amenitiesModel.OthersChecked)
+		query := `INSERT INTO amenities(amenities_id, property_id, wifi, pool, security, laundry_room, equipped_kitchen, air_conditioning, parking, garage_atached, fireplace, window_covering, backyard, fitness_gym, elevator, others) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING amenities_id, property_id, wifi, pool, security, laundry_room, equipped_kitchen, air_conditioning, parking, garage_atached, fireplace, window_covering, backyard, fitness_gym, elevator, others`
+		queryRow := q.dbPool.QueryRow(ctx, query, amenitiesModel.AmenitiesID, amenitiesModel.PropertyID, amenitiesModel.Wifi, amenitiesModel.Pool, amenitiesModel.Security, amenitiesModel.LaundryRoom, amenitiesModel.EquippedKitchen, amenitiesModel.AirConditioning, amenitiesModel.Parking, amenitiesModel.GarageAtached, amenitiesModel.Fireplace, amenitiesModel.WindowCovering, amenitiesModel.Backyard, amenitiesModel.FitnessGym, amenitiesModel.Elevator, amenitiesModel.Others)
+		err := queryRow.Scan(&amenitiesModel.AmenitiesID, &amenitiesModel.PropertyID, &amenitiesModel.Wifi, &amenitiesModel.Pool, &amenitiesModel.Security, &amenitiesModel.LaundryRoom, &amenitiesModel.EquippedKitchen, &amenitiesModel.AirConditioning, &amenitiesModel.Parking, &amenitiesModel.GarageAtached, &amenitiesModel.Fireplace, &amenitiesModel.WindowCovering, &amenitiesModel.Backyard, &amenitiesModel.FitnessGym, &amenitiesModel.Elevator, &amenitiesModel.Others)
 		if err != nil {
 			return nil, err
 		}
@@ -1073,6 +1080,7 @@ func EditAmenities(c fiber.Ctx) error{
 	// }
 
 
+	
 
 	AmenitiesUpdateRequestModel := func (dto.AmenitiesUpdateRequest) (*models.Amenities, error) {
 		amenities := new(models.Amenities)
@@ -1080,9 +1088,18 @@ func EditAmenities(c fiber.Ctx) error{
 		if err != nil {
 			return nil, err
 		}
+		var othersJSON []byte
+
+		if reqBody.Others != nil {
+			othersJSON, err = json.Marshal(reqBody.Others)
+			if err != nil {
+				return nil, err
+			}
+		}
+
 		amenities = &models.Amenities{
 			PropertyID: property_id,
-			AmenitiesID: uuid.New(),
+			AmenitiesID: uuid.Nil,
 			Wifi: reqBody.Wifi,
 			Pool: reqBody.Pool,
 			Security: reqBody.Security,
@@ -1096,8 +1113,10 @@ func EditAmenities(c fiber.Ctx) error{
 			Backyard: reqBody.Backyard,
 			FitnessGym: reqBody.FitnessGym,
 			Elevator: reqBody.Elevator,
-			OthersName: reqBody.OthersName,
-			OthersChecked: reqBody.OthersChecked,
+			Others: othersJSON,
+		}
+		if reqBody.Others != nil {
+			amenities.Others = othersJSON
 		}
 		return amenities, nil
 	}
@@ -1107,28 +1126,57 @@ func EditAmenities(c fiber.Ctx) error{
 	}
 	Update := func (ctx context.Context, q *PropertyRepository, amenitiesModel *models.Amenities) (*models.Amenities, error) {
 		query := `
-			UPDATE amenities
-			SET
-				wifi = $1, 
-				pool = $2, 
-				security = $3, 
-				laundry_room = $4, 
-				equipped_kitchen = $5, 
-				air_conditioning = $6, 
-				parking =$7, 
-				garage_atached = $8, 
-				fireplace = $9, 
-				window_covering = $10, 
-				backyard = $11, 
-				fitness_gym = $12, 
-				elevator = $13, 
-				others_name = $14, 
-				others_checked = $15
-			WHERE 
-				property_id = $16
-			RETURNING amenities_id, property_id, wifi, pool, security, laundry_room, equipped_kitchen, air_conditioning, parking, garage_atached, fireplace, window_covering, backyard, fitness_gym, elevator, others_name, others_checked`
-		queryRow := q.dbPool.QueryRow(ctx, query, amenitiesModel.Wifi, amenitiesModel.Pool, amenitiesModel.Security, amenitiesModel.LaundryRoom, amenitiesModel.EquippedKitchen, amenitiesModel.AirConditioning, amenitiesModel.Parking, amenitiesModel.GarageAtached, amenitiesModel.Fireplace, amenitiesModel.WindowCovering, amenitiesModel.Backyard, amenitiesModel.FitnessGym, amenitiesModel.Elevator, amenitiesModel.OthersName, amenitiesModel.OthersChecked, amenitiesModel.PropertyID)
-		err := queryRow.Scan(&amenitiesModel.AmenitiesID, &amenitiesModel.PropertyID, &amenitiesModel.Wifi, &amenitiesModel.Pool, &amenitiesModel.Security, &amenitiesModel.LaundryRoom, &amenitiesModel.EquippedKitchen, &amenitiesModel.AirConditioning, &amenitiesModel.Parking, &amenitiesModel.GarageAtached, &amenitiesModel.Fireplace, &amenitiesModel.WindowCovering, &amenitiesModel.Backyard, &amenitiesModel.FitnessGym, &amenitiesModel.Elevator, &amenitiesModel.OthersName, &amenitiesModel.OthersChecked)
+			UPDATE amenities SET
+				wifi = $1,
+				pool = $2,
+				security = $3,
+				laundry_room = $4,
+				equipped_kitchen = $5,
+				air_conditioning = $6,
+				parking = $7,
+				garage_atached = $8,
+				fireplace = $9,
+				window_covering = $10,
+				backyard = $11,
+				fitness_gym = $12,
+				elevator = $13
+			`
+
+			args := []any{
+				amenitiesModel.Wifi,
+				amenitiesModel.Pool,
+				amenitiesModel.Security,
+				amenitiesModel.LaundryRoom,
+				amenitiesModel.EquippedKitchen,
+				amenitiesModel.AirConditioning,
+				amenitiesModel.Parking,
+				amenitiesModel.GarageAtached,
+				amenitiesModel.Fireplace,
+				amenitiesModel.WindowCovering,
+				amenitiesModel.Backyard,
+				amenitiesModel.FitnessGym,
+				amenitiesModel.Elevator,
+			}
+
+			argIndex := 14
+
+			if reqBody.Others != nil {
+				query += fmt.Sprintf(", others = $%d", argIndex)
+				args = append(args, amenitiesModel.Others)
+				argIndex++
+			}
+
+			query += fmt.Sprintf(`
+			WHERE property_id = $%d
+			RETURNING amenities_id, property_id, wifi, pool, security, laundry_room,
+			equipped_kitchen, air_conditioning, parking, garage_atached, fireplace,
+			window_covering, backyard, fitness_gym, elevator, others
+			`, argIndex)
+
+			args = append(args, amenitiesModel.PropertyID)
+
+		queryRow := q.dbPool.QueryRow(ctx, query, amenitiesModel.Wifi, amenitiesModel.Pool, amenitiesModel.Security, amenitiesModel.LaundryRoom, amenitiesModel.EquippedKitchen, amenitiesModel.AirConditioning, amenitiesModel.Parking, amenitiesModel.GarageAtached, amenitiesModel.Fireplace, amenitiesModel.WindowCovering, amenitiesModel.Backyard, amenitiesModel.FitnessGym, amenitiesModel.Elevator, amenitiesModel.Others, amenitiesModel.PropertyID)
+		err := queryRow.Scan(&amenitiesModel.AmenitiesID, &amenitiesModel.PropertyID, &amenitiesModel.Wifi, &amenitiesModel.Pool, &amenitiesModel.Security, &amenitiesModel.LaundryRoom, &amenitiesModel.EquippedKitchen, &amenitiesModel.AirConditioning, &amenitiesModel.Parking, &amenitiesModel.GarageAtached, &amenitiesModel.Fireplace, &amenitiesModel.WindowCovering, &amenitiesModel.Backyard, &amenitiesModel.FitnessGym, &amenitiesModel.Elevator, &amenitiesModel.Others)
 		if err != nil {
 			return nil, err
 		}
@@ -1142,8 +1190,8 @@ func EditAmenities(c fiber.Ctx) error{
 	if err != nil{
 		return response.Error_Response(c, "error while trying to create Amenities table", err, nil, fiber.StatusBadRequest)
 	}
-	zap.S().Info("Amenities table created successfully! Amenities: ", amenities)
-	return response.Success_Response(c, amenitiesModel, "Ameniteies Model Created successfully", fiber.StatusOK)
+	zap.S().Info("Amenities table updated successfully! Amenities: ", amenities)
+	return response.Success_Response(c, amenitiesModel, "Ameniteies Model Updated successfully", fiber.StatusOK)
 }
 
 func EditAccordionWidget(c fiber.Ctx) error{

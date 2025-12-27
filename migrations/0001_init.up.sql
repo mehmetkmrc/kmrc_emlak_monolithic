@@ -89,8 +89,7 @@ CREATE TABLE public.amenities (
     backyard boolean,
     fitness_gym boolean,
     elevator boolean,
-    others_name text,
-    others_checked boolean,
+    others jsonb DEFAULT '[]'::jsonb,
     CONSTRAINT fk_amenities_property
         FOREIGN KEY (property_id) REFERENCES public.property(property_id)
         ON DELETE CASCADE

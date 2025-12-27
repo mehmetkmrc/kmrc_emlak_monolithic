@@ -1,4 +1,4 @@
-
+const othersArray = [];
 
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("documentLoader");
@@ -297,7 +297,20 @@ document.addEventListener("DOMContentLoaded", function () {
             const elevator = document.querySelector('input[name="elevator"]').checked;
             // Yeni alanlar
            // Diğer özellikleri gönder
-            const othersArray = otherAmenitiesArray; // Dinamik olarak eklenen tüm değerler
+            
+
+            document.querySelectorAll("#other-amenities-container li").forEach(li => {
+                const nameInput = li.querySelector('input[type="text"]');
+                const checkbox = li.querySelector('input[type="checkbox"]');
+
+                if (nameInput && nameInput.value.trim() !== "") {
+                    othersArray.push({
+                        name: nameInput.value.trim(),
+                        enabled: checkbox.checked
+                    });
+                }
+            });
+
 
 
             const amenitiesData = {

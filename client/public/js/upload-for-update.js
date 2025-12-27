@@ -209,6 +209,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
+            
+
             let otherAmenitiesArray = [];
 
             function setupOtherAmenities() {
@@ -249,7 +251,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Checkbox event
                     checkbox.addEventListener("change", function () {
                         if (this.checked && input.value.trim() !== "") {
-                            otherAmenitiesArray.push(input.value.trim());
+                            otherAmenitiesArray.push({
+                                name: input.value.trim(),
+                                checked: true
+                            });
                             this.disabled = true;
                             input.disabled = true;
 
@@ -292,8 +297,17 @@ document.addEventListener("DOMContentLoaded", function () {
             const elevator = document.querySelector('input[name="elevator"]').checked;
             // Yeni alanlar
            // Diğer özellikleri gönder
-            const othersArray = otherAmenitiesArray; // Dinamik olarak eklenen tüm değerler
+           const otherInputs = document.querySelectorAll(
+                '#other-amenities-container input[name="others[]"]'
+            );
 
+            const othersArray = Array.from(otherInputs)
+            .map(input => input.value.trim())
+            .filter(v => v !== "")
+            .map(v => ({
+                name: v,
+                enabled: true
+            }));
 
             const amenitiesData = {
                 property_id: propertyID, // Daha önce aldığınız propertyID

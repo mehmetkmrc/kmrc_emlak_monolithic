@@ -48,7 +48,7 @@
                             
                                 <div class="col-lg-9">
                                     <div class="dashboard-title">
-                                        <div class="dashboard-title-item"><span>Emlak Ekle</span></div>
+                                        <div class="dashboard-title-item"><span>İlan Ekle</span></div>
                                         <!--Tariff Plan menu-->
                                         <div class="tfp-det-container">
                                             <div class="db-date"><i class="fa-regular fa-calendar"></i><strong></strong></div>
@@ -465,18 +465,23 @@
                                                                 <input id="amenities-checkbox" type="checkbox" name="elevator" {{if .Elevator}}checked{{end}}>
                                                                 <label for="amenities-checkbox">Asansör</label>
                                                             </li>
-                                                            <li id="other-amenities-container" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
-                                                                <div class="other-amenity" style="display: flex; align-items: center; gap: 10px;">
-                                                                    <input type="text" placeholder="Diğer Özellikleri buraya yazın..." style="flex:1; padding:8px 12px; border-radius:5px; border:1px solid #ccc;">
-                                                                    <input type="checkbox" class="other-amenity-checkbox" style="width:20px; height:20px;">
-                                                                    <label style="margin:0; font-weight:500;">Var</label>
-                                                                </div>
-                                                            </li>
+                                                           
 
 
                                                         </ul>
+                                                        
                                                     </div>
                                                     <div class="col-lg-6">
+                                                        <div class="dashboard-widget-title-single">Diğer Olanaklar(Opsiyonel):</div>
+
+                                                                <ul class="no-list-style" id="other-amenities-container"></ul>
+
+                                                                <br>
+                                                                <button type="button" onclick="addAmenity()" class="btn btn-sm btn-primary">
+                                                                    + Olanak Ekle
+                                                                </button>
+                                                    </div>
+                                                    <div class="col-lg-12">
                                                         <div class="dashboard-widget-title-single">Plan ve Broşürleri Ekle:</div>
                                                         <!-- listsearch-input-item -->
                                                         <form class="fuzone">
@@ -492,6 +497,8 @@
                                                         </form>
                                                         <!-- listsearch-input-item -->									
                                                     </div>
+                                                    
+                                                    
                                                     <div class="col-lg-12">
                                                         <div class="dashboard-widget-title-single" style="margin-top: 20px">
                                                             Akordeon Widget'ı
@@ -704,3 +711,43 @@
 <!-- Main end -->
 
 <script src="/js/upload.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    addAmenity();
+});
+
+let amenityIndex = 0;
+
+function addAmenity(value = "", checked = false) {
+    const container = document.getElementById("other-amenities-container");
+
+    const li = document.createElement("li");
+    li.style.display = "flex";
+    li.style.alignItems = "center";
+    li.style.gap = "10px";
+
+    li.innerHTML = `
+        <input 
+            type="text" 
+            name="otherAmenities[${amenityIndex}][name]" 
+            value="${value}"
+            placeholder="Olanak adı"
+            style="flex:1; padding:8px;"
+        />
+
+        <input 
+            id="amenities-checkbox"
+            type="checkbox" 
+            name="otherAmenities[${amenityIndex}][enabled]" 
+            ${checked ? "checked" : ""}
+            
+        />
+        <span>Var</span>
+
+        <button type="button" onclick="this.parentElement.remove()">❌</button>
+    `;
+
+    container.appendChild(li);
+    amenityIndex++;
+}
+</script>
