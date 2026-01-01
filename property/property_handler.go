@@ -1544,3 +1544,61 @@ func DeleteImage(c fiber.Ctx) error {
 
 	return response.Success_Response(c, nil, "Image deleted successfully", fiber.StatusOK)
 }
+
+
+func DeleteProperty(c fiber.Ctx) error {
+    propertyIDParam := c.Params("property_id")
+    if propertyIDParam == "" {
+        return response.Error_Response(
+            c,
+            "property_id is required",
+            nil,
+            nil,
+            fiber.StatusBadRequest,
+        )
+    }
+
+    propertyID, err := uuid.Parse(propertyIDParam)
+    if err != nil {
+        return response.Error_Response(
+            c,
+            "invalid property_id",
+            err,
+            nil,
+            fiber.StatusBadRequest,
+        )
+    }
+
+    Delete := func(ctx context.Context, q *PropertyRepository, propertyID uuid.UUID) error {
+        query := `
+            DELETE FROM property
+            WHERE property_id = $1
+        `
+        _, err := q.dbPool.Exec(ctx, query, propertyID)
+        return err
+    }
+
+    DeleteProperty := func(ctx context.Context, propertyID uuid.UUID) error {
+        repo := &PropertyRepository{dbPool: database.DBPool}
+        return Delete(ctx, repo, propertyID)
+    }
+
+    if err := DeleteProperty(c.Context(), propertyID); err != nil {
+        return response.Error_Response(
+            c,
+            "error while trying to delete property",
+            err,
+            nil,
+            fiber.StatusInternalServerError,
+        )
+    }
+
+    zap.S().Info("Property deleted successfully:", propertyID)
+
+    return response.Success_Response(
+        c,
+        nil,
+        "Property deleted successfully",
+        fiber.StatusOK,
+    )
+}

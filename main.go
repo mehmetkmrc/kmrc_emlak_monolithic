@@ -135,6 +135,10 @@ func main() {
 	upropertier.Put("/edit-plans-brochures", property.EditPlansBrochures)
 	upropertier.Delete("nearby/:nearbyID", property.DeleteNearby)
 	upropertier.Delete("image/:mediaID", property.DeleteImage)
+	upropertier.Delete("/delete/:property_id", property.DeleteProperty)
+
+
+
 
 	userp := app.Group("/user")
 	userp.Put("/update-user-base-info", user.UpdateUser, auth.IsAuthorized,middleware.UserMiddleware, auth.GetUserDetail)

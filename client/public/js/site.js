@@ -163,3 +163,36 @@ function handleUpload(inputFile) {
 
     inputFile.value = "";
 }
+
+async function deleteProperty(propertyId) {
+    if (!propertyId) {
+        showModal("error", "Hata", "İlan ID bulunamadı");
+        return;
+    }
+
+    const confirmed = confirm("Bu ilanı silmek istediğinize emin misiniz?");
+    if (!confirmed) return;
+
+    try {
+        const res = await fetch(`http://127.0.0.1:8081/update-property/delete/${propertyId}`, {
+            method: "DELETE"
+        });
+
+        if (!res.ok) {
+            const txt = await res.text();
+            showModal("error", "Silme Hatası", txt);
+            return;
+        }
+
+        showModal("success", "Başarılı", "İlan başarıyla kaldırıldı");
+
+        // Satırı DOM'dan kaldır (yenilemeden)
+        const item = document.querySelector(`[data-property-id="${propertyId}"]`);
+        if (item) item.remove();
+
+    } catch (err) {
+        console.error(err);
+        showModal("error", "Sunucu Hatası", err.message);
+    }
+}
+
