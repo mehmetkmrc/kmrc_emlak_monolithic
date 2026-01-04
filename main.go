@@ -136,6 +136,8 @@ func main() {
 	upropertier.Delete("nearby/:nearbyID", property.DeleteNearby)
 	upropertier.Delete("image/:mediaID", property.DeleteImage)
 	upropertier.Delete("/delete/:property_id", property.DeleteProperty)
+	upropertier.Put("/passive/:property_id",  property.PassiveProperty,
+)
 
 
 

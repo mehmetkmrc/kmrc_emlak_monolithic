@@ -22,6 +22,7 @@ CREATE TABLE public.property (
     tariff_plan text,
     date timestamp without time zone NOT NULL,
     title text NOT NULL,
+    property_status integer NOT NULL DEFAULT 1,
     CONSTRAINT fk_property_user
         FOREIGN KEY (user_id) REFERENCES public.users(user_id)
         ON DELETE CASCADE

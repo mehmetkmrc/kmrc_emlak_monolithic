@@ -564,7 +564,6 @@ func InsertImage(c fiber.Ctx) error {
 }
 
 
-
 func AddBasicInfo(c fiber.Ctx) error{
 	reqBody := new(dto.BasicInfoCreateRequest)
 	body := c.Body()
@@ -1599,6 +1598,53 @@ func DeleteProperty(c fiber.Ctx) error {
         c,
         nil,
         "Property deleted successfully",
+        fiber.StatusOK,
+    )
+}
+
+
+func PassiveProperty(c fiber.Ctx) error {
+    propertyIDParam := c.Params("property_id")
+    if propertyIDParam == "" {
+        return response.Error_Response(c, "property_id is required", nil, nil, fiber.StatusBadRequest)
+    }
+
+    propertyID, err := uuid.Parse(propertyIDParam)
+    if err != nil {
+        return response.Error_Response(c, "invalid property_id", err, nil, fiber.StatusBadRequest)
+    }
+
+    Update := func(ctx context.Context, q *PropertyRepository, propertyID uuid.UUID) error {
+        query := `
+            UPDATE property
+            SET property_status = 0
+            WHERE property_id = $1
+        `
+        _, err := q.dbPool.Exec(ctx, query, propertyID)
+        return err
+    }
+
+    PassiveProperty := func(ctx context.Context, propertyID uuid.UUID) error {
+        repo := &PropertyRepository{dbPool: database.DBPool}
+        return Update(ctx, repo, propertyID)
+    }
+
+    if err := PassiveProperty(c.Context(), propertyID); err != nil {
+        return response.Error_Response(
+            c,
+            "error while trying to passive property",
+            err,
+            nil,
+            fiber.StatusInternalServerError,
+        )
+    }
+
+    zap.S().Info("Property set to passive:", propertyID)
+
+    return response.Success_Response(
+        c,
+        nil,
+        "Property set to passive successfully",
         fiber.StatusOK,
     )
 }

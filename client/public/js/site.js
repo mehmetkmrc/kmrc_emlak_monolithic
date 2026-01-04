@@ -196,3 +196,39 @@ async function deleteProperty(propertyId) {
     }
 }
 
+// =======================
+// ⏸️ PROPERTY PASSIVE
+// =======================
+async function passiveProperty(propertyId) {
+    if (!propertyId) {
+        showModal("error", "Hata", "İlan ID bulunamadı");
+        return;
+    }
+
+    const confirmed = confirm("Bu ilanı pasife almak istediğinize emin misiniz?");
+    if (!confirmed) return;
+
+    try {
+        const res = await fetch(`http://127.0.0.1:8081/update-property/passive/${propertyId}`, {
+            method: "PUT"
+        });
+
+        if (!res.ok) {
+            const txt = await res.text();
+            showModal("error", "Hata", txt);
+            return;
+        }
+
+        showModal("success", "Başarılı", "İlan pasife alındı");
+
+        // UI güncelle (ikon değiştir / satırı soldur)
+        const item = document.querySelector(`[data-property-id="${propertyId}"]`);
+        if (item) {
+            item.classList.add("property-passive");
+        }
+
+    } catch (err) {
+        console.error(err);
+        showModal("error", "Sunucu Hatası", err.message);
+    }
+}
